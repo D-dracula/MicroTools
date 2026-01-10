@@ -1,0 +1,501 @@
+ReviewID,ProductName,Rating,ReviewText,ReviewDate,CustomerName,Verified
+REV00001,"ALARM CLOCK BAKELIKE RED",1,"Returned for refund.",2024-02-19,Customer4624,Yes
+REV00002,"CREAM CUPID HEARTS COAT HANGER",2,"Customer service was unhelpful.",2024-02-16,Customer7484,Yes
+REV00003,"WHITE HANGING HEART T-LIGHT HOLDER",2,"Product arrived damaged.",2024-04-27,Customer4712,Yes
+REV00004,"BATH BUILDING BLOCK WORD",1,"Customer service was unhelpful.",2024-06-06,Customer5084,Yes
+REV00005,"KNITTED UNION FLAG HOT WATER BOTTLE",5,"Exceeded my expectations!",2024-03-12,Customer3587,Yes
+REV00006,"HOT WATER BOTTLE TEA AND SYMPATHY",2,"Would not recommend.",2024-05-31,Customer2444,Yes
+REV00007,"VICTORIAN SEWING BOX LARGE",2,"Poor quality, broke after one use.",2024-02-28,Customer6543,No
+REV00008,"HAND WARMER UNION JACK",1,"Product arrived damaged.",2024-04-20,Customer4241,Yes
+REV00009,"CREAM CUPID HEARTS COAT HANGER",5,"Love it! Will buy again.",2024-02-21,Customer5026,Yes
+REV00010,"HAND WARMER UNION JACK",5,"Amazing value for money.",2024-11-19,Customer7802,Yes
+REV00011,"POPPY'S PLAYHOUSE KITCHEN",3,"Product is okay, nothing special.",2024-05-18,Customer4840,Yes
+REV00012,"VICTORIAN SEWING BOX LARGE",5,"Amazing value for money.",2024-06-29,Customer3828,No
+REV00013,"BATH BUILDING BLOCK WORD",4,"Love it! Will buy again.",2024-01-02,Customer4973,No
+REV00014,"POPPY'S PLAYHOUSE KITCHEN",1,"Returned for refund.",2024-08-15,Customer7284,Yes
+REV00015,"HEART OF WICKER SMALL",4,"Very happy with this product.",2024-04-21,Customer5897,Yes
+REV00016,"ASSORTED COLOUR BIRD ORNAMENT",3,"Average quality for the price.",2024-03-23,Customer5409,No
+REV00017,"GLASS STAR FROSTED T-LIGHT HOLDER",3,"Product is okay, nothing special.",2024-04-06,Customer5429,Yes
+REV00018,"VICTORIAN SEWING BOX LARGE",3,"Product is okay, nothing special.",2024-01-27,Customer1429,Yes
+REV00019,"JAM MAKING SET WITH JARS",1,"Customer service was unhelpful.",2024-09-07,Customer5508,Yes
+REV00020,"RED WOOLLY HOTTIE WHITE HEART",3,"Product is okay, nothing special.",2024-09-27,Customer1144,Yes
+REV00021,"KNITTED UNION FLAG HOT WATER BOTTLE",4,"Excellent product! Highly recommend.",2024-04-03,Customer1642,Yes
+REV00022,"KNITTED UNION FLAG HOT WATER BOTTLE",4,"Great quality, fast shipping.",2024-02-04,Customer4486,Yes
+REV00023,"HAND WARMER RED POLKA DOT",3,"Not bad, not great.",2024-11-10,Customer8372,Yes
+REV00024,"ALARM CLOCK BAKELIKE GREEN",1,"Waste of money.",2024-07-22,Customer3469,Yes
+REV00025,"ALARM CLOCK BAKELIKE PINK",3,"Decent product, met expectations.",2024-01-18,Customer1611,Yes
+REV00026,"REGENCY CAKESTAND 3 TIER",1,"Missing parts in the package.",2024-11-26,Customer2887,Yes
+REV00027,"WHITE METAL LANTERN",3,"It works but could be better.",2024-08-03,Customer3287,Yes
+REV00028,"ALARM CLOCK BAKELIKE RED",5,"Great quality, fast shipping.",2024-09-09,Customer6485,Yes
+REV00029,"WHITE METAL LANTERN",1,"Not as described, very disappointed.",2024-02-09,Customer7019,Yes
+REV00030,"HAND WARMER UNION JACK",3,"Decent product, met expectations.",2024-11-09,Customer4045,Yes
+REV00031,"SET 7 BABUSHKA NESTING BOXES",1,"Missing parts in the package.",2024-10-02,Customer4448,No
+REV00032,"REGENCY CAKESTAND 3 TIER",2,"Waste of money.",2024-09-09,Customer4054,Yes
+REV00033,"RED WOOLLY HOTTIE WHITE HEART",5,"Amazing value for money.",2024-05-19,Customer6043,Yes
+REV00034,"HEART OF WICKER SMALL",1,"Product arrived damaged.",2024-06-02,Customer9492,No
+REV00035,"HAND WARMER RED POLKA DOT",1,"Poor quality, broke after one use.",2024-06-07,Customer5093,Yes
+REV00036,"HOT WATER BOTTLE TEA AND SYMPATHY",5,"Best purchase I've made this year.",2024-01-17,Customer9400,No
+REV00037,"RED WOOLLY HOTTIE WHITE HEART",5,"Excellent product! Highly recommend.",2024-05-11,Customer9683,Yes
+REV00038,"HEART OF WICKER SMALL",4,"Amazing value for money.",2024-11-21,Customer1063,Yes
+REV00039,"PAPER CHAIN KIT 50'S CHRISTMAS",3,"Average quality for the price.",2024-10-02,Customer1454,Yes
+REV00040,"VICTORIAN SEWING BOX LARGE",1,"Not as described, very disappointed.",2024-04-07,Customer8433,Yes
+REV00041,"REGENCY CAKESTAND 3 TIER",2,"Customer service was unhelpful.",2024-08-04,Customer9388,Yes
+REV00042,"POPPY'S PLAYHOUSE BEDROOM",4,"Perfect gift, beautifully packaged.",2024-02-23,Customer5574,Yes
+REV00043,"RED WOOLLY HOTTIE WHITE HEART",2,"Poor quality, broke after one use.",2024-06-14,Customer3661,No
+REV00044,"ASSORTED COLOUR BIRD ORNAMENT",2,"Shipping took too long.",2024-02-20,Customer6507,Yes
+REV00045,"BATH BUILDING BLOCK WORD",1,"Returned for refund.",2024-11-14,Customer2664,No
+REV00046,"POPPY'S PLAYHOUSE KITCHEN",1,"Would not recommend.",2024-04-15,Customer1265,Yes
+REV00047,"GLASS STAR FROSTED T-LIGHT HOLDER",5,"Exceeded my expectations!",2024-07-18,Customer6807,Yes
+REV00048,"RED WOOLLY HOTTIE WHITE HEART",5,"Very happy with this product.",2024-03-08,Customer4202,Yes
+REV00049,"RED WOOLLY HOTTIE WHITE HEART",4,"Very happy with this product.",2024-08-18,Customer9440,Yes
+REV00050,"REGENCY CAKESTAND 3 TIER",4,"Excellent product! Highly recommend.",2024-04-07,Customer3814,Yes
+REV00051,"ASSORTED COLOUR BIRD ORNAMENT",1,"Poor quality, broke after one use.",2024-01-18,Customer7957,No
+REV00052,"ALARM CLOCK BAKELIKE PINK",3,"Product is okay, nothing special.",2024-10-10,Customer7565,Yes
+REV00053,"SET 7 BABUSHKA NESTING BOXES",4,"Great quality, fast shipping.",2024-12-14,Customer1220,Yes
+REV00054,"REGENCY CAKESTAND 3 TIER",5,"Great quality, fast shipping.",2024-01-09,Customer2370,Yes
+REV00055,"JAM MAKING SET WITH JARS",4,"Love it! Will buy again.",2024-08-23,Customer8932,Yes
+REV00056,"BATH BUILDING BLOCK WORD",4,"Excellent product! Highly recommend.",2024-08-11,Customer6742,Yes
+REV00057,"KNITTED UNION FLAG HOT WATER BOTTLE",2,"Product looks cheap.",2024-01-31,Customer4746,Yes
+REV00058,"REGENCY CAKESTAND 3 TIER",1,"Product looks cheap.",2024-10-24,Customer2377,Yes
+REV00059,"WHITE METAL LANTERN",5,"Great quality, fast shipping.",2024-11-16,Customer3789,Yes
+REV00060,"ALARM CLOCK BAKELIKE PINK",3,"Average quality for the price.",2024-07-17,Customer2809,Yes
+REV00061,"RED WOOLLY HOTTIE WHITE HEART",2,"Waste of money.",2024-10-26,Customer3796,Yes
+REV00062,"HAND WARMER UNION JACK",1,"Missing parts in the package.",2024-03-06,Customer7571,Yes
+REV00063,"HAND WARMER RED POLKA DOT",2,"Returned for refund.",2024-03-14,Customer1459,No
+REV00064,"HEART OF WICKER SMALL",2,"Waste of money.",2024-11-03,Customer4544,Yes
+REV00065,"GLASS STAR FROSTED T-LIGHT HOLDER",5,"Very happy with this product.",2024-01-28,Customer7946,No
+REV00066,"KNITTED UNION FLAG HOT WATER BOTTLE",3,"Decent product, met expectations.",2024-02-05,Customer7504,Yes
+REV00067,"CREAM CUPID HEARTS COAT HANGER",3,"Not bad, not great.",2024-12-27,Customer5610,Yes
+REV00068,"JAM MAKING SET WITH JARS",2,"Product looks cheap.",2024-06-15,Customer2605,No
+REV00069,"POPPY'S PLAYHOUSE KITCHEN",3,"It works but could be better.",2024-04-25,Customer6058,Yes
+REV00070,"VICTORIAN SEWING BOX LARGE",3,"Decent product, met expectations.",2024-10-01,Customer4739,Yes
+REV00071,"BATH BUILDING BLOCK WORD",1,"Product arrived damaged.",2024-11-21,Customer7650,Yes
+REV00072,"PAPER CHAIN KIT 50'S CHRISTMAS",1,"Product arrived damaged.",2024-09-16,Customer9657,Yes
+REV00073,"ALARM CLOCK BAKELIKE GREEN",3,"Decent product, met expectations.",2024-07-09,Customer3327,Yes
+REV00074,"HOT WATER BOTTLE TEA AND SYMPATHY",2,"Product arrived damaged.",2024-03-31,Customer1003,Yes
+REV00075,"SET 7 BABUSHKA NESTING BOXES",1,"Missing parts in the package.",2024-11-22,Customer1544,Yes
+REV00076,"BATH BUILDING BLOCK WORD",4,"Love it! Will buy again.",2024-11-02,Customer8532,Yes
+REV00077,"KNITTED UNION FLAG HOT WATER BOTTLE",5,"Love it! Will buy again.",2024-02-16,Customer5049,Yes
+REV00078,"GLASS STAR FROSTED T-LIGHT HOLDER",3,"Average quality for the price.",2024-02-28,Customer5349,No
+REV00079,"GLASS STAR FROSTED T-LIGHT HOLDER",5,"Great quality, fast shipping.",2024-12-21,Customer1407,Yes
+REV00080,"ALARM CLOCK BAKELIKE PINK",2,"Returned for refund.",2024-11-20,Customer5864,Yes
+REV00081,"VICTORIAN SEWING BOX LARGE",5,"Excellent product! Highly recommend.",2024-03-21,Customer4769,Yes
+REV00082,"REGENCY CAKESTAND 3 TIER",2,"Returned for refund.",2024-02-11,Customer2800,No
+REV00083,"JAM MAKING SET WITH JARS",1,"Not as described, very disappointed.",2024-09-07,Customer9110,No
+REV00084,"HAND WARMER RED POLKA DOT",1,"Returned for refund.",2024-09-09,Customer3528,Yes
+REV00085,"WHITE METAL LANTERN",1,"Returned for refund.",2024-12-27,Customer8198,Yes
+REV00086,"GLASS STAR FROSTED T-LIGHT HOLDER",5,"Amazing value for money.",2024-02-26,Customer7230,Yes
+REV00087,"ALARM CLOCK BAKELIKE GREEN",1,"Would not recommend.",2024-04-05,Customer5472,Yes
+REV00088,"GLASS STAR FROSTED T-LIGHT HOLDER",2,"Poor quality, broke after one use.",2024-04-26,Customer1904,Yes
+REV00089,"HOT WATER BOTTLE TEA AND SYMPATHY",1,"Shipping took too long.",2024-08-19,Customer8287,No
+REV00090,"WHITE HANGING HEART T-LIGHT HOLDER",5,"Best purchase I've made this year.",2024-12-06,Customer3063,Yes
+REV00091,"GLASS STAR FROSTED T-LIGHT HOLDER",4,"Outstanding customer service.",2024-05-07,Customer2714,No
+REV00092,"RED WOOLLY HOTTIE WHITE HEART",4,"Five stars, absolutely perfect!",2024-03-20,Customer3001,Yes
+REV00093,"ALARM CLOCK BAKELIKE RED",4,"Five stars, absolutely perfect!",2024-11-13,Customer5874,No
+REV00094,"REGENCY CAKESTAND 3 TIER",3,"Product is okay, nothing special.",2024-06-16,Customer1834,Yes
+REV00095,"ALARM CLOCK BAKELIKE RED",3,"It works but could be better.",2024-01-31,Customer1091,No
+REV00096,"ALARM CLOCK BAKELIKE PINK",1,"Missing parts in the package.",2024-08-22,Customer3235,Yes
+REV00097,"WHITE HANGING HEART T-LIGHT HOLDER",3,"Product is okay, nothing special.",2024-09-12,Customer6114,No
+REV00098,"JAM MAKING SET WITH JARS",3,"Decent product, met expectations.",2024-05-04,Customer8096,No
+REV00099,"ALARM CLOCK BAKELIKE RED",2,"Waste of money.",2024-10-22,Customer4816,Yes
+REV00100,"SET 7 BABUSHKA NESTING BOXES",1,"Poor quality, broke after one use.",2024-01-24,Customer1776,No
+REV00101,"ALARM CLOCK BAKELIKE GREEN",5,"Five stars, absolutely perfect!",2024-11-01,Customer9301,Yes
+REV00102,"POPPY'S PLAYHOUSE BEDROOM",4,"Best purchase I've made this year.",2024-07-27,Customer6199,Yes
+REV00103,"HEART OF WICKER SMALL",1,"Poor quality, broke after one use.",2024-02-03,Customer6238,No
+REV00104,"BATH BUILDING BLOCK WORD",2,"Waste of money.",2024-03-16,Customer3358,Yes
+REV00105,"BATH BUILDING BLOCK WORD",3,"Average quality for the price.",2024-03-26,Customer9172,Yes
+REV00106,"JAM MAKING SET WITH JARS",3,"Product is okay, nothing special.",2024-12-03,Customer3566,Yes
+REV00107,"REGENCY CAKESTAND 3 TIER",3,"Decent product, met expectations.",2024-06-11,Customer1500,No
+REV00108,"REGENCY CAKESTAND 3 TIER",1,"Returned for refund.",2024-12-23,Customer3170,Yes
+REV00109,"JAM MAKING SET WITH JARS",1,"Returned for refund.",2024-04-22,Customer6582,Yes
+REV00110,"GLASS STAR FROSTED T-LIGHT HOLDER",3,"Product is okay, nothing special.",2024-12-07,Customer9357,Yes
+REV00111,"CREAM CUPID HEARTS COAT HANGER",2,"Poor quality, broke after one use.",2024-10-03,Customer1161,Yes
+REV00112,"HAND WARMER UNION JACK",4,"Perfect gift, beautifully packaged.",2024-03-15,Customer4542,Yes
+REV00113,"WHITE METAL LANTERN",5,"Great quality, fast shipping.",2024-06-04,Customer1899,Yes
+REV00114,"ALARM CLOCK BAKELIKE PINK",4,"Amazing value for money.",2024-09-09,Customer3988,Yes
+REV00115,"ALARM CLOCK BAKELIKE GREEN",2,"Returned for refund.",2024-07-18,Customer3220,No
+REV00116,"PAPER CHAIN KIT 50'S CHRISTMAS",5,"Love it! Will buy again.",2024-10-21,Customer4273,Yes
+REV00117,"ALARM CLOCK BAKELIKE PINK",1,"Missing parts in the package.",2024-10-21,Customer6994,Yes
+REV00118,"POPPY'S PLAYHOUSE BEDROOM",3,"It works but could be better.",2024-10-17,Customer4241,Yes
+REV00119,"PAPER CHAIN KIT 50'S CHRISTMAS",1,"Waste of money.",2024-09-02,Customer5568,Yes
+REV00120,"PAPER CHAIN KIT 50'S CHRISTMAS",2,"Poor quality, broke after one use.",2024-01-01,Customer5752,No
+REV00121,"POPPY'S PLAYHOUSE BEDROOM",1,"Shipping took too long.",2024-02-26,Customer2796,Yes
+REV00122,"PAPER CHAIN KIT 50'S CHRISTMAS",3,"Not bad, not great.",2024-06-22,Customer9244,No
+REV00123,"GLASS STAR FROSTED T-LIGHT HOLDER",3,"Not bad, not great.",2024-05-30,Customer9045,No
+REV00124,"HAND WARMER UNION JACK",2,"Product arrived damaged.",2024-01-29,Customer3961,No
+REV00125,"WHITE HANGING HEART T-LIGHT HOLDER",5,"Love it! Will buy again.",2024-02-22,Customer1328,Yes
+REV00126,"POPPY'S PLAYHOUSE BEDROOM",1,"Customer service was unhelpful.",2024-02-10,Customer1690,Yes
+REV00127,"ALARM CLOCK BAKELIKE GREEN",2,"Returned for refund.",2024-04-15,Customer7504,Yes
+REV00128,"WHITE METAL LANTERN",2,"Shipping took too long.",2024-12-22,Customer3689,Yes
+REV00129,"POPPY'S PLAYHOUSE BEDROOM",3,"Product is okay, nothing special.",2024-11-06,Customer4142,No
+REV00130,"VICTORIAN SEWING BOX LARGE",4,"Very happy with this product.",2024-06-13,Customer9177,Yes
+REV00131,"BATH BUILDING BLOCK WORD",3,"It works but could be better.",2024-02-25,Customer2954,Yes
+REV00132,"HOT WATER BOTTLE TEA AND SYMPATHY",5,"Five stars, absolutely perfect!",2024-05-03,Customer5264,Yes
+REV00133,"VICTORIAN SEWING BOX LARGE",5,"Excellent product! Highly recommend.",2024-06-21,Customer7843,No
+REV00134,"JAM MAKING SET WITH JARS",4,"Best purchase I've made this year.",2024-09-07,Customer4103,Yes
+REV00135,"POPPY'S PLAYHOUSE BEDROOM",4,"Great quality, fast shipping.",2024-12-11,Customer5347,Yes
+REV00136,"ASSORTED COLOUR BIRD ORNAMENT",1,"Shipping took too long.",2024-12-12,Customer7082,Yes
+REV00137,"ALARM CLOCK BAKELIKE PINK",5,"Five stars, absolutely perfect!",2024-03-06,Customer2188,Yes
+REV00138,"HEART OF WICKER SMALL",1,"Product arrived damaged.",2024-12-30,Customer1451,Yes
+REV00139,"ASSORTED COLOUR BIRD ORNAMENT",1,"Customer service was unhelpful.",2024-07-01,Customer7993,Yes
+REV00140,"GLASS STAR FROSTED T-LIGHT HOLDER",2,"Not as described, very disappointed.",2024-04-10,Customer7766,Yes
+REV00141,"WHITE METAL LANTERN",3,"It works but could be better.",2024-02-26,Customer8346,Yes
+REV00142,"WHITE METAL LANTERN",1,"Product arrived damaged.",2024-09-11,Customer7766,Yes
+REV00143,"CREAM CUPID HEARTS COAT HANGER",2,"Not as described, very disappointed.",2024-10-14,Customer6736,Yes
+REV00144,"HAND WARMER RED POLKA DOT",5,"Love it! Will buy again.",2024-12-25,Customer1572,No
+REV00145,"ALARM CLOCK BAKELIKE GREEN",1,"Shipping took too long.",2024-02-14,Customer1800,Yes
+REV00146,"PAPER CHAIN KIT 50'S CHRISTMAS",3,"Not bad, not great.",2024-04-21,Customer5136,No
+REV00147,"WHITE METAL LANTERN",4,"Exceeded my expectations!",2024-11-13,Customer5300,Yes
+REV00148,"CREAM CUPID HEARTS COAT HANGER",3,"It works but could be better.",2024-11-12,Customer3017,No
+REV00149,"REGENCY CAKESTAND 3 TIER",5,"Amazing value for money.",2024-08-27,Customer8226,Yes
+REV00150,"HAND WARMER UNION JACK",5,"Exceeded my expectations!",2024-11-24,Customer7543,No
+REV00151,"ALARM CLOCK BAKELIKE RED",2,"Not as described, very disappointed.",2024-03-08,Customer7298,No
+REV00152,"GLASS STAR FROSTED T-LIGHT HOLDER",3,"Product is okay, nothing special.",2024-11-07,Customer7552,Yes
+REV00153,"HOT WATER BOTTLE TEA AND SYMPATHY",4,"Best purchase I've made this year.",2024-11-26,Customer8843,No
+REV00154,"ALARM CLOCK BAKELIKE PINK",3,"Product is okay, nothing special.",2024-10-15,Customer3728,Yes
+REV00155,"WHITE HANGING HEART T-LIGHT HOLDER",1,"Waste of money.",2024-10-11,Customer3142,Yes
+REV00156,"ALARM CLOCK BAKELIKE RED",1,"Customer service was unhelpful.",2024-02-11,Customer3358,Yes
+REV00157,"JAM MAKING SET WITH JARS",4,"Outstanding customer service.",2024-09-20,Customer8100,Yes
+REV00158,"ASSORTED COLOUR BIRD ORNAMENT",2,"Not as described, very disappointed.",2024-12-30,Customer1725,Yes
+REV00159,"WHITE HANGING HEART T-LIGHT HOLDER",1,"Missing parts in the package.",2024-03-25,Customer5883,Yes
+REV00160,"HEART OF WICKER SMALL",2,"Missing parts in the package.",2024-12-06,Customer1027,Yes
+REV00161,"CREAM CUPID HEARTS COAT HANGER",1,"Customer service was unhelpful.",2024-09-04,Customer4224,Yes
+REV00162,"WHITE HANGING HEART T-LIGHT HOLDER",3,"Average quality for the price.",2024-02-15,Customer3702,Yes
+REV00163,"HAND WARMER UNION JACK",4,"Exceeded my expectations!",2024-04-26,Customer9574,No
+REV00164,"HOT WATER BOTTLE TEA AND SYMPATHY",4,"Excellent product! Highly recommend.",2024-07-04,Customer9253,No
+REV00165,"KNITTED UNION FLAG HOT WATER BOTTLE",1,"Poor quality, broke after one use.",2024-05-11,Customer1127,Yes
+REV00166,"ALARM CLOCK BAKELIKE PINK",5,"Five stars, absolutely perfect!",2024-05-07,Customer4401,No
+REV00167,"ALARM CLOCK BAKELIKE RED",3,"Product is okay, nothing special.",2024-07-30,Customer6801,Yes
+REV00168,"POPPY'S PLAYHOUSE BEDROOM",5,"Very happy with this product.",2024-04-07,Customer3889,No
+REV00169,"HOT WATER BOTTLE TEA AND SYMPATHY",4,"Exceeded my expectations!",2024-06-10,Customer3374,Yes
+REV00170,"ALARM CLOCK BAKELIKE PINK",4,"Five stars, absolutely perfect!",2024-04-08,Customer5329,Yes
+REV00171,"CREAM CUPID HEARTS COAT HANGER",5,"Best purchase I've made this year.",2024-03-02,Customer4848,Yes
+REV00172,"PAPER CHAIN KIT 50'S CHRISTMAS",2,"Product arrived damaged.",2024-06-29,Customer1594,Yes
+REV00173,"RED WOOLLY HOTTIE WHITE HEART",4,"Outstanding customer service.",2024-11-21,Customer8218,Yes
+REV00174,"ALARM CLOCK BAKELIKE PINK",2,"Not as described, very disappointed.",2024-04-06,Customer3475,Yes
+REV00175,"CREAM CUPID HEARTS COAT HANGER",4,"Great quality, fast shipping.",2024-01-21,Customer1960,Yes
+REV00176,"WHITE HANGING HEART T-LIGHT HOLDER",3,"Decent product, met expectations.",2024-05-07,Customer4263,Yes
+REV00177,"PAPER CHAIN KIT 50'S CHRISTMAS",3,"Product is okay, nothing special.",2024-10-19,Customer7221,Yes
+REV00178,"CREAM CUPID HEARTS COAT HANGER",2,"Product arrived damaged.",2024-09-27,Customer9945,Yes
+REV00179,"VICTORIAN SEWING BOX LARGE",4,"Outstanding customer service.",2024-02-29,Customer9702,Yes
+REV00180,"VICTORIAN SEWING BOX LARGE",3,"Product is okay, nothing special.",2024-07-22,Customer8968,Yes
+REV00181,"REGENCY CAKESTAND 3 TIER",4,"Five stars, absolutely perfect!",2024-12-29,Customer8147,Yes
+REV00182,"REGENCY CAKESTAND 3 TIER",5,"Best purchase I've made this year.",2024-05-16,Customer5041,Yes
+REV00183,"ALARM CLOCK BAKELIKE GREEN",5,"Outstanding customer service.",2024-05-21,Customer4533,Yes
+REV00184,"HAND WARMER RED POLKA DOT",2,"Returned for refund.",2024-11-12,Customer2417,No
+REV00185,"GLASS STAR FROSTED T-LIGHT HOLDER",4,"Exceeded my expectations!",2024-12-13,Customer8634,Yes
+REV00186,"SET 7 BABUSHKA NESTING BOXES",4,"Great quality, fast shipping.",2024-04-18,Customer2136,Yes
+REV00187,"HAND WARMER RED POLKA DOT",2,"Product arrived damaged.",2024-06-25,Customer7632,No
+REV00188,"WHITE HANGING HEART T-LIGHT HOLDER",3,"It works but could be better.",2024-09-21,Customer5708,No
+REV00189,"HOT WATER BOTTLE TEA AND SYMPATHY",4,"Five stars, absolutely perfect!",2024-02-13,Customer8066,Yes
+REV00190,"GLASS STAR FROSTED T-LIGHT HOLDER",1,"Product looks cheap.",2024-06-24,Customer6118,No
+REV00191,"VICTORIAN SEWING BOX LARGE",2,"Not as described, very disappointed.",2024-12-03,Customer4051,Yes
+REV00192,"HAND WARMER UNION JACK",5,"Perfect gift, beautifully packaged.",2024-02-16,Customer8680,Yes
+REV00193,"ALARM CLOCK BAKELIKE RED",5,"Love it! Will buy again.",2024-09-29,Customer2435,Yes
+REV00194,"ALARM CLOCK BAKELIKE RED",2,"Customer service was unhelpful.",2024-03-18,Customer7265,Yes
+REV00195,"BATH BUILDING BLOCK WORD",3,"Decent product, met expectations.",2024-05-24,Customer8090,Yes
+REV00196,"HEART OF WICKER SMALL",4,"Great quality, fast shipping.",2024-02-16,Customer3382,Yes
+REV00197,"ALARM CLOCK BAKELIKE PINK",4,"Great quality, fast shipping.",2024-02-14,Customer1893,Yes
+REV00198,"ALARM CLOCK BAKELIKE PINK",1,"Not as described, very disappointed.",2024-06-11,Customer3634,Yes
+REV00199,"HAND WARMER UNION JACK",5,"Love it! Will buy again.",2024-12-05,Customer5555,No
+REV00200,"REGENCY CAKESTAND 3 TIER",2,"Shipping took too long.",2024-04-22,Customer9803,Yes
+REV00201,"GLASS STAR FROSTED T-LIGHT HOLDER",2,"Would not recommend.",2024-04-29,Customer4204,Yes
+REV00202,"ALARM CLOCK BAKELIKE PINK",4,"Outstanding customer service.",2024-12-11,Customer2968,Yes
+REV00203,"KNITTED UNION FLAG HOT WATER BOTTLE",5,"Five stars, absolutely perfect!",2024-07-05,Customer1294,Yes
+REV00204,"JAM MAKING SET WITH JARS",4,"Great quality, fast shipping.",2024-01-02,Customer3062,Yes
+REV00205,"HEART OF WICKER SMALL",5,"Five stars, absolutely perfect!",2024-05-04,Customer4480,No
+REV00206,"HOT WATER BOTTLE TEA AND SYMPATHY",3,"Product is okay, nothing special.",2024-04-04,Customer9440,Yes
+REV00207,"RED WOOLLY HOTTIE WHITE HEART",4,"Perfect gift, beautifully packaged.",2024-01-07,Customer2625,Yes
+REV00208,"SET 7 BABUSHKA NESTING BOXES",3,"Product is okay, nothing special.",2024-10-19,Customer5683,Yes
+REV00209,"CREAM CUPID HEARTS COAT HANGER",4,"Perfect gift, beautifully packaged.",2024-01-01,Customer2716,Yes
+REV00210,"REGENCY CAKESTAND 3 TIER",2,"Waste of money.",2024-08-07,Customer6503,Yes
+REV00211,"JAM MAKING SET WITH JARS",5,"Perfect gift, beautifully packaged.",2024-02-14,Customer8878,Yes
+REV00212,"HAND WARMER UNION JACK",5,"Very happy with this product.",2024-10-09,Customer6703,Yes
+REV00213,"CREAM CUPID HEARTS COAT HANGER",1,"Not as described, very disappointed.",2024-06-10,Customer5340,Yes
+REV00214,"WHITE HANGING HEART T-LIGHT HOLDER",2,"Waste of money.",2024-02-17,Customer5628,Yes
+REV00215,"SET 7 BABUSHKA NESTING BOXES",4,"Perfect gift, beautifully packaged.",2024-06-26,Customer5337,Yes
+REV00216,"POPPY'S PLAYHOUSE KITCHEN",3,"It works but could be better.",2024-06-01,Customer7431,Yes
+REV00217,"VICTORIAN SEWING BOX LARGE",2,"Not as described, very disappointed.",2024-08-15,Customer7484,No
+REV00218,"POPPY'S PLAYHOUSE KITCHEN",5,"Love it! Will buy again.",2024-06-30,Customer5375,Yes
+REV00219,"CREAM CUPID HEARTS COAT HANGER",1,"Poor quality, broke after one use.",2024-04-15,Customer9792,Yes
+REV00220,"BATH BUILDING BLOCK WORD",1,"Poor quality, broke after one use.",2024-02-22,Customer2209,Yes
+REV00221,"WHITE HANGING HEART T-LIGHT HOLDER",2,"Customer service was unhelpful.",2024-12-13,Customer8261,Yes
+REV00222,"KNITTED UNION FLAG HOT WATER BOTTLE",3,"Not bad, not great.",2024-04-18,Customer3995,Yes
+REV00223,"HAND WARMER UNION JACK",2,"Poor quality, broke after one use.",2024-07-22,Customer2529,No
+REV00224,"GLASS STAR FROSTED T-LIGHT HOLDER",4,"Outstanding customer service.",2024-05-12,Customer4231,Yes
+REV00225,"PAPER CHAIN KIT 50'S CHRISTMAS",1,"Would not recommend.",2024-01-10,Customer6209,Yes
+REV00226,"ALARM CLOCK BAKELIKE GREEN",1,"Would not recommend.",2024-11-13,Customer7374,Yes
+REV00227,"BATH BUILDING BLOCK WORD",4,"Exceeded my expectations!",2024-08-12,Customer2385,Yes
+REV00228,"BATH BUILDING BLOCK WORD",2,"Returned for refund.",2024-01-15,Customer4893,Yes
+REV00229,"REGENCY CAKESTAND 3 TIER",2,"Shipping took too long.",2024-10-31,Customer3211,Yes
+REV00230,"REGENCY CAKESTAND 3 TIER",4,"Outstanding customer service.",2024-04-10,Customer7180,Yes
+REV00231,"HEART OF WICKER SMALL",1,"Returned for refund.",2024-09-24,Customer6030,Yes
+REV00232,"CREAM CUPID HEARTS COAT HANGER",1,"Shipping took too long.",2024-11-04,Customer7693,No
+REV00233,"POPPY'S PLAYHOUSE KITCHEN",3,"Decent product, met expectations.",2024-05-23,Customer9390,Yes
+REV00234,"ALARM CLOCK BAKELIKE GREEN",1,"Returned for refund.",2024-02-16,Customer4292,Yes
+REV00235,"CREAM CUPID HEARTS COAT HANGER",2,"Product arrived damaged.",2024-12-16,Customer7056,Yes
+REV00236,"BATH BUILDING BLOCK WORD",4,"Outstanding customer service.",2024-10-03,Customer7866,Yes
+REV00237,"ALARM CLOCK BAKELIKE PINK",3,"Average quality for the price.",2024-12-26,Customer1271,Yes
+REV00238,"POPPY'S PLAYHOUSE KITCHEN",1,"Product looks cheap.",2024-06-12,Customer3097,Yes
+REV00239,"HEART OF WICKER SMALL",4,"Perfect gift, beautifully packaged.",2024-08-24,Customer9996,Yes
+REV00240,"POPPY'S PLAYHOUSE BEDROOM",1,"Missing parts in the package.",2024-07-03,Customer3588,Yes
+REV00241,"PAPER CHAIN KIT 50'S CHRISTMAS",5,"Five stars, absolutely perfect!",2024-06-28,Customer8835,Yes
+REV00242,"PAPER CHAIN KIT 50'S CHRISTMAS",2,"Waste of money.",2024-03-09,Customer2970,Yes
+REV00243,"WHITE METAL LANTERN",1,"Not as described, very disappointed.",2024-11-19,Customer1197,Yes
+REV00244,"PAPER CHAIN KIT 50'S CHRISTMAS",3,"Average quality for the price.",2024-07-09,Customer8240,Yes
+REV00245,"WHITE HANGING HEART T-LIGHT HOLDER",1,"Would not recommend.",2024-10-09,Customer3230,Yes
+REV00246,"KNITTED UNION FLAG HOT WATER BOTTLE",4,"Excellent product! Highly recommend.",2024-11-20,Customer4395,No
+REV00247,"GLASS STAR FROSTED T-LIGHT HOLDER",5,"Five stars, absolutely perfect!",2024-07-12,Customer9675,Yes
+REV00248,"CREAM CUPID HEARTS COAT HANGER",1,"Not as described, very disappointed.",2024-10-22,Customer3661,No
+REV00249,"PAPER CHAIN KIT 50'S CHRISTMAS",1,"Would not recommend.",2024-06-13,Customer4286,Yes
+REV00250,"WHITE METAL LANTERN",1,"Product looks cheap.",2024-10-05,Customer1971,Yes
+REV00251,"HOT WATER BOTTLE TEA AND SYMPATHY",5,"Exceeded my expectations!",2024-07-23,Customer3088,Yes
+REV00252,"ALARM CLOCK BAKELIKE RED",2,"Not as described, very disappointed.",2024-04-20,Customer5956,Yes
+REV00253,"KNITTED UNION FLAG HOT WATER BOTTLE",4,"Five stars, absolutely perfect!",2024-03-11,Customer2960,No
+REV00254,"POPPY'S PLAYHOUSE BEDROOM",2,"Customer service was unhelpful.",2024-01-01,Customer2995,Yes
+REV00255,"ASSORTED COLOUR BIRD ORNAMENT",4,"Exceeded my expectations!",2024-12-08,Customer3761,No
+REV00256,"PAPER CHAIN KIT 50'S CHRISTMAS",1,"Product arrived damaged.",2024-02-16,Customer5763,Yes
+REV00257,"JAM MAKING SET WITH JARS",3,"Decent product, met expectations.",2024-06-05,Customer4118,Yes
+REV00258,"WHITE METAL LANTERN",3,"Average quality for the price.",2024-08-08,Customer8081,Yes
+REV00259,"REGENCY CAKESTAND 3 TIER",4,"Very happy with this product.",2024-05-03,Customer8361,No
+REV00260,"CREAM CUPID HEARTS COAT HANGER",3,"Decent product, met expectations.",2024-08-30,Customer7424,No
+REV00261,"PAPER CHAIN KIT 50'S CHRISTMAS",4,"Best purchase I've made this year.",2024-07-23,Customer3551,Yes
+REV00262,"HAND WARMER UNION JACK",1,"Customer service was unhelpful.",2024-09-20,Customer4263,No
+REV00263,"WHITE HANGING HEART T-LIGHT HOLDER",5,"Amazing value for money.",2024-07-28,Customer6264,Yes
+REV00264,"ALARM CLOCK BAKELIKE PINK",1,"Product arrived damaged.",2024-04-07,Customer9745,Yes
+REV00265,"WHITE METAL LANTERN",1,"Not as described, very disappointed.",2024-01-22,Customer2152,Yes
+REV00266,"VICTORIAN SEWING BOX LARGE",2,"Poor quality, broke after one use.",2024-10-22,Customer6147,Yes
+REV00267,"POPPY'S PLAYHOUSE KITCHEN",4,"Great quality, fast shipping.",2024-05-08,Customer3490,Yes
+REV00268,"ALARM CLOCK BAKELIKE PINK",4,"Great quality, fast shipping.",2024-05-10,Customer3651,Yes
+REV00269,"HAND WARMER UNION JACK",3,"Average quality for the price.",2024-03-22,Customer9132,Yes
+REV00270,"GLASS STAR FROSTED T-LIGHT HOLDER",3,"Not bad, not great.",2024-12-19,Customer4938,Yes
+REV00271,"ALARM CLOCK BAKELIKE GREEN",3,"Not bad, not great.",2024-10-24,Customer8178,Yes
+REV00272,"PAPER CHAIN KIT 50'S CHRISTMAS",1,"Product arrived damaged.",2024-06-28,Customer1577,Yes
+REV00273,"RED WOOLLY HOTTIE WHITE HEART",2,"Product arrived damaged.",2024-11-07,Customer8996,Yes
+REV00274,"VICTORIAN SEWING BOX LARGE",3,"Product is okay, nothing special.",2024-03-18,Customer2987,Yes
+REV00275,"PAPER CHAIN KIT 50'S CHRISTMAS",3,"Decent product, met expectations.",2024-12-12,Customer7564,Yes
+REV00276,"BATH BUILDING BLOCK WORD",4,"Love it! Will buy again.",2024-02-12,Customer5731,Yes
+REV00277,"HOT WATER BOTTLE TEA AND SYMPATHY",1,"Missing parts in the package.",2024-05-11,Customer7664,Yes
+REV00278,"CREAM CUPID HEARTS COAT HANGER",1,"Would not recommend.",2024-06-04,Customer7268,Yes
+REV00279,"HAND WARMER RED POLKA DOT",5,"Perfect gift, beautifully packaged.",2024-04-21,Customer9587,Yes
+REV00280,"KNITTED UNION FLAG HOT WATER BOTTLE",1,"Not as described, very disappointed.",2024-07-29,Customer6239,Yes
+REV00281,"ALARM CLOCK BAKELIKE PINK",1,"Not as described, very disappointed.",2024-05-16,Customer8934,Yes
+REV00282,"HAND WARMER UNION JACK",1,"Poor quality, broke after one use.",2024-12-19,Customer2934,Yes
+REV00283,"KNITTED UNION FLAG HOT WATER BOTTLE",1,"Shipping took too long.",2024-02-03,Customer1697,Yes
+REV00284,"HAND WARMER UNION JACK",4,"Excellent product! Highly recommend.",2024-04-15,Customer8185,Yes
+REV00285,"POPPY'S PLAYHOUSE KITCHEN",4,"Great quality, fast shipping.",2024-10-21,Customer3246,Yes
+REV00286,"RED WOOLLY HOTTIE WHITE HEART",1,"Shipping took too long.",2024-05-30,Customer5989,Yes
+REV00287,"ASSORTED COLOUR BIRD ORNAMENT",5,"Amazing value for money.",2024-09-24,Customer1779,Yes
+REV00288,"ASSORTED COLOUR BIRD ORNAMENT",2,"Missing parts in the package.",2024-08-03,Customer7124,Yes
+REV00289,"VICTORIAN SEWING BOX LARGE",2,"Not as described, very disappointed.",2024-08-21,Customer4321,Yes
+REV00290,"HAND WARMER UNION JACK",2,"Poor quality, broke after one use.",2024-08-06,Customer9707,Yes
+REV00291,"BATH BUILDING BLOCK WORD",2,"Poor quality, broke after one use.",2024-10-15,Customer7477,Yes
+REV00292,"ALARM CLOCK BAKELIKE PINK",5,"Perfect gift, beautifully packaged.",2024-04-10,Customer9271,Yes
+REV00293,"VICTORIAN SEWING BOX LARGE",5,"Best purchase I've made this year.",2024-03-11,Customer9115,Yes
+REV00294,"ALARM CLOCK BAKELIKE RED",4,"Outstanding customer service.",2024-11-29,Customer9229,Yes
+REV00295,"ALARM CLOCK BAKELIKE PINK",1,"Poor quality, broke after one use.",2024-12-01,Customer2864,Yes
+REV00296,"SET 7 BABUSHKA NESTING BOXES",2,"Missing parts in the package.",2024-05-28,Customer2800,No
+REV00297,"HAND WARMER RED POLKA DOT",1,"Product looks cheap.",2024-01-25,Customer5129,Yes
+REV00298,"CREAM CUPID HEARTS COAT HANGER",2,"Not as described, very disappointed.",2024-02-07,Customer8303,Yes
+REV00299,"BATH BUILDING BLOCK WORD",5,"Best purchase I've made this year.",2024-07-17,Customer2358,Yes
+REV00300,"WHITE METAL LANTERN",5,"Best purchase I've made this year.",2024-09-18,Customer1808,Yes
+REV00301,"BATH BUILDING BLOCK WORD",1,"Returned for refund.",2024-04-15,Customer9962,Yes
+REV00302,"SET 7 BABUSHKA NESTING BOXES",3,"Average quality for the price.",2024-09-30,Customer2500,Yes
+REV00303,"CREAM CUPID HEARTS COAT HANGER",3,"Product is okay, nothing special.",2024-10-10,Customer5150,Yes
+REV00304,"PAPER CHAIN KIT 50'S CHRISTMAS",3,"It works but could be better.",2024-01-14,Customer5100,Yes
+REV00305,"POPPY'S PLAYHOUSE KITCHEN",2,"Returned for refund.",2024-08-13,Customer6935,Yes
+REV00306,"WHITE METAL LANTERN",3,"Decent product, met expectations.",2024-04-07,Customer6484,Yes
+REV00307,"CREAM CUPID HEARTS COAT HANGER",2,"Shipping took too long.",2024-12-03,Customer5119,No
+REV00308,"ALARM CLOCK BAKELIKE RED",1,"Shipping took too long.",2024-06-17,Customer2028,Yes
+REV00309,"HAND WARMER RED POLKA DOT",1,"Missing parts in the package.",2024-02-12,Customer6235,Yes
+REV00310,"ASSORTED COLOUR BIRD ORNAMENT",1,"Customer service was unhelpful.",2024-09-14,Customer3078,Yes
+REV00311,"RED WOOLLY HOTTIE WHITE HEART",1,"Waste of money.",2024-03-06,Customer3420,Yes
+REV00312,"HAND WARMER RED POLKA DOT",3,"It works but could be better.",2024-09-14,Customer3710,Yes
+REV00313,"RED WOOLLY HOTTIE WHITE HEART",4,"Love it! Will buy again.",2024-01-05,Customer7610,Yes
+REV00314,"HOT WATER BOTTLE TEA AND SYMPATHY",1,"Product looks cheap.",2024-09-21,Customer5355,Yes
+REV00315,"POPPY'S PLAYHOUSE KITCHEN",4,"Amazing value for money.",2024-09-06,Customer9601,Yes
+REV00316,"WHITE HANGING HEART T-LIGHT HOLDER",5,"Five stars, absolutely perfect!",2024-03-13,Customer3521,Yes
+REV00317,"REGENCY CAKESTAND 3 TIER",3,"Decent product, met expectations.",2024-06-19,Customer9342,Yes
+REV00318,"RED WOOLLY HOTTIE WHITE HEART",2,"Poor quality, broke after one use.",2024-11-20,Customer9302,Yes
+REV00319,"WHITE METAL LANTERN",4,"Perfect gift, beautifully packaged.",2024-02-06,Customer7194,Yes
+REV00320,"ALARM CLOCK BAKELIKE RED",5,"Very happy with this product.",2024-03-22,Customer4312,Yes
+REV00321,"HAND WARMER RED POLKA DOT",1,"Shipping took too long.",2024-08-14,Customer7195,No
+REV00322,"CREAM CUPID HEARTS COAT HANGER",3,"Average quality for the price.",2024-10-29,Customer5243,Yes
+REV00323,"VICTORIAN SEWING BOX LARGE",2,"Waste of money.",2024-01-30,Customer8571,Yes
+REV00324,"ALARM CLOCK BAKELIKE RED",3,"Decent product, met expectations.",2024-01-17,Customer8440,Yes
+REV00325,"ALARM CLOCK BAKELIKE RED",4,"Best purchase I've made this year.",2024-07-17,Customer4725,No
+REV00326,"GLASS STAR FROSTED T-LIGHT HOLDER",4,"Outstanding customer service.",2024-03-07,Customer3769,No
+REV00327,"POPPY'S PLAYHOUSE KITCHEN",4,"Best purchase I've made this year.",2024-09-22,Customer2704,Yes
+REV00328,"CREAM CUPID HEARTS COAT HANGER",2,"Poor quality, broke after one use.",2024-08-14,Customer4336,Yes
+REV00329,"PAPER CHAIN KIT 50'S CHRISTMAS",3,"It works but could be better.",2024-12-26,Customer1419,Yes
+REV00330,"ALARM CLOCK BAKELIKE PINK",5,"Five stars, absolutely perfect!",2024-11-11,Customer7191,Yes
+REV00331,"KNITTED UNION FLAG HOT WATER BOTTLE",4,"Perfect gift, beautifully packaged.",2024-11-09,Customer9833,No
+REV00332,"CREAM CUPID HEARTS COAT HANGER",2,"Would not recommend.",2024-05-09,Customer3433,Yes
+REV00333,"ALARM CLOCK BAKELIKE RED",1,"Product looks cheap.",2024-08-22,Customer4903,Yes
+REV00334,"POPPY'S PLAYHOUSE KITCHEN",3,"Decent product, met expectations.",2024-01-17,Customer3417,No
+REV00335,"SET 7 BABUSHKA NESTING BOXES",5,"Best purchase I've made this year.",2024-05-08,Customer1761,No
+REV00336,"POPPY'S PLAYHOUSE KITCHEN",4,"Great quality, fast shipping.",2024-04-17,Customer7104,Yes
+REV00337,"KNITTED UNION FLAG HOT WATER BOTTLE",3,"It works but could be better.",2024-08-20,Customer4277,Yes
+REV00338,"JAM MAKING SET WITH JARS",5,"Love it! Will buy again.",2024-07-31,Customer8639,No
+REV00339,"CREAM CUPID HEARTS COAT HANGER",5,"Outstanding customer service.",2024-07-13,Customer7825,No
+REV00340,"HEART OF WICKER SMALL",2,"Poor quality, broke after one use.",2024-06-18,Customer8597,Yes
+REV00341,"POPPY'S PLAYHOUSE KITCHEN",3,"It works but could be better.",2024-10-11,Customer1398,No
+REV00342,"ALARM CLOCK BAKELIKE GREEN",1,"Shipping took too long.",2024-07-03,Customer9791,Yes
+REV00343,"GLASS STAR FROSTED T-LIGHT HOLDER",2,"Not as described, very disappointed.",2024-04-14,Customer2779,Yes
+REV00344,"REGENCY CAKESTAND 3 TIER",3,"Not bad, not great.",2024-10-29,Customer1021,Yes
+REV00345,"POPPY'S PLAYHOUSE KITCHEN",3,"Decent product, met expectations.",2024-08-28,Customer6359,Yes
+REV00346,"VICTORIAN SEWING BOX LARGE",2,"Shipping took too long.",2024-03-10,Customer4805,Yes
+REV00347,"HAND WARMER UNION JACK",3,"It works but could be better.",2024-07-10,Customer5362,Yes
+REV00348,"BATH BUILDING BLOCK WORD",2,"Would not recommend.",2024-08-04,Customer2892,Yes
+REV00349,"CREAM CUPID HEARTS COAT HANGER",1,"Product arrived damaged.",2024-01-02,Customer4846,Yes
+REV00350,"ALARM CLOCK BAKELIKE GREEN",1,"Product looks cheap.",2024-09-02,Customer4636,No
+REV00351,"BATH BUILDING BLOCK WORD",5,"Amazing value for money.",2024-08-22,Customer3539,No
+REV00352,"WHITE METAL LANTERN",5,"Exceeded my expectations!",2024-09-10,Customer7831,Yes
+REV00353,"GLASS STAR FROSTED T-LIGHT HOLDER",4,"Outstanding customer service.",2024-12-22,Customer6367,Yes
+REV00354,"BATH BUILDING BLOCK WORD",1,"Waste of money.",2024-06-29,Customer6283,Yes
+REV00355,"KNITTED UNION FLAG HOT WATER BOTTLE",3,"Decent product, met expectations.",2024-08-03,Customer2199,Yes
+REV00356,"WHITE HANGING HEART T-LIGHT HOLDER",4,"Best purchase I've made this year.",2024-02-03,Customer4805,No
+REV00357,"VICTORIAN SEWING BOX LARGE",5,"Amazing value for money.",2024-10-21,Customer9513,Yes
+REV00358,"REGENCY CAKESTAND 3 TIER",5,"Outstanding customer service.",2024-06-28,Customer2114,Yes
+REV00359,"PAPER CHAIN KIT 50'S CHRISTMAS",2,"Waste of money.",2024-09-04,Customer5163,Yes
+REV00360,"HAND WARMER RED POLKA DOT",4,"Great quality, fast shipping.",2024-10-21,Customer2767,Yes
+REV00361,"ALARM CLOCK BAKELIKE RED",5,"Outstanding customer service.",2024-05-27,Customer2260,Yes
+REV00362,"HEART OF WICKER SMALL",3,"Average quality for the price.",2024-12-23,Customer1905,Yes
+REV00363,"ALARM CLOCK BAKELIKE RED",4,"Perfect gift, beautifully packaged.",2024-02-12,Customer9111,No
+REV00364,"ASSORTED COLOUR BIRD ORNAMENT",3,"Not bad, not great.",2024-10-23,Customer2172,Yes
+REV00365,"ASSORTED COLOUR BIRD ORNAMENT",4,"Outstanding customer service.",2024-01-21,Customer6893,Yes
+REV00366,"KNITTED UNION FLAG HOT WATER BOTTLE",2,"Returned for refund.",2024-07-26,Customer8553,Yes
+REV00367,"WHITE HANGING HEART T-LIGHT HOLDER",4,"Great quality, fast shipping.",2024-06-09,Customer2954,Yes
+REV00368,"RED WOOLLY HOTTIE WHITE HEART",5,"Exceeded my expectations!",2024-09-06,Customer5185,Yes
+REV00369,"HOT WATER BOTTLE TEA AND SYMPATHY",1,"Customer service was unhelpful.",2024-12-24,Customer3281,Yes
+REV00370,"WHITE METAL LANTERN",2,"Not as described, very disappointed.",2024-07-13,Customer6105,Yes
+REV00371,"VICTORIAN SEWING BOX LARGE",5,"Excellent product! Highly recommend.",2024-12-23,Customer1631,Yes
+REV00372,"WHITE HANGING HEART T-LIGHT HOLDER",2,"Returned for refund.",2024-01-31,Customer2818,Yes
+REV00373,"ALARM CLOCK BAKELIKE RED",3,"Product is okay, nothing special.",2024-06-26,Customer4096,No
+REV00374,"ALARM CLOCK BAKELIKE RED",1,"Product looks cheap.",2024-02-26,Customer7613,No
+REV00375,"BATH BUILDING BLOCK WORD",1,"Waste of money.",2024-01-26,Customer3928,Yes
+REV00376,"ALARM CLOCK BAKELIKE RED",4,"Best purchase I've made this year.",2024-05-22,Customer5828,Yes
+REV00377,"REGENCY CAKESTAND 3 TIER",2,"Shipping took too long.",2024-11-21,Customer9755,Yes
+REV00378,"REGENCY CAKESTAND 3 TIER",5,"Best purchase I've made this year.",2024-04-24,Customer2199,No
+REV00379,"VICTORIAN SEWING BOX LARGE",5,"Amazing value for money.",2024-10-20,Customer6028,Yes
+REV00380,"WHITE HANGING HEART T-LIGHT HOLDER",2,"Waste of money.",2024-11-04,Customer1841,Yes
+REV00381,"HEART OF WICKER SMALL",2,"Product arrived damaged.",2024-12-26,Customer6085,Yes
+REV00382,"HAND WARMER UNION JACK",4,"Five stars, absolutely perfect!",2024-12-07,Customer8606,Yes
+REV00383,"BATH BUILDING BLOCK WORD",1,"Waste of money.",2024-06-15,Customer7238,Yes
+REV00384,"REGENCY CAKESTAND 3 TIER",4,"Great quality, fast shipping.",2024-04-29,Customer3200,Yes
+REV00385,"ASSORTED COLOUR BIRD ORNAMENT",4,"Love it! Will buy again.",2024-06-19,Customer2658,Yes
+REV00386,"ALARM CLOCK BAKELIKE RED",4,"Great quality, fast shipping.",2024-06-11,Customer6591,Yes
+REV00387,"WHITE HANGING HEART T-LIGHT HOLDER",2,"Not as described, very disappointed.",2024-12-02,Customer3826,Yes
+REV00388,"WHITE HANGING HEART T-LIGHT HOLDER",1,"Not as described, very disappointed.",2024-06-07,Customer8605,Yes
+REV00389,"HAND WARMER RED POLKA DOT",4,"Amazing value for money.",2024-12-10,Customer6050,Yes
+REV00390,"ASSORTED COLOUR BIRD ORNAMENT",1,"Shipping took too long.",2024-10-07,Customer7801,Yes
+REV00391,"HAND WARMER RED POLKA DOT",4,"Great quality, fast shipping.",2024-08-07,Customer7996,Yes
+REV00392,"SET 7 BABUSHKA NESTING BOXES",5,"Amazing value for money.",2024-03-28,Customer3365,Yes
+REV00393,"CREAM CUPID HEARTS COAT HANGER",1,"Customer service was unhelpful.",2024-01-21,Customer3657,No
+REV00394,"HEART OF WICKER SMALL",5,"Perfect gift, beautifully packaged.",2024-01-09,Customer4521,Yes
+REV00395,"SET 7 BABUSHKA NESTING BOXES",4,"Exceeded my expectations!",2024-02-05,Customer6137,Yes
+REV00396,"WHITE HANGING HEART T-LIGHT HOLDER",4,"Exceeded my expectations!",2024-02-17,Customer2462,Yes
+REV00397,"HOT WATER BOTTLE TEA AND SYMPATHY",3,"Product is okay, nothing special.",2024-05-01,Customer2570,Yes
+REV00398,"HEART OF WICKER SMALL",4,"Outstanding customer service.",2024-12-16,Customer2317,Yes
+REV00399,"ASSORTED COLOUR BIRD ORNAMENT",2,"Missing parts in the package.",2024-04-05,Customer6423,Yes
+REV00400,"BATH BUILDING BLOCK WORD",5,"Amazing value for money.",2024-05-03,Customer4806,Yes
+REV00401,"JAM MAKING SET WITH JARS",5,"Amazing value for money.",2024-12-18,Customer5349,Yes
+REV00402,"ALARM CLOCK BAKELIKE GREEN",2,"Waste of money.",2024-11-22,Customer3632,Yes
+REV00403,"VICTORIAN SEWING BOX LARGE",4,"Perfect gift, beautifully packaged.",2024-09-21,Customer6405,Yes
+REV00404,"SET 7 BABUSHKA NESTING BOXES",3,"It works but could be better.",2024-03-15,Customer3241,Yes
+REV00405,"PAPER CHAIN KIT 50'S CHRISTMAS",5,"Excellent product! Highly recommend.",2024-11-13,Customer7991,No
+REV00406,"REGENCY CAKESTAND 3 TIER",1,"Poor quality, broke after one use.",2024-04-19,Customer7091,Yes
+REV00407,"KNITTED UNION FLAG HOT WATER BOTTLE",4,"Excellent product! Highly recommend.",2024-06-26,Customer2868,No
+REV00408,"GLASS STAR FROSTED T-LIGHT HOLDER",2,"Product looks cheap.",2024-10-15,Customer5939,Yes
+REV00409,"VICTORIAN SEWING BOX LARGE",3,"Product is okay, nothing special.",2024-08-22,Customer3298,No
+REV00410,"ALARM CLOCK BAKELIKE PINK",4,"Great quality, fast shipping.",2024-09-05,Customer4291,Yes
+REV00411,"ALARM CLOCK BAKELIKE RED",3,"It works but could be better.",2024-01-28,Customer5840,Yes
+REV00412,"POPPY'S PLAYHOUSE KITCHEN",4,"Amazing value for money.",2024-03-27,Customer1941,No
+REV00413,"HEART OF WICKER SMALL",3,"Average quality for the price.",2024-03-23,Customer3217,No
+REV00414,"HEART OF WICKER SMALL",4,"Exceeded my expectations!",2024-10-06,Customer4199,Yes
+REV00415,"REGENCY CAKESTAND 3 TIER",2,"Poor quality, broke after one use.",2024-05-15,Customer7247,Yes
+REV00416,"RED WOOLLY HOTTIE WHITE HEART",5,"Amazing value for money.",2024-11-13,Customer4938,No
+REV00417,"ALARM CLOCK BAKELIKE GREEN",2,"Shipping took too long.",2024-03-10,Customer3714,No
+REV00418,"REGENCY CAKESTAND 3 TIER",1,"Poor quality, broke after one use.",2024-06-12,Customer5944,Yes
+REV00419,"WHITE HANGING HEART T-LIGHT HOLDER",5,"Excellent product! Highly recommend.",2024-07-13,Customer4149,Yes
+REV00420,"KNITTED UNION FLAG HOT WATER BOTTLE",1,"Would not recommend.",2024-01-06,Customer7776,Yes
+REV00421,"RED WOOLLY HOTTIE WHITE HEART",1,"Product looks cheap.",2024-04-17,Customer9483,Yes
+REV00422,"HEART OF WICKER SMALL",2,"Returned for refund.",2024-04-01,Customer5303,Yes
+REV00423,"HEART OF WICKER SMALL",2,"Not as described, very disappointed.",2024-12-21,Customer6750,Yes
+REV00424,"ALARM CLOCK BAKELIKE PINK",4,"Amazing value for money.",2024-03-17,Customer8170,No
+REV00425,"BATH BUILDING BLOCK WORD",4,"Very happy with this product.",2024-06-25,Customer6529,Yes
+REV00426,"HOT WATER BOTTLE TEA AND SYMPATHY",3,"Not bad, not great.",2024-06-21,Customer1204,Yes
+REV00427,"HAND WARMER RED POLKA DOT",3,"Not bad, not great.",2024-08-30,Customer4036,Yes
+REV00428,"POPPY'S PLAYHOUSE KITCHEN",5,"Outstanding customer service.",2024-06-02,Customer1068,Yes
+REV00429,"VICTORIAN SEWING BOX LARGE",4,"Great quality, fast shipping.",2024-04-13,Customer8392,No
+REV00430,"HAND WARMER UNION JACK",1,"Poor quality, broke after one use.",2024-12-25,Customer4911,No
+REV00431,"WHITE METAL LANTERN",4,"Very happy with this product.",2024-10-15,Customer9569,Yes
+REV00432,"RED WOOLLY HOTTIE WHITE HEART",4,"Great quality, fast shipping.",2024-01-25,Customer2895,Yes
+REV00433,"WHITE METAL LANTERN",3,"Average quality for the price.",2024-11-22,Customer3577,No
+REV00434,"WHITE METAL LANTERN",5,"Great quality, fast shipping.",2024-08-09,Customer7894,No
+REV00435,"POPPY'S PLAYHOUSE BEDROOM",2,"Product looks cheap.",2024-08-02,Customer8939,Yes
+REV00436,"POPPY'S PLAYHOUSE KITCHEN",2,"Not as described, very disappointed.",2024-06-15,Customer6335,Yes
+REV00437,"ALARM CLOCK BAKELIKE RED",3,"Average quality for the price.",2024-11-01,Customer9583,Yes
+REV00438,"REGENCY CAKESTAND 3 TIER",1,"Would not recommend.",2024-06-12,Customer1270,Yes
+REV00439,"BATH BUILDING BLOCK WORD",5,"Outstanding customer service.",2024-01-23,Customer1001,Yes
+REV00440,"POPPY'S PLAYHOUSE BEDROOM",3,"It works but could be better.",2024-02-29,Customer7969,Yes
+REV00441,"HAND WARMER RED POLKA DOT",3,"Not bad, not great.",2024-02-17,Customer7409,No
+REV00442,"HOT WATER BOTTLE TEA AND SYMPATHY",3,"Decent product, met expectations.",2024-12-02,Customer1418,No
+REV00443,"HAND WARMER RED POLKA DOT",1,"Not as described, very disappointed.",2024-01-15,Customer7847,No
+REV00444,"SET 7 BABUSHKA NESTING BOXES",3,"Not bad, not great.",2024-11-02,Customer8818,No
+REV00445,"HAND WARMER RED POLKA DOT",4,"Love it! Will buy again.",2024-06-27,Customer9036,Yes
+REV00446,"RED WOOLLY HOTTIE WHITE HEART",2,"Would not recommend.",2024-01-05,Customer2997,Yes
+REV00447,"HAND WARMER RED POLKA DOT",5,"Excellent product! Highly recommend.",2024-12-04,Customer8272,Yes
+REV00448,"PAPER CHAIN KIT 50'S CHRISTMAS",2,"Product arrived damaged.",2024-07-17,Customer2172,Yes
+REV00449,"ALARM CLOCK BAKELIKE PINK",1,"Customer service was unhelpful.",2024-02-06,Customer1828,Yes
+REV00450,"WHITE HANGING HEART T-LIGHT HOLDER",3,"Average quality for the price.",2024-01-08,Customer5594,Yes
+REV00451,"HOT WATER BOTTLE TEA AND SYMPATHY",3,"Average quality for the price.",2024-11-07,Customer8447,No
+REV00452,"WHITE METAL LANTERN",3,"Product is okay, nothing special.",2024-07-15,Customer9123,Yes
+REV00453,"HEART OF WICKER SMALL",5,"Very happy with this product.",2024-01-10,Customer2435,Yes
+REV00454,"PAPER CHAIN KIT 50'S CHRISTMAS",2,"Customer service was unhelpful.",2024-09-17,Customer9499,Yes
+REV00455,"ALARM CLOCK BAKELIKE PINK",2,"Waste of money.",2024-10-30,Customer4646,Yes
+REV00456,"HAND WARMER UNION JACK",3,"It works but could be better.",2024-11-22,Customer9690,Yes
+REV00457,"HOT WATER BOTTLE TEA AND SYMPATHY",4,"Five stars, absolutely perfect!",2024-03-26,Customer6092,Yes
+REV00458,"KNITTED UNION FLAG HOT WATER BOTTLE",2,"Customer service was unhelpful.",2024-02-04,Customer9295,No
+REV00459,"ALARM CLOCK BAKELIKE PINK",1,"Product looks cheap.",2024-07-18,Customer8031,No
+REV00460,"VICTORIAN SEWING BOX LARGE",3,"Product is okay, nothing special.",2024-11-15,Customer5322,Yes
+REV00461,"WHITE METAL LANTERN",4,"Very happy with this product.",2024-11-14,Customer6725,Yes
+REV00462,"GLASS STAR FROSTED T-LIGHT HOLDER",5,"Exceeded my expectations!",2024-02-17,Customer9753,Yes
+REV00463,"POPPY'S PLAYHOUSE KITCHEN",2,"Shipping took too long.",2024-05-22,Customer8827,Yes
+REV00464,"ALARM CLOCK BAKELIKE PINK",5,"Outstanding customer service.",2024-02-22,Customer6193,No
+REV00465,"VICTORIAN SEWING BOX LARGE",1,"Not as described, very disappointed.",2024-01-29,Customer1036,Yes
+REV00466,"HAND WARMER RED POLKA DOT",2,"Poor quality, broke after one use.",2024-03-10,Customer9791,No
+REV00467,"GLASS STAR FROSTED T-LIGHT HOLDER",2,"Customer service was unhelpful.",2024-12-10,Customer6700,Yes
+REV00468,"ASSORTED COLOUR BIRD ORNAMENT",2,"Customer service was unhelpful.",2024-10-23,Customer4563,Yes
+REV00469,"ALARM CLOCK BAKELIKE GREEN",2,"Missing parts in the package.",2024-11-29,Customer9902,No
+REV00470,"PAPER CHAIN KIT 50'S CHRISTMAS",4,"Very happy with this product.",2024-05-04,Customer8934,Yes
+REV00471,"VICTORIAN SEWING BOX LARGE",2,"Product arrived damaged.",2024-08-10,Customer5781,Yes
+REV00472,"VICTORIAN SEWING BOX LARGE",2,"Not as described, very disappointed.",2024-05-27,Customer5717,No
+REV00473,"ALARM CLOCK BAKELIKE PINK",3,"Product is okay, nothing special.",2024-07-12,Customer6047,Yes
+REV00474,"ALARM CLOCK BAKELIKE RED",5,"Love it! Will buy again.",2024-12-16,Customer5643,Yes
+REV00475,"POPPY'S PLAYHOUSE KITCHEN",5,"Five stars, absolutely perfect!",2024-02-15,Customer3878,Yes
+REV00476,"WHITE HANGING HEART T-LIGHT HOLDER",3,"Not bad, not great.",2024-01-24,Customer5123,Yes
+REV00477,"WHITE METAL LANTERN",2,"Shipping took too long.",2024-03-21,Customer5658,Yes
+REV00478,"POPPY'S PLAYHOUSE BEDROOM",3,"Product is okay, nothing special.",2024-10-01,Customer3373,Yes
+REV00479,"KNITTED UNION FLAG HOT WATER BOTTLE",4,"Exceeded my expectations!",2024-09-29,Customer3918,Yes
+REV00480,"WHITE METAL LANTERN",3,"Not bad, not great.",2024-11-02,Customer7917,No
+REV00481,"BATH BUILDING BLOCK WORD",5,"Very happy with this product.",2024-02-17,Customer2914,Yes
+REV00482,"WHITE METAL LANTERN",1,"Product looks cheap.",2024-07-04,Customer6396,Yes
+REV00483,"JAM MAKING SET WITH JARS",5,"Best purchase I've made this year.",2024-05-21,Customer2926,Yes
+REV00484,"VICTORIAN SEWING BOX LARGE",1,"Would not recommend.",2024-12-06,Customer5403,No
+REV00485,"WHITE METAL LANTERN",3,"Product is okay, nothing special.",2024-08-25,Customer3878,Yes
+REV00486,"BATH BUILDING BLOCK WORD",5,"Amazing value for money.",2024-11-14,Customer9607,No
+REV00487,"HEART OF WICKER SMALL",1,"Returned for refund.",2024-01-28,Customer2396,Yes
+REV00488,"RED WOOLLY HOTTIE WHITE HEART",4,"Excellent product! Highly recommend.",2024-03-27,Customer2056,Yes
+REV00489,"BATH BUILDING BLOCK WORD",4,"Outstanding customer service.",2024-12-02,Customer4361,Yes
+REV00490,"CREAM CUPID HEARTS COAT HANGER",3,"Decent product, met expectations.",2024-12-02,Customer6162,Yes
+REV00491,"POPPY'S PLAYHOUSE KITCHEN",4,"Love it! Will buy again.",2024-04-09,Customer1567,Yes
+REV00492,"ASSORTED COLOUR BIRD ORNAMENT",5,"Love it! Will buy again.",2024-05-12,Customer4403,Yes
+REV00493,"REGENCY CAKESTAND 3 TIER",4,"Very happy with this product.",2024-05-11,Customer9305,No
+REV00494,"HOT WATER BOTTLE TEA AND SYMPATHY",5,"Love it! Will buy again.",2024-06-06,Customer3471,Yes
+REV00495,"CREAM CUPID HEARTS COAT HANGER",2,"Would not recommend.",2024-10-15,Customer8917,Yes
+REV00496,"PAPER CHAIN KIT 50'S CHRISTMAS",1,"Customer service was unhelpful.",2024-10-27,Customer5539,Yes
+REV00497,"HAND WARMER UNION JACK",3,"Average quality for the price.",2024-12-11,Customer9096,No
+REV00498,"POPPY'S PLAYHOUSE KITCHEN",4,"Amazing value for money.",2024-05-06,Customer8527,No
+REV00499,"GLASS STAR FROSTED T-LIGHT HOLDER",5,"Excellent product! Highly recommend.",2024-05-11,Customer5787,Yes
+REV00500,"GLASS STAR FROSTED T-LIGHT HOLDER",5,"Excellent product! Highly recommend.",2024-09-26,Customer3961,Yes

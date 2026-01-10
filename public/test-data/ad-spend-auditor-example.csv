@@ -1,0 +1,8 @@
+CampaignID,CampaignName,Platform,AdSpend,Impressions,Clicks,Conversions,Revenue,StartDate,EndDate
+AD001,Summer Sale Campaign,Facebook,1200.50,45000,2250,89,4450.00,2024-06-01,2024-06-30
+AD002,Back to School Promo,Google,850.75,32000,1600,67,3350.00,2024-08-01,2024-08-31
+AD003,Holiday Special,Instagram,2100.00,78000,3900,156,7800.00,2024-12-01,2024-12-31
+AD004,New Product Launch,TikTok,675.25,28000,1400,45,2250.00,2024-03-01,2024-03-31
+AD005,Flash Sale Weekend,Facebook,450.00,18000,900,34,1700.00,2024-05-15,2024-05-17
+AD006,Brand Awareness,Google,1800.00,95000,4750,203,10150.00,2024-07-01,2024-07-31
+AD007,Retargeting Campaign,Instagram,320.80,12000,600,28,1400.00,2024-09-01,2024-09-30

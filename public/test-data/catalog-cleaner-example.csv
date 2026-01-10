@@ -1,0 +1,7 @@
+SKU,ProductTitle,Description,Category,Brand,SupplierPrice,SellingPrice,Stock,Supplier,Tags
+SKU001,"wireless headphones bluetooth","High quality wireless headphones with noise cancellation. Perfect for music lovers.",Electronics,TechBrand,45.00,89.99,150,TechSupplier,"wireless,bluetooth,headphones"
+SKU002,"PHONE CASE CLEAR TRANSPARENT","Clear transparent phone case for iPhone 14. Provides excellent protection.",Accessories,ProtectBrand,5.50,19.99,300,AccessorySupplier,"phone,case,clear,iphone"
+SKU003,"bluetooth speaker portable waterproof","Portable waterproof Bluetooth speaker with amazing bass. Great for outdoor activities.",Electronics,SoundBrand,35.00,79.99,75,AudioSupplier,"bluetooth,speaker,waterproof,portable"
+SKU004,"usb cable fast charging","Fast charging USB-C cable 6ft length. Compatible with most devices.",Accessories,ChargeBrand,3.25,12.99,500,CableSupplier,"usb,cable,charging,usb-c"
+SKU005,"Gaming Mouse RGB LED","High precision gaming mouse with RGB LED lighting. Perfect for gamers.",Electronics,GameBrand,25.00,59.99,120,GamingSupplier,"gaming,mouse,rgb,led"
+SKU006,"Laptop Stand Adjustable","Adjustable aluminum laptop stand for better ergonomics. Fits most laptops.",Accessories,ErgoBrand,18.00,39.99,80,OfficeSupplier,"laptop,stand,adjustable,aluminum"

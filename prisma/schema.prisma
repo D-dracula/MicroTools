@@ -1,0 +1,111 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============ NextAuth.js Models ============
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  password      String?   // null for OAuth users
+  image         String?
+  emailVerified DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts     Account[]
+  sessions     Session[]
+  calculations Calculation[]
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+
+// ============ Application Models ============
+
+model Calculation {
+  id        String   @id @default(cuid())
+  userId    String
+  toolSlug  String   // e.g., "profit-margin-calculator"
+  inputs    Json     // { costPrice: 100, sellingPrice: 150 }
+  outputs   Json     // { profit: 50, margin: 33.33, markup: 50 }
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([toolSlug])
+}
+
+model ToolUsage {
+  id        String   @id @default(cuid())
+  toolSlug  String
+  userType  String   // "guest" | "authenticated"
+  createdAt DateTime @default(now())
+
+  @@index([toolSlug])
+  @@index([createdAt])
+}
+
+model CustomAd {
+  id        String  @id @default(cuid())
+  placement String  // "landing-hero", "tool-sidebar", "tool-bottom"
+  priority  Int     @default(0)
+  isActive  Boolean @default(true)
+
+  // Content (bilingual)
+  titleAr       String
+  titleEn       String
+  descriptionAr String?
+  descriptionEn String?
+  imageUrl      String
+  linkUrl       String
+
+  // Scheduling
+  startDate DateTime?
+  endDate   DateTime?
+
+  // Analytics
+  impressions Int @default(0)
+  clicks      Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([placement])
+  @@index([isActive])
+}

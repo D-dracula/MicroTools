@@ -1,0 +1,9 @@
+ReviewID,ProductName,Rating,ReviewText,ReviewDate,CustomerName,Verified,HelpfulVotes
+REV001,Wireless Headphones,5,"Amazing sound quality! Battery lasts all day. Highly recommended.",2024-01-15,John Smith,Yes,12
+REV002,Wireless Headphones,4,"Good headphones but a bit pricey. Sound is clear and comfortable to wear.",2024-01-16,Sarah Johnson,Yes,8
+REV003,Wireless Headphones,2,"Poor build quality. Broke after 2 weeks of use. Disappointed.",2024-01-17,Mike Brown,Yes,15
+REV004,Phone Case,5,"Perfect fit for my phone. Great protection and looks stylish.",2024-01-18,Lisa Davis,Yes,6
+REV005,Phone Case,3,"Decent case but the color faded quickly. Protection is okay.",2024-01-19,Tom Wilson,No,3
+REV006,Bluetooth Speaker,5,"Incredible bass and crystal clear sound. Worth every penny!",2024-01-20,Emma Garcia,Yes,20
+REV007,Bluetooth Speaker,1,"Terrible sound quality. Very disappointed with this purchase.",2024-01-21,David Miller,Yes,9
+REV008,USB Cable,4,"Good quality cable. Fast charging and durable construction.",2024-01-22,Anna Taylor,Yes,4

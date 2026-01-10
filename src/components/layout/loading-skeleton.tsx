@@ -1,0 +1,75 @@
+/**
+ * Loading Skeleton Component
+ * مكون التحميل المشترك - يعمل بدون JavaScript (Server Component)
+ * يكتشف اللغة تلقائياً من dir attribute
+ */
+
+interface LoadingSkeletonProps {
+  message?: string;
+}
+
+export function LoadingSkeleton({ message }: LoadingSkeletonProps) {
+  return (
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+      <div className="flex flex-col items-center space-y-6">
+        {/* Logo with animation */}
+        <div className="relative">
+          {/* Rotating background circle */}
+          <div 
+            className="absolute inset-0 w-24 h-24 rounded-full border-4 border-primary/20 border-t-primary animate-spin"
+          />
+          
+          {/* ProfitKit Logo */}
+          <div className="w-16 h-16 m-4 flex items-center justify-center">
+            <svg 
+              viewBox="0 0 500 500" 
+              className="w-full h-full animate-pulse"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <defs>
+                <linearGradient id="logoGradientSkeleton" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" style={{stopColor: '#a855f7'}} />
+                  <stop offset="50%" style={{stopColor: '#8b5cf6'}} />
+                  <stop offset="100%" style={{stopColor: '#ec4899'}} />
+                </linearGradient>
+              </defs>
+              <g 
+                transform="translate(0,500) scale(0.1,-0.1)" 
+                fill="url(#logoGradientSkeleton)" 
+                stroke="none"
+              >
+                <path d="M3475 3533 c-33 -26 -68 -55 -77 -63 -10 -8 -76 -58 -147 -110 -71 -52 -130 -97 -130 -100 -1 -5 90 -41 137 -55 19 -6 23 -12 17 -32 -9 -39 -127 -280 -173 -357 -23 -37 -42 -70 -42 -72 0 -16 -199 -287 -268 -364 l-40 -45 -207 138 c-113 76 -210 137 -214 135 -5 -2 -46 -50 -92 -108 -209 -264 -546 -593 -780 -761 -112 -80 -115 -94 -12 -53 286 113 601 329 851 582 45 46 88 82 95 80 6 -2 94 -58 194 -125 101 -68 188 -123 194 -123 21 0 191 189 306 340 151 199 297 438 368 602 33 77 29 76 129 26 70 -35 69 -36 52 32 -8 30 -24 109 -35 175 -12 66 -26 140 -31 165 -5 25 -12 66 -16 93 -8 58 -5 58 -79 0z"/>
+                <path d="M2186 3330 c-80 -24 -116 -91 -116 -215 l0 -95 -209 0 c-226 0 -249 -4 -311 -57 -69 -58 -69 -53 -71 -601 0 -270 2 -492 6 -493 3 0 33 23 66 51 l60 52 -1 430 c-1 435 0 446 33 480 1 2 317 5 702 8 l700 5 33 63 33 62 -100 0 -101 0 0 88 c-1 128 -32 187 -117 218 -44 15 -557 19 -607 4z m576 -137 c14 -13 18 -31 18 -95 l0 -78 -293 0 -292 0 3 83 c2 45 9 88 14 95 18 21 526 17 550 -5z"/>
+                <path d="M3470 2874 c-6 -14 -26 -53 -45 -86 l-35 -59 0 -478 0 -478 -25 -23 c-18 -17 -40 -25 -80 -28 l-55 -4 -2 383 -3 384 -24 -39 c-14 -22 -51 -72 -83 -113 l-58 -73 0 -270 0 -270 -80 0 -80 0 -2 180 -3 180 -50 -49 -49 -48 -31 18 c-16 11 -34 19 -38 19 -4 0 -5 -68 -1 -150 l7 -151 -84 3 -84 3 -3 205 -3 205 -76 50 c-42 28 -80 52 -84 53 -5 2 -9 -114 -9 -258 l0 -261 -81 3 -82 3 2 178 2 178 -63 -53 c-35 -29 -75 -63 -90 -74 -27 -21 -28 -24 -28 -128 l0 -106 -80 0 -80 0 0 45 c0 44 -7 54 -25 36 -15 -15 -133 -79 -217 -118 -90 -42 -91 -44 -40 -69 48 -24 1670 -35 1752 -12 59 17 134 89 149 143 15 56 15 1080 0 1124 -13 38 -26 40 -39 5z"/>
+              </g>
+            </svg>
+          </div>
+        </div>
+
+        {/* Loading text - يعرض بكلا اللغتين */}
+        <div className="text-center space-y-2">
+          <h3 className="text-lg font-semibold text-foreground">
+            {message || (
+              <>
+                <span className="block rtl:hidden">Loading...</span>
+                <span className="hidden rtl:block">جاري التحميل...</span>
+              </>
+            )}
+          </h3>
+          
+          {/* Animated dots */}
+          <div className="flex justify-center gap-1">
+            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '0ms'}} />
+            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '150ms'}} />
+            <div className="w-2 h-2 bg-primary rounded-full animate-bounce" style={{animationDelay: '300ms'}} />
+          </div>
+        </div>
+
+        {/* Progress bar */}
+        <div className="w-64 h-1 bg-muted rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full animate-loading-bar" />
+        </div>
+      </div>
+    </div>
+  );
+}

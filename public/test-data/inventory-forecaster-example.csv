@@ -1,0 +1,10 @@
+Date,ProductID,ProductName,QuantitySold,CurrentStock,ReorderLevel,UnitCost,SellingPrice,Supplier
+2024-01-01,PROD001,Wireless Mouse,15,120,25,18.50,45.99,TechSupplier
+2024-01-02,PROD001,Wireless Mouse,8,112,25,18.50,45.99,TechSupplier
+2024-01-03,PROD001,Wireless Mouse,12,100,25,18.50,45.99,TechSupplier
+2024-01-01,PROD002,Gaming Keyboard,5,45,10,35.00,89.99,TechSupplier
+2024-01-02,PROD002,Gaming Keyboard,3,42,10,35.00,89.99,TechSupplier
+2024-01-03,PROD002,Gaming Keyboard,7,35,10,35.00,89.99,TechSupplier
+2024-01-01,PROD003,USB Hub,20,200,50,8.25,24.99,AccessorySupplier
+2024-01-02,PROD003,USB Hub,18,182,50,8.25,24.99,AccessorySupplier
+2024-01-03,PROD003,USB Hub,22,160,50,8.25,24.99,AccessorySupplier
