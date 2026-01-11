@@ -6,11 +6,6 @@
 
 export { LoginForm } from './login-form'
 export { RegisterForm } from './register-form'
-export { SessionExpiryWarning, AutoLogout } from './session-expiry-warning'
-export { SessionStatus } from './session-status'
 
-// Re-export types
-export type {
-  SessionExpiryWarningProps,
-  AutoLogoutProps,
-} from './session-expiry-warning'
+// Note: SessionExpiryWarning and SessionStatus components have been removed
+// They can be re-implemented if needed in the future

@@ -11,7 +11,7 @@ import {
 } from "@/lib/rate-limit";
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 /**
@@ -37,7 +37,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     );
   }
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Create database operations instance
     const db = await createServerDatabaseOperations();
@@ -95,7 +95,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     );
   }
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Check authentication
     const session = await getServerSession(authOptions);
@@ -188,7 +188,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     );
   }
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Check authentication
     const session = await getServerSession(authOptions);

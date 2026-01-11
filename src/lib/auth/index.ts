@@ -8,9 +8,6 @@
 // Main NextAuth.js configuration
 export { authOptions } from '../auth'
 
-// Supabase adapter for NextAuth.js
-export { SupabaseAdapter } from './supabase-adapter'
-
 // Authentication helper functions
 export {
   signUp,

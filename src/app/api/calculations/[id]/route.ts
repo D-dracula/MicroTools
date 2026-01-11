@@ -7,7 +7,13 @@ import {
   SupabaseError,
   getErrorRecoveryActions 
 } from "@/lib/supabase/errors";
-import { logger } from "@/lib/supabase/logger";
+// import { logger } from "@/lib/supabase/logger";
+const logger = {
+  debug: (msg: string, ctx?: any) => console.debug(msg, ctx),
+  info: (msg: string, ctx?: any) => console.info(msg, ctx),
+  warn: (msg: string, ctx?: any, err?: any) => console.warn(msg, ctx, err),
+  error: (msg: string, ctx?: any, err?: any) => console.error(msg, ctx, err),
+}
 import {
   checkRateLimit,
   getClientIdentifier,
@@ -16,7 +22,7 @@ import {
 } from "@/lib/rate-limit";
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 /**
@@ -73,7 +79,7 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       logger.warn('Missing calculation ID in request', {
         userId: session.user.id,
@@ -133,16 +139,17 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
     });
     
   } catch (error) {
+    const resolvedParams = await params;
     const supabaseError = error instanceof SupabaseError 
       ? error 
       : classifySupabaseError(error, {
           operation: 'GET /api/calculations/[id]',
-          calculationId: params.id,
+          calculationId: resolvedParams.id,
           clientId
         });
 
     logger.error('Error fetching calculation', {
-      calculationId: params.id,
+      calculationId: resolvedParams.id,
       clientId,
       duration: Date.now() - startTime,
       error: supabaseError.toLogObject()
@@ -216,7 +223,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    const { id } = params;
+    const { id } = await params;
     if (!id) {
       logger.warn('Missing calculation ID in DELETE request', {
         userId: session.user.id,
@@ -279,16 +286,17 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     });
     
   } catch (error) {
+    const resolvedParams = await params;
     const supabaseError = error instanceof SupabaseError 
       ? error 
       : classifySupabaseError(error, {
           operation: 'DELETE /api/calculations/[id]',
-          calculationId: params.id,
+          calculationId: resolvedParams.id,
           clientId
         });
 
     logger.error('Error deleting calculation', {
-      calculationId: params.id,
+      calculationId: resolvedParams.id,
       clientId,
       duration: Date.now() - startTime,
       error: supabaseError.toLogObject()

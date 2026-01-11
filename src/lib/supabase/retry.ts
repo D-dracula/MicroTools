@@ -6,12 +6,19 @@
 
 import {
   SupabaseError,
+  SupabaseConnectionError,
   classifySupabaseError,
   shouldRetryError,
   getRetryDelay,
   ErrorContext,
 } from './errors'
-import { logger } from './logger'
+// import { logger } from './logger'
+const logger = {
+  debug: (msg: string, ctx?: any) => console.debug(msg, ctx),
+  info: (msg: string, ctx?: any) => console.info(msg, ctx),
+  warn: (msg: string, ctx?: any, err?: any) => console.warn(msg, ctx, err),
+  error: (msg: string, ctx?: any, err?: any) => console.error(msg, ctx, err),
+}
 
 export interface RetryOptions {
   /** Maximum number of retry attempts */
@@ -191,7 +198,7 @@ export class CircuitBreaker {
           failures: this.failures,
         })
       } else {
-        const error = new SupabaseError(
+        const error = new SupabaseConnectionError(
           'Circuit breaker is open - service temporarily unavailable'
         )
         logger.warn('Circuit breaker rejected request', {
@@ -316,14 +323,14 @@ function sleep(ms: number): Promise<void> {
  * Retry decorator for class methods
  */
 export function retryable(options: RetryOptions = {}) {
-  return function (
+  return function <T extends (...args: any[]) => Promise<any>>(
     target: any,
     propertyKey: string,
-    descriptor: PropertyDescriptor
-  ) {
-    const originalMethod = descriptor.value
+    descriptor: TypedPropertyDescriptor<T>
+  ): TypedPropertyDescriptor<T> {
+    const originalMethod = descriptor.value!
 
-    descriptor.value = async function (...args: any[]) {
+    descriptor.value = async function (this: any, ...args: any[]) {
       const context = ErrorContext.create()
         .operation(`${target.constructor.name}.${propertyKey}`)
         .custom('args', args.length)
@@ -333,7 +340,7 @@ export function retryable(options: RetryOptions = {}) {
         () => originalMethod.apply(this, args),
         { ...options, context: { ...context, ...options.context } }
       )
-    }
+    } as T
 
     return descriptor
   }

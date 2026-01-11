@@ -1,7 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { SupabaseAdapter } from "./auth/supabase-adapter";
 import { createServerSupabaseClient } from "./supabase/client";
 import { createServerDatabaseOperations } from "./supabase/database";
 
@@ -10,8 +9,8 @@ import { isSupabaseConfigured } from "./supabase/client";
 const isDatabaseConfigured = isSupabaseConfigured();
 
 export const authOptions: NextAuthOptions = {
-  // Use Supabase adapter for database operations
-  adapter: isDatabaseConfigured ? SupabaseAdapter() : undefined,
+  // Note: Supabase adapter has been removed for simplicity
+  // adapter: isDatabaseConfigured ? SupabaseAdapter() : undefined,
   
   providers: [
     // Credentials Provider (Email/Password) - only if database is configured

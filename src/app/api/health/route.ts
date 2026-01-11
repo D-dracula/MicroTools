@@ -8,7 +8,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { createClient } from '@/lib/supabase/client'
 import { withErrorHandling, handleHealthCheck } from '@/lib/supabase/api-error-handler'
 import { getHealthStatus, getErrorMetrics } from '@/lib/supabase/error-monitoring'
-import { logger } from '@/lib/supabase/logger'
+// import { logger } from '@/lib/supabase/logger'
+const logger = {
+  debug: (msg: string, ctx?: any) => console.debug(msg, ctx),
+  info: (msg: string, ctx?: any) => console.info(msg, ctx),
+  warn: (msg: string, ctx?: any, err?: any) => console.warn(msg, ctx, err),
+  error: (msg: string, ctx?: any, err?: any) => console.error(msg, ctx, err),
+}
 import { 
   getEnvironmentStatus, 
   validateEnvironmentIsolation,

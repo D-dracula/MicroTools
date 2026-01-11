@@ -236,7 +236,7 @@ class ProductionValidator {
     
     // Set environment to production for validation
     process.env.NEXT_PUBLIC_APP_ENV = 'production'
-    process.env.NODE_ENV = 'production'
+    ;(process.env as any).NODE_ENV = 'production'
 
     try {
       // Run all validations

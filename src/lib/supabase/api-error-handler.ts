@@ -10,7 +10,13 @@ import {
   classifySupabaseError, 
   getErrorRecoveryActions 
 } from './errors'
-import { logger } from './logger'
+// import { logger } from './logger'
+const logger = {
+  debug: (msg: string, ctx?: any) => console.debug(msg, ctx),
+  info: (msg: string, ctx?: any) => console.info(msg, ctx),
+  warn: (msg: string, ctx?: any, err?: any) => console.warn(msg, ctx, err),
+  error: (msg: string, ctx?: any, err?: any) => console.error(msg, ctx, err),
+}
 
 export interface ApiErrorContext {
   endpoint: string

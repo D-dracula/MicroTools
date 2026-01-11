@@ -9,7 +9,13 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { withErrorHandling, validateAuthentication } from '@/lib/supabase/api-error-handler'
 import { errorMonitor } from '@/lib/supabase/error-monitoring'
-import { logger } from '@/lib/supabase/logger'
+// import { logger } from '@/lib/supabase/logger'
+const logger = {
+  debug: (msg: string, ctx?: any) => console.debug(msg, ctx),
+  info: (msg: string, ctx?: any) => console.info(msg, ctx),
+  warn: (msg: string, ctx?: any, err?: any) => console.warn(msg, ctx, err),
+  error: (msg: string, ctx?: any, err?: any) => console.error(msg, ctx, err),
+}
 
 /**
  * GET /api/admin/errors

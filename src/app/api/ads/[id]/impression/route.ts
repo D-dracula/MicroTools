@@ -8,7 +8,7 @@ import {
 } from "@/lib/rate-limit";
 
 interface RouteParams {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 /**
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     );
   }
   try {
-    const { id } = params;
+    const { id } = await params;
 
     // Create database operations instance
     const db = await createServerDatabaseOperations();
