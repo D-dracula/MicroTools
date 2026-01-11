@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 
-// AdSense configuration
+// AdSense configukration
 const ADSENSE_CLIENT_ID = process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID || "";
 
 interface AdSenseProps {
