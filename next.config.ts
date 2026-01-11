@@ -4,6 +4,11 @@ import createNextIntlPlugin from "next-intl/plugin";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  // Environment variables
+  env: {
+    DATABASE_URL: process.env.DATABASE_URL || 'postgresql://localhost:5432/micro_tools',
+  },
+  
   // Vercel deployment optimizations
   experimental: {
     serverComponentsExternalPackages: ['@prisma/client', 'prisma']
