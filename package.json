@@ -2,10 +2,6 @@
   "name": "micro-tools",
   "version": "0.1.0",
   "private": true,
-{
-  "name": "micro-tools",
-  "version": "0.1.0",
-  "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
