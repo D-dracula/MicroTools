@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { hash } from "bcryptjs";
-import { prisma } from "@/lib/prisma";
+import { createServerSupabaseClient } from "@/lib/supabase/client";
+import { createServerDatabaseOperations } from "@/lib/supabase/database";
 import { registerSchema } from "@/lib/validations/auth";
 import {
   checkRateLimit,
@@ -11,8 +11,8 @@ import {
 
 /**
  * POST /api/auth/register
- * Register a new user
- * Requirements: 7.1, 7.4, 7.8, 9.6
+ * Register a new user using Supabase Auth
+ * Requirements: 2.1, 7.1, 7.4, 7.8, 9.6
  */
 export async function POST(request: NextRequest) {
   // Rate limiting (Requirement 9.6) - strict for auth endpoints to prevent brute force
@@ -31,18 +31,8 @@ export async function POST(request: NextRequest) {
       }
     );
   }
-  try {
-    // Check if database is configured
-    if (!prisma) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Database not configured. Registration is disabled.",
-        },
-        { status: 503 }
-      );
-    }
 
+  try {
     const body = await request.json();
 
     // Validate input with Zod
@@ -61,48 +51,83 @@ export async function POST(request: NextRequest) {
 
     const { email, password, name } = validationResult.data;
 
-    // Check if user already exists
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
+    // Create Supabase client
+    const supabase = await createServerSupabaseClient();
+    
+    // Register user with Supabase Auth (Requirement 2.1)
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          name: name || '',
+        },
+      },
     });
 
-    if (existingUser) {
+    if (error) {
+      console.error('Registration error:', error);
+      
+      // Handle specific Supabase Auth errors
+      if (error.message.includes('already registered')) {
+        return NextResponse.json(
+          { success: false, error: 'User already exists with this email' },
+          { status: 409 }
+        );
+      }
+      
+      if (error.message.includes('Password')) {
+        return NextResponse.json(
+          { success: false, error: 'Password does not meet requirements' },
+          { status: 400 }
+        );
+      }
+      
       return NextResponse.json(
-        {
-          success: false,
-          error: "User with this email already exists",
-        },
+        { success: false, error: 'Registration failed', details: error.message },
         { status: 400 }
       );
     }
 
-    // Hash password with bcrypt (cost factor 12)
-    const hashedPassword = await hash(password, 12);
+    if (!data.user) {
+      return NextResponse.json(
+        { success: false, error: 'Registration failed - no user created' },
+        { status: 500 }
+      );
+    }
 
-    // Create user
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
+    // Create user profile in database if user is confirmed (Requirement 7.1)
+    if (data.user.email_confirmed_at) {
+      try {
+        const db = await createServerDatabaseOperations();
+        await db.createUser({
+          id: data.user.id,
+          name: name || null,
+          image: null,
+        });
+      } catch (profileError) {
+        console.error('Error creating user profile:', profileError);
+        // Don't fail registration if profile creation fails
+        // The profile will be created on first sign in
+      }
+    }
+
+    // Return success response
+    return NextResponse.json({
+      success: true,
+      user: {
+        id: data.user.id,
+        email: data.user.email,
         name: name || null,
+        emailConfirmed: !!data.user.email_confirmed_at,
       },
-      select: {
-        id: true,
-        email: true,
-        name: true,
-        createdAt: true,
-      },
+      message: data.user.email_confirmed_at 
+        ? 'Registration successful' 
+        : 'Registration successful. Please check your email to confirm your account.',
     });
 
-    return NextResponse.json(
-      {
-        success: true,
-        data: user,
-      },
-      { status: 201 }
-    );
   } catch (error) {
-    console.error("Registration error:", error);
+    console.error("Unexpected registration error:", error);
     return NextResponse.json(
       {
         success: false,

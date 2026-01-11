@@ -1,0 +1,8 @@
+# Test Results Directory
+
+This directory contains test execution reports and coverage data.
+
+Files in this directory:
+- supabase-tests.json - Detailed test execution results
+- coverage/ - Code coverage reports (when --coverage is used)
+- performance/ - Performance test results (when --performance is used)

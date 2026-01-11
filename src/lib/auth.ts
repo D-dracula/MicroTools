@@ -1,13 +1,18 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
-import { compare } from "bcryptjs";
-import { prisma } from "./prisma";
+import { SupabaseAdapter } from "./auth/supabase-adapter";
+import { createServerSupabaseClient } from "./supabase/client";
+import { createServerDatabaseOperations } from "./supabase/database";
 
-// Check if database is configured
-const isDatabaseConfigured = !!prisma;
+// Check if Supabase is configured
+import { isSupabaseConfigured } from "./supabase/client";
+const isDatabaseConfigured = isSupabaseConfigured();
 
 export const authOptions: NextAuthOptions = {
+  // Use Supabase adapter for database operations
+  adapter: isDatabaseConfigured ? SupabaseAdapter() : undefined,
+  
   providers: [
     // Credentials Provider (Email/Password) - only if database is configured
     ...(isDatabaseConfigured
@@ -19,33 +24,47 @@ export const authOptions: NextAuthOptions = {
               password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-              if (!credentials?.email || !credentials?.password || !prisma) {
+              if (!credentials?.email || !credentials?.password || !isDatabaseConfigured) {
                 return null;
               }
 
-              const user = await prisma.user.findUnique({
-                where: { email: credentials.email },
-              });
+              try {
+                // Use Supabase Auth for authentication
+                const supabase = await createServerSupabaseClient();
+                
+                // Sign in with Supabase Auth
+                const { data, error } = await supabase.auth.signInWithPassword({
+                  email: credentials.email,
+                  password: credentials.password,
+                });
 
-              if (!user || !user.password) {
+                if (error || !data.user) {
+                  return null;
+                }
+
+                // Get user profile from database
+                const db = await createServerDatabaseOperations();
+                let profile = await db.getUserById(data.user.id);
+
+                // Create profile if it doesn't exist
+                if (!profile) {
+                  profile = await db.createUser({
+                    id: data.user.id,
+                    name: data.user.user_metadata?.name || null,
+                    image: data.user.user_metadata?.avatar_url || null,
+                  });
+                }
+
+                return {
+                  id: data.user.id,
+                  email: data.user.email,
+                  name: profile?.name || data.user.user_metadata?.name,
+                  image: profile?.image || data.user.user_metadata?.avatar_url,
+                };
+              } catch (error) {
+                console.error("Auth error:", error);
                 return null;
               }
-
-              const isPasswordValid = await compare(
-                credentials.password,
-                user.password
-              );
-
-              if (!isPasswordValid) {
-                return null;
-              }
-
-              return {
-                id: user.id,
-                email: user.email,
-                name: user.name,
-                image: user.image,
-              };
             },
           }),
         ]
@@ -62,34 +81,44 @@ export const authOptions: NextAuthOptions = {
   ],
 
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
       }
       return token;
     },
     async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.id as string;
+      if (session.user && token.id) {
+        (session.user as any).id = token.id as string;
       }
       return session;
     },
-    async signIn({ user, account }) {
-      // Handle OAuth sign in - create or update user
-      if (account?.provider === "google" && user.email && prisma) {
-        const existingUser = await prisma.user.findUnique({
-          where: { email: user.email },
-        });
-
-        if (!existingUser) {
-          // Create new user for OAuth
-          await prisma.user.create({
-            data: {
-              email: user.email,
-              name: user.name,
-              image: user.image,
-            },
-          });
+    async signIn({ user, account, profile }) {
+      // Handle OAuth sign in - ensure user profile exists
+      if (account?.provider === "google" && user.email && isDatabaseConfigured) {
+        try {
+          const db = await createServerDatabaseOperations();
+          
+          // Check if profile exists
+          let userProfile = await db.getUserById(user.id);
+          
+          if (!userProfile) {
+            // Create new profile for OAuth user
+            await db.createUser({
+              id: user.id,
+              name: user.name || profile?.name || null,
+              image: user.image || null,
+            });
+          } else {
+            // Update existing profile with latest OAuth data
+            await db.updateUser(user.id, {
+              name: user.name || profile?.name || userProfile.name,
+              image: user.image || userProfile.image,
+            });
+          }
+        } catch (error) {
+          console.error("Error managing user profile:", error);
+          // Don't fail the sign in if profile operations fail
         }
       }
       return true;

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { prisma } from "@/lib/prisma";
+import { createServerDatabaseOperations } from "@/lib/supabase/database";
 import { authOptions } from "@/lib/auth";
 import {
   createCustomAdSchema,
@@ -52,39 +52,14 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Check if database is configured
-    if (!prisma) {
-      return NextResponse.json({
-        success: true,
-        data: null,
-      });
-    }
+    // Create database operations instance
+    const db = await createServerDatabaseOperations();
 
-    const now = new Date();
+    // Fetch active custom ads for the placement
+    const ads = await db.getActiveAds(placementResult.data);
 
-    // Fetch active custom ad with highest priority for the placement
-    // Respects scheduling (Requirement 15.6)
-    const customAd = await prisma.customAd.findFirst({
-      where: {
-        placement: placementResult.data,
-        isActive: true,
-        OR: [
-          { startDate: null },
-          { startDate: { lte: now } },
-        ],
-        AND: [
-          {
-            OR: [
-              { endDate: null },
-              { endDate: { gte: now } },
-            ],
-          },
-        ],
-      },
-      orderBy: {
-        priority: "desc", // Higher priority first (Requirement 15.4)
-      },
-    });
+    // Return the first ad (highest priority)
+    const customAd = ads.length > 0 ? ads[0] : null;
 
     return NextResponse.json({
       success: true,
@@ -137,16 +112,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if database is configured
-    if (!prisma) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Database not configured",
-        },
-        { status: 503 }
-      );
-    }
+    // Create database operations instance
+    const db = await createServerDatabaseOperations();
 
     // Parse and validate request body
     const body = await request.json();
@@ -164,21 +131,19 @@ export async function POST(request: NextRequest) {
 
     const data = validationResult.data;
 
-    // Create the custom ad
-    const customAd = await prisma.customAd.create({
-      data: {
-        placement: data.placement,
-        priority: data.priority,
-        isActive: data.isActive,
-        titleAr: data.titleAr,
-        titleEn: data.titleEn,
-        descriptionAr: data.descriptionAr,
-        descriptionEn: data.descriptionEn,
-        imageUrl: data.imageUrl,
-        linkUrl: data.linkUrl,
-        startDate: data.startDate ? new Date(data.startDate) : null,
-        endDate: data.endDate ? new Date(data.endDate) : null,
-      },
+    // Create the custom ad using Supabase operations
+    const customAd = await db.createAd({
+      placement: data.placement,
+      priority: data.priority,
+      is_active: data.isActive,
+      title_ar: data.titleAr,
+      title_en: data.titleEn,
+      description_ar: data.descriptionAr,
+      description_en: data.descriptionEn,
+      image_url: data.imageUrl,
+      link_url: data.linkUrl,
+      start_date: data.startDate ? new Date(data.startDate).toISOString() : null,
+      end_date: data.endDate ? new Date(data.endDate).toISOString() : null,
     });
 
     return NextResponse.json(

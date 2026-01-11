@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { createServerDatabaseOperations } from "@/lib/supabase/database";
 import {
   createCalculationSchema,
   listCalculationsQuerySchema,
@@ -46,13 +45,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Check if database is configured
-    if (!prisma) {
-      return NextResponse.json(
-        { success: false, error: "Database not configured" },
-        { status: 503 }
-      );
-    }
+    // Create database operations instance
+    const db = await createServerDatabaseOperations();
 
     // Parse query parameters
     const { searchParams } = new URL(request.url);
@@ -70,29 +64,24 @@ export async function GET(request: NextRequest) {
     }
 
     const { page, pageSize, toolSlug } = queryResult.data;
+
+    // Get calculations using Supabase operations
+    const calculations = await db.getUserCalculations(session.user.id, pageSize);
+    
+    // Filter by toolSlug if provided (simple client-side filtering for now)
+    const filteredCalculations = toolSlug 
+      ? calculations.filter(calc => calc.tool_slug === toolSlug)
+      : calculations;
+
+    // Apply pagination (simple client-side pagination for now)
     const skip = (page - 1) * pageSize;
-
-    // Build where clause
-    const where = {
-      userId: session.user.id,
-      ...(toolSlug && { toolSlug }),
-    };
-
-    // Get calculations with pagination
-    const [calculations, total] = await Promise.all([
-      prisma.calculation.findMany({
-        where,
-        orderBy: { createdAt: "desc" },
-        skip,
-        take: pageSize,
-      }),
-      prisma.calculation.count({ where }),
-    ]);
+    const paginatedCalculations = filteredCalculations.slice(skip, skip + pageSize);
+    const total = filteredCalculations.length;
 
     return NextResponse.json({
       success: true,
       data: {
-        items: calculations,
+        items: paginatedCalculations,
         total,
         page,
         pageSize,
@@ -141,13 +130,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if database is configured
-    if (!prisma) {
-      return NextResponse.json(
-        { success: false, error: "Database not configured" },
-        { status: 503 }
-      );
-    }
+    // Create database operations instance
+    const db = await createServerDatabaseOperations();
 
     // Parse and validate request body
     const body = await request.json();
@@ -162,14 +146,12 @@ export async function POST(request: NextRequest) {
 
     const { toolSlug, inputs, outputs } = validationResult.data;
 
-    // Create calculation
-    const calculation = await prisma.calculation.create({
-      data: {
-        userId: session.user.id,
-        toolSlug,
-        inputs: inputs as Prisma.InputJsonValue,
-        outputs: outputs as Prisma.InputJsonValue,
-      },
+    // Create calculation using Supabase operations
+    const calculation = await db.saveCalculation({
+      user_id: session.user.id,
+      tool_slug: toolSlug,
+      inputs,
+      outputs,
     });
 
     return NextResponse.json(

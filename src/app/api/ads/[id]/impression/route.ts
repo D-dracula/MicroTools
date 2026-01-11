@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma";
+import { createServerDatabaseOperations } from "@/lib/supabase/database";
 import {
   checkRateLimit,
   getClientIdentifier,
@@ -8,7 +8,7 @@ import {
 } from "@/lib/rate-limit";
 
 interface RouteParams {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 /**
@@ -34,39 +34,13 @@ export async function POST(request: NextRequest, { params }: RouteParams) {
     );
   }
   try {
-    const { id } = await params;
+    const { id } = params;
 
-    if (!prisma) {
-      return NextResponse.json({
-        success: true,
-        data: { recorded: false },
-      });
-    }
+    // Create database operations instance
+    const db = await createServerDatabaseOperations();
 
-    // Check if ad exists
-    const existingAd = await prisma.customAd.findUnique({
-      where: { id },
-    });
-
-    if (!existingAd) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Ad not found",
-        },
-        { status: 404 }
-      );
-    }
-
-    // Increment impression count
-    await prisma.customAd.update({
-      where: { id },
-      data: {
-        impressions: {
-          increment: 1,
-        },
-      },
-    });
+    // Increment impression count using Supabase operations
+    await db.incrementAdImpressions(id);
 
     return NextResponse.json({
       success: true,
