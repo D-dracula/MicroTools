@@ -1,4 +1,7 @@
 {
+  "git": {
+    "deploymentEnabled": false
+  },
   "functions": {
     "app/api/**/*.ts": {
       "maxDuration": 30
