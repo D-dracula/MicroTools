@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createServerSupabaseClient } from "@/lib/supabase/client";
-import { createServerDatabaseOperations } from "@/lib/supabase/database";
+import { createAdminClient } from "@/lib/supabase/client";
+import { createAdminDatabaseOperations } from "@/lib/supabase/database";
 import { registerSchema } from "@/lib/validations/auth";
 import {
   checkRateLimit,
@@ -61,21 +61,17 @@ export async function POST(request: NextRequest) {
 
     const { email, password, name } = validationResult.data;
 
-    // Get the origin for redirect URL
-    const origin = request.headers.get('origin') || process.env.NEXTAUTH_URL || 'http://localhost:3000';
-
-    // Create Supabase client
-    const supabase = await createServerSupabaseClient();
+    // Use Admin client to create user with auto-confirmation
+    // This bypasses email confirmation requirement for immediate login
+    const supabaseAdmin = createAdminClient();
     
-    // Register user with Supabase Auth (Requirement 2.1)
-    const { data, error } = await supabase.auth.signUp({
+    // Register user with Supabase Auth Admin API (auto-confirms email)
+    const { data, error } = await supabaseAdmin.auth.admin.createUser({
       email,
       password,
-      options: {
-        emailRedirectTo: `${origin}/api/auth/callback`,
-        data: {
-          name: name || '',
-        },
+      email_confirm: true, // Auto-confirm email for immediate login
+      user_metadata: {
+        name: name || '',
       },
     });
 
@@ -83,7 +79,7 @@ export async function POST(request: NextRequest) {
       console.error('Registration error:', error);
       
       // Handle specific Supabase Auth errors
-      if (error.message.includes('already registered')) {
+      if (error.message.includes('already been registered') || error.message.includes('already exists')) {
         return NextResponse.json(
           { success: false, error: 'User already exists with this email' },
           { status: 409 }
@@ -109,11 +105,14 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+    
+    console.log('✅ User created with auto-confirmed email:', data.user.email);
 
     // Always create user profile in database (Requirement 7.1)
     // Profile is created immediately, email confirmation status is tracked separately
     try {
-      const db = await createServerDatabaseOperations();
+      // Use Admin client for database operations (bypasses RLS)
+      const db = createAdminDatabaseOperations();
       
       // Check if profile already exists (in case of re-registration attempt)
       const existingProfile = await db.getUserById(data.user.id);
@@ -141,11 +140,9 @@ export async function POST(request: NextRequest) {
         id: data.user.id,
         email: data.user.email,
         name: name || null,
-        emailConfirmed: !!data.user.email_confirmed_at,
+        emailConfirmed: true, // Always confirmed with admin API
       },
-      message: data.user.email_confirmed_at 
-        ? 'Registration successful' 
-        : 'Registration successful. Please check your email to confirm your account.',
+      message: 'Registration successful. You can now login.',
     });
 
   } catch (error) {

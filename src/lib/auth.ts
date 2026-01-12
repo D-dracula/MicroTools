@@ -2,7 +2,7 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { createServerSupabaseClient } from "./supabase/client";
-import { createServerDatabaseOperations } from "./supabase/database";
+import { createAdminDatabaseOperations } from "./supabase/database";
 
 // Check if Supabase is configured
 import { isSupabaseConfigured } from "./supabase/client";
@@ -23,25 +23,48 @@ export const authOptions: NextAuthOptions = {
               password: { label: "Password", type: "password" },
             },
             async authorize(credentials) {
-              if (!credentials?.email || !credentials?.password || !isDatabaseConfigured) {
-                console.log('❌ Auth: Missing credentials or database not configured');
+              console.log('🔐 ========== LOGIN ATTEMPT ==========');
+              console.log('🔐 Email:', credentials?.email);
+              console.log('🔐 Has password:', !!credentials?.password);
+              console.log('🔐 Database configured:', isDatabaseConfigured);
+              
+              if (!credentials?.email || !credentials?.password) {
+                console.log('❌ Auth: Missing email or password');
+                return null;
+              }
+              
+              if (!isDatabaseConfigured) {
+                console.log('❌ Auth: Database not configured');
                 return null;
               }
 
               try {
                 // Use Supabase Auth for authentication
+                console.log('🔐 Creating Supabase client...');
                 const supabase = await createServerSupabaseClient();
-                
-                console.log('🔐 Attempting login for:', credentials.email);
+                console.log('🔐 Supabase client created');
                 
                 // Sign in with Supabase Auth
+                console.log('🔐 Calling signInWithPassword...');
                 const { data, error } = await supabase.auth.signInWithPassword({
                   email: credentials.email,
                   password: credentials.password,
                 });
 
+                console.log('🔐 SignIn response:', {
+                  hasData: !!data,
+                  hasUser: !!data?.user,
+                  hasSession: !!data?.session,
+                  error: error?.message || null,
+                  errorCode: error?.code || null,
+                });
+
                 if (error) {
-                  console.error('❌ Supabase auth error:', error.message);
+                  console.error('❌ Supabase auth error:', {
+                    message: error.message,
+                    code: error.code,
+                    status: error.status,
+                  });
                   return null;
                 }
 
@@ -50,18 +73,18 @@ export const authOptions: NextAuthOptions = {
                   return null;
                 }
 
-                // Check if email is confirmed
-                if (!data.user.email_confirmed_at) {
-                  console.log('⚠️ Email not confirmed for:', credentials.email);
-                  // Still allow login but log the warning
-                  // Supabase handles email confirmation requirement in its settings
-                }
-
-                console.log('✅ Supabase auth successful for:', data.user.email);
+                console.log('✅ Supabase auth successful:', {
+                  userId: data.user.id,
+                  email: data.user.email,
+                  emailConfirmed: !!data.user.email_confirmed_at,
+                  confirmedAt: data.user.email_confirmed_at,
+                });
 
                 // Get user profile from database
-                const db = await createServerDatabaseOperations();
+                console.log('🔐 Getting user profile from database...');
+                const db = createAdminDatabaseOperations();
                 let profile = await db.getUserById(data.user.id);
+                console.log('🔐 Profile found:', !!profile);
 
                 // Create profile if it doesn't exist
                 if (!profile) {
@@ -79,14 +102,20 @@ export const authOptions: NextAuthOptions = {
                   }
                 }
 
-                return {
+                const result = {
                   id: data.user.id,
                   email: data.user.email,
                   name: profile?.name || data.user.user_metadata?.name,
                   image: profile?.image || data.user.user_metadata?.avatar_url,
                 };
+                
+                console.log('✅ Returning user:', result);
+                console.log('🔐 ========== LOGIN SUCCESS ==========');
+                return result;
               } catch (error) {
                 console.error("❌ Auth error:", error);
+                console.error("❌ Error stack:", error instanceof Error ? error.stack : 'No stack');
+                console.log('🔐 ========== LOGIN FAILED ==========');
                 return null;
               }
             },
@@ -121,7 +150,7 @@ export const authOptions: NextAuthOptions = {
       // Handle OAuth sign in - ensure user profile exists
       if (account?.provider === "google" && user.email && isDatabaseConfigured) {
         try {
-          const db = await createServerDatabaseOperations();
+          const db = createAdminDatabaseOperations();
           
           // Check if profile exists
           let userProfile = await db.getUserById(user.id);

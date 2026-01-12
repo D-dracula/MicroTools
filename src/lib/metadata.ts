@@ -96,6 +96,9 @@ export function generateSiteMetadata(locale: Locale): Metadata {
     authors: [{ name: config.siteName }],
     creator: config.siteName,
     publisher: config.siteName,
+    verification: {
+      google: "NKPgaq13THWhO9Eh9pkUH6mrnTISuZd4EtgGdIUZdNE",
+    },
     robots: {
       index: true,
       follow: true,

@@ -1,5 +1,5 @@
 import { createServerSupabaseClient } from '@/lib/supabase/client'
-import { createServerDatabaseOperations } from '@/lib/supabase/database'
+import { createAdminDatabaseOperations } from '@/lib/supabase/database'
 import { NextRequest, NextResponse } from 'next/server'
 
 /**
@@ -54,7 +54,7 @@ export async function GET(request: NextRequest) {
       if (data.user) {
         try {
           // Ensure user profile exists in database
-          const db = await createServerDatabaseOperations()
+          const db = createAdminDatabaseOperations()
           let profile = await db.getUserById(data.user.id)
           
           if (!profile) {
@@ -124,7 +124,7 @@ export async function GET(request: NextRequest) {
         
         // Ensure profile exists
         try {
-          const db = await createServerDatabaseOperations()
+          const db = createAdminDatabaseOperations()
           const profile = await db.getUserById(data.user.id)
           
           if (!profile) {

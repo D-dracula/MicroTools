@@ -56,8 +56,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    // أضف هذه بعد التسجيل في Google Search Console
-    // google: 'your-google-verification-code',
+    google: 'NKPgaq13THWhO9Eh9pkUH6mrnTISuZd4EtgGdIUZdNE',
   },
 };
 
