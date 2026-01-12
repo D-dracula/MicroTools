@@ -38,8 +38,8 @@ const nextConfig: NextConfig = {
   // Redirect trailing slashes
   trailingSlash: false,
   
-  // Output configuration for Vercel
-  output: 'standalone',
+  // Output configuration for Vercel - remove standalone to prevent multiple builds
+  // output: 'standalone',
 };
 
 export default withNextIntl(nextConfig);
