@@ -10,14 +10,14 @@ interface MetadataConfig {
 // Site-wide metadata configuration
 const siteConfig = {
   ar: {
-    siteName: "أدوات التجارة",
-    siteDescription: "أدوات مجانية لأصحاب المتاجر الإلكترونية",
-    keywords: ["أدوات التجارة الإلكترونية", "حاسبة هامش الربح", "أدوات مجانية", "متجر إلكتروني"],
+    siteName: "باين كالك",
+    siteDescription: "أدوات مجانية لأصحاب المتاجر الإلكترونية - حاسبات الأرباح والتكاليف",
+    keywords: ["باين كالك", "أدوات التجارة الإلكترونية", "حاسبة هامش الربح", "أدوات مجانية", "متجر إلكتروني", "pinecalc"],
   },
   en: {
-    siteName: "Micro Tools",
-    siteDescription: "Free tools for e-commerce store owners",
-    keywords: ["e-commerce tools", "profit margin calculator", "free tools", "online store"],
+    siteName: "PineCalc",
+    siteDescription: "Free business tools for e-commerce store owners - profit calculators and cost analysis",
+    keywords: ["PineCalc", "e-commerce tools", "profit margin calculator", "free tools", "online store", "business calculator"],
   },
 };
 
@@ -25,41 +25,41 @@ const siteConfig = {
 const pageMetadata = {
   landing: {
     ar: {
-      title: "أدوات التجارة - أدوات ذكية للتجارة الإلكترونية",
-      description: "مجموعة من الأدوات المجانية لمساعدتك في إدارة متجرك بكفاءة واحترافية",
+      title: "باين كالك - أدوات ذكية للتجارة الإلكترونية",
+      description: "مجموعة من الأدوات المجانية لمساعدتك في إدارة متجرك بكفاءة واحترافية - حاسبات الأرباح والتكاليف",
     },
     en: {
-      title: "Micro Tools - Smart Tools for E-commerce",
-      description: "A collection of free tools to help you manage your store efficiently and professionally",
+      title: "PineCalc - Smart Tools for E-commerce",
+      description: "A collection of free tools to help you manage your store efficiently and professionally - profit and cost calculators",
     },
   },
   login: {
     ar: {
-      title: "تسجيل الدخول - أدوات التجارة",
+      title: "تسجيل الدخول - باين كالك",
       description: "سجل دخولك للوصول إلى حسابك وحفظ حساباتك",
     },
     en: {
-      title: "Login - Micro Tools",
+      title: "Login - PineCalc",
       description: "Sign in to access your account and save your calculations",
     },
   },
   register: {
     ar: {
-      title: "إنشاء حساب - أدوات التجارة",
+      title: "إنشاء حساب - باين كالك",
       description: "أنشئ حساباً مجانياً لحفظ حساباتك والوصول إليها من أي مكان",
     },
     en: {
-      title: "Register - Micro Tools",
+      title: "Register - PineCalc",
       description: "Create a free account to save your calculations and access them anywhere",
     },
   },
   dashboard: {
     ar: {
-      title: "لوحة التحكم - أدوات التجارة",
+      title: "لوحة التحكم - باين كالك",
       description: "عرض وإدارة سجل حساباتك المحفوظة",
     },
     en: {
-      title: "Dashboard - Micro Tools",
+      title: "Dashboard - PineCalc",
       description: "View and manage your saved calculation history",
     },
   },
@@ -69,11 +69,11 @@ const pageMetadata = {
 const toolMetadata: Record<string, { ar: { title: string; description: string }; en: { title: string; description: string } }> = {
   "profit-margin-calculator": {
     ar: {
-      title: "حاسبة هامش الربح - أدوات التجارة",
+      title: "حاسبة هامش الربح - باين كالك",
       description: "احسب هامش الربح ونسبة الزيادة بسهولة. أداة مجانية لأصحاب المتاجر الإلكترونية",
     },
     en: {
-      title: "Profit Margin Calculator - Micro Tools",
+      title: "Profit Margin Calculator - PineCalc",
       description: "Calculate profit margin and markup easily. Free tool for e-commerce store owners",
     },
   },

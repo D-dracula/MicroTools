@@ -18,15 +18,15 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://micro-tools.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://pinecalc.com'),
   title: {
-    default: "Micro Tools - أدوات مجانية للتجار",
-    template: "%s | Micro Tools",
+    default: "PineCalc - باين كالك | أدوات مجانية للتجار",
+    template: "%s | PineCalc",
   },
   description: "أدوات مجانية للتجار وأصحاب المتاجر الإلكترونية - حاسبات الأرباح، أدوات الصور، أدوات التسويق والمزيد",
-  keywords: ["أدوات تجارية", "حاسبة أرباح", "e-commerce tools", "profit calculator", "business tools"],
-  authors: [{ name: "Micro Tools" }],
-  creator: "Micro Tools",
+  keywords: ["باين كالك", "PineCalc", "أدوات تجارية", "حاسبة أرباح", "e-commerce tools", "profit calculator", "business tools"],
+  authors: [{ name: "PineCalc" }],
+  creator: "PineCalc",
   icons: {
     icon: [
       { url: '/icon.svg', type: 'image/svg+xml' },
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "ar_SA",
     alternateLocale: "en_US",
-    siteName: "Micro Tools",
+    siteName: "PineCalc",
   },
   twitter: {
     card: "summary_large_image",

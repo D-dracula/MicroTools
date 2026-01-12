@@ -1,7 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { tools } from '@/lib/tools'
 
-const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://micro-tools.com'
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pinecalc.com'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const currentDate = new Date()
