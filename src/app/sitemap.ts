@@ -8,6 +8,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
   
   // Base pages - Arabic and English versions separately
   const basePages: MetadataRoute.Sitemap = [
+    // Root page (redirects to /en)
+    {
+      url: `${baseUrl}`,
+      lastModified: currentDate,
+      changeFrequency: 'daily',
+      priority: 1,
+    },
     // Arabic pages
     {
       url: `${baseUrl}/ar`,
