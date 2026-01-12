@@ -1,6 +1,6 @@
 {
   "common": {
-    "siteName": "Micro Tools",
+    "siteName": "PineCalc",
     "siteDescription": "Free tools for e-commerce store owners",
     "backToHome": "Back to Home",
     "save": "Save",
@@ -31,7 +31,10 @@
     "noAccount": "Don't have an account?",
     "hasAccount": "Already have an account?",
     "invalidCredentials": "Invalid credentials",
-    "passwordRequirements": "At least 8 characters, uppercase, lowercase, and a number"
+    "passwordRequirements": "At least 8 characters, uppercase, lowercase, and a number",
+    "checkEmailConfirmation": "Your account has been created! Please check your email to confirm your account.",
+    "emailSentTo": "Confirmation email sent to",
+    "backToLogin": "Back to login"
   },
   "dashboard": {
     "title": "Dashboard",

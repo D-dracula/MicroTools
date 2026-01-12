@@ -27,8 +27,8 @@ export function Header() {
           <Image
             src="/logo.svg"
             alt={t("siteName")}
-            width={40}
-            height={40}
+            width={48}
+            height={48}
             className="drop-shadow-lg group-hover:drop-shadow-xl transition-all"
           />
           <span className="text-gradient font-extrabold">

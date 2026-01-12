@@ -30,9 +30,12 @@ export function RegisterForm() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const [success, setSuccess] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess(false);
     setIsLoading(true);
 
     try {
@@ -49,7 +52,14 @@ export function RegisterForm() {
         return;
       }
 
-      // Auto sign in after registration
+      // Check if email confirmation is required
+      if (!data.user?.emailConfirmed) {
+        // Show success message - user needs to confirm email
+        setSuccess(true);
+        return;
+      }
+
+      // Auto sign in after registration (only if email is confirmed)
       const result = await signIn("credentials", {
         email,
         password,
@@ -80,6 +90,23 @@ export function RegisterForm() {
         <CardDescription>{t("passwordRequirements")}</CardDescription>
       </CardHeader>
       <CardContent>
+        {success ? (
+          <div className="p-4 text-center space-y-4">
+            <div className="p-3 text-sm text-green-700 bg-green-100 dark:bg-green-900/30 dark:text-green-400 rounded-md">
+              {t("checkEmailConfirmation")}
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {t("emailSentTo")} <strong>{email}</strong>
+            </p>
+            <Link
+              href={`/${locale}/auth/login`}
+              className="inline-block text-primary hover:underline"
+            >
+              {t("backToLogin")}
+            </Link>
+          </div>
+        ) : (
+        <>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
             <div className="p-3 text-sm text-destructive bg-destructive/10 rounded-md">
@@ -152,6 +179,8 @@ export function RegisterForm() {
         >
           {t("loginWithGoogle")}
         </Button>
+        </>
+        )}
       </CardContent>
       <CardFooter className="justify-center">
         <p className="text-sm text-muted-foreground">

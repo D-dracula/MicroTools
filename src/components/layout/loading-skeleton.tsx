@@ -19,7 +19,7 @@ export function LoadingSkeleton({ message }: LoadingSkeletonProps) {
             className="absolute inset-0 w-24 h-24 rounded-full border-4 border-primary/20 border-t-primary animate-spin"
           />
           
-          {/* ProfitKit Logo */}
+          {/* PineCalc Logo */}
           <div className="w-16 h-16 m-4 flex items-center justify-center">
             <svg 
               viewBox="0 0 500 500" 

@@ -18,8 +18,39 @@ const cairo = Cairo({
 });
 
 export const metadata: Metadata = {
-  title: "Micro Tools",
-  description: "Free micro-tools for e-commerce sellers",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://micro-tools.com'),
+  title: {
+    default: "Micro Tools - أدوات مجانية للتجار",
+    template: "%s | Micro Tools",
+  },
+  description: "أدوات مجانية للتجار وأصحاب المتاجر الإلكترونية - حاسبات الأرباح، أدوات الصور، أدوات التسويق والمزيد",
+  keywords: ["أدوات تجارية", "حاسبة أرباح", "e-commerce tools", "profit calculator", "business tools"],
+  authors: [{ name: "Micro Tools" }],
+  creator: "Micro Tools",
+  openGraph: {
+    type: "website",
+    locale: "ar_SA",
+    alternateLocale: "en_US",
+    siteName: "Micro Tools",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  verification: {
+    // أضف هذه بعد التسجيل في Google Search Console
+    // google: 'your-google-verification-code',
+  },
 };
 
 export default function RootLayout({
