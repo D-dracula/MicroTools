@@ -5,7 +5,7 @@ import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { Loader2, Mail } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,20 +30,37 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
+  const [showResendOption, setShowResendOption] = useState(false);
 
   // Check for email confirmation success
   useEffect(() => {
     if (searchParams.get('confirmed') === 'true') {
       setSuccess(t("emailConfirmed"));
     }
-    if (searchParams.get('error')) {
-      setError(t("authError"));
+    const errorType = searchParams.get('error');
+    const errorMessage = searchParams.get('message');
+    if (errorType) {
+      if (errorType === 'callback_error') {
+        setError(errorMessage || t("authError"));
+        setShowResendOption(true);
+      } else if (errorType === 'verification_failed') {
+        setError(t("verificationFailed") || "Email verification failed. Please try again.");
+        setShowResendOption(true);
+      } else if (errorType === 'no_code') {
+        setError(t("invalidLink") || "Invalid or expired link. Please request a new one.");
+        setShowResendOption(true);
+      } else {
+        setError(t("authError"));
+      }
     }
   }, [searchParams, t]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    setSuccess("");
+    setShowResendOption(false);
     setIsLoading(true);
 
     try {
@@ -55,6 +72,10 @@ export function LoginForm() {
 
       if (result?.error) {
         setError(t("invalidCredentials"));
+        // Show resend option if login fails - user might not have confirmed email
+        if (email) {
+          setShowResendOption(true);
+        }
       } else {
         router.push(`/${locale}`);
         router.refresh();
@@ -63,6 +84,38 @@ export function LoginForm() {
       setError(t("invalidCredentials"));
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleResendConfirmation = async () => {
+    if (!email) {
+      setError(t("emailRequired") || "Please enter your email address first.");
+      return;
+    }
+
+    setIsResending(true);
+    setError("");
+    setSuccess("");
+
+    try {
+      const response = await fetch("/api/auth/resend-confirmation", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        setSuccess(t("confirmationResent") || "If an account exists with this email, a confirmation link has been sent.");
+        setShowResendOption(false);
+      } else {
+        setError(data.error || t("authError"));
+      }
+    } catch {
+      setError(t("authError"));
+    } finally {
+      setIsResending(false);
     }
   };
 
@@ -123,6 +176,23 @@ export function LoginForm() {
               t("login")
             )}
           </Button>
+
+          {showResendOption && (
+            <Button
+              type="button"
+              variant="ghost"
+              className="w-full text-sm"
+              onClick={handleResendConfirmation}
+              disabled={isResending}
+            >
+              {isResending ? (
+                <Loader2 className="h-4 w-4 animate-spin me-2" />
+              ) : (
+                <Mail className="h-4 w-4 me-2" />
+              )}
+              {t("resendConfirmation") || "Resend confirmation email"}
+            </Button>
+          )}
         </form>
 
         <div className="relative my-4">

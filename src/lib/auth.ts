@@ -24,6 +24,7 @@ export const authOptions: NextAuthOptions = {
             },
             async authorize(credentials) {
               if (!credentials?.email || !credentials?.password || !isDatabaseConfigured) {
+                console.log('❌ Auth: Missing credentials or database not configured');
                 return null;
               }
 
@@ -31,15 +32,32 @@ export const authOptions: NextAuthOptions = {
                 // Use Supabase Auth for authentication
                 const supabase = await createServerSupabaseClient();
                 
+                console.log('🔐 Attempting login for:', credentials.email);
+                
                 // Sign in with Supabase Auth
                 const { data, error } = await supabase.auth.signInWithPassword({
                   email: credentials.email,
                   password: credentials.password,
                 });
 
-                if (error || !data.user) {
+                if (error) {
+                  console.error('❌ Supabase auth error:', error.message);
                   return null;
                 }
+
+                if (!data.user) {
+                  console.error('❌ No user returned from Supabase');
+                  return null;
+                }
+
+                // Check if email is confirmed
+                if (!data.user.email_confirmed_at) {
+                  console.log('⚠️ Email not confirmed for:', credentials.email);
+                  // Still allow login but log the warning
+                  // Supabase handles email confirmation requirement in its settings
+                }
+
+                console.log('✅ Supabase auth successful for:', data.user.email);
 
                 // Get user profile from database
                 const db = await createServerDatabaseOperations();
@@ -47,11 +65,18 @@ export const authOptions: NextAuthOptions = {
 
                 // Create profile if it doesn't exist
                 if (!profile) {
-                  profile = await db.createUser({
-                    id: data.user.id,
-                    name: data.user.user_metadata?.name || null,
-                    image: data.user.user_metadata?.avatar_url || null,
-                  });
+                  console.log('📝 Creating profile for user:', data.user.id);
+                  try {
+                    profile = await db.createUser({
+                      id: data.user.id,
+                      name: data.user.user_metadata?.name || null,
+                      image: data.user.user_metadata?.avatar_url || null,
+                    });
+                    console.log('✅ Profile created successfully');
+                  } catch (profileError) {
+                    console.error('⚠️ Failed to create profile:', profileError);
+                    // Continue without profile - user can still authenticate
+                  }
                 }
 
                 return {
@@ -61,7 +86,7 @@ export const authOptions: NextAuthOptions = {
                   image: profile?.image || data.user.user_metadata?.avatar_url,
                 };
               } catch (error) {
-                console.error("Auth error:", error);
+                console.error("❌ Auth error:", error);
                 return null;
               }
             },

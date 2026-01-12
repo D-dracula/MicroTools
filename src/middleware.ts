@@ -10,11 +10,30 @@ export async function middleware(request: NextRequest) {
   const { searchParams, pathname } = new URL(request.url)
   
   // Handle Supabase auth callback code (email confirmation, password reset, etc.)
+  // This can come from various paths, not just root
   const code = searchParams.get('code')
-  if (code && pathname === '/') {
+  const token_hash = searchParams.get('token_hash')
+  const type = searchParams.get('type')
+  
+  // If we have auth parameters and we're not already on the callback route
+  if ((code || token_hash) && !pathname.includes('/api/auth/callback')) {
+    console.log('🔄 Middleware: Redirecting auth callback', { 
+      hasCode: !!code, 
+      hasTokenHash: !!token_hash,
+      type,
+      pathname 
+    })
+    
     // Redirect to auth callback handler
     const callbackUrl = new URL('/api/auth/callback', request.url)
-    callbackUrl.searchParams.set('code', code)
+    if (code) callbackUrl.searchParams.set('code', code)
+    if (token_hash) callbackUrl.searchParams.set('token_hash', token_hash)
+    if (type) callbackUrl.searchParams.set('type', type)
+    
+    // Preserve other params like 'next'
+    const next = searchParams.get('next')
+    if (next) callbackUrl.searchParams.set('next', next)
+    
     return NextResponse.redirect(callbackUrl)
   }
 

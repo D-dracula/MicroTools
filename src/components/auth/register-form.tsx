@@ -48,7 +48,12 @@ export function RegisterForm() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError(data.error || "Registration failed");
+        // Show detailed error for debugging
+        const errorMsg = data.details 
+          ? data.details.map((d: {field: string, message: string}) => `${d.field}: ${d.message}`).join(', ')
+          : data.error || "Registration failed";
+        console.log('Registration error:', data);
+        setError(errorMsg);
         return;
       }
 

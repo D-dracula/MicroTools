@@ -36,7 +36,12 @@
     "emailSentTo": "Confirmation email sent to",
     "backToLogin": "Back to login",
     "emailConfirmed": "Your email has been confirmed! You can now log in.",
-    "authError": "An authentication error occurred. Please try again."
+    "authError": "An authentication error occurred. Please try again.",
+    "verificationFailed": "Email verification failed. The link may have expired. Please request a new confirmation email.",
+    "invalidLink": "Invalid or expired link. Please request a new confirmation email.",
+    "resendConfirmation": "Resend confirmation email",
+    "confirmationResent": "If an account exists with this email, a confirmation link has been sent.",
+    "emailRequired": "Please enter your email address first."
   },
   "dashboard": {
     "title": "Dashboard",

@@ -27,6 +27,14 @@ export const metadata: Metadata = {
   keywords: ["أدوات تجارية", "حاسبة أرباح", "e-commerce tools", "profit calculator", "business tools"],
   authors: [{ name: "Micro Tools" }],
   creator: "Micro Tools",
+  icons: {
+    icon: [
+      { url: '/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/apple-icon.svg', type: 'image/svg+xml' },
+    ],
+  },
   openGraph: {
     type: "website",
     locale: "ar_SA",

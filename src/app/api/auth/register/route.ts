@@ -34,16 +34,26 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
+    
+    // Debug logging
+    console.log('📝 Registration attempt:', { 
+      email: body.email, 
+      hasPassword: !!body.password,
+      passwordLength: body.password?.length,
+      name: body.name 
+    });
 
     // Validate input with Zod
     const validationResult = registerSchema.safeParse(body);
     
     if (!validationResult.success) {
       const issues = validationResult.error.issues;
+      console.log('❌ Validation failed:', issues);
       return NextResponse.json(
         {
           success: false,
           error: issues[0]?.message || "Validation error",
+          details: issues.map(i => ({ field: i.path.join('.'), message: i.message })),
         },
         { status: 400 }
       );
@@ -100,20 +110,28 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create user profile in database if user is confirmed (Requirement 7.1)
-    if (data.user.email_confirmed_at) {
-      try {
-        const db = await createServerDatabaseOperations();
+    // Always create user profile in database (Requirement 7.1)
+    // Profile is created immediately, email confirmation status is tracked separately
+    try {
+      const db = await createServerDatabaseOperations();
+      
+      // Check if profile already exists (in case of re-registration attempt)
+      const existingProfile = await db.getUserById(data.user.id);
+      
+      if (!existingProfile) {
         await db.createUser({
           id: data.user.id,
           name: name || null,
           image: null,
         });
-      } catch (profileError) {
-        console.error('Error creating user profile:', profileError);
-        // Don't fail registration if profile creation fails
-        // The profile will be created on first sign in
+        console.log('✅ Created user profile for:', data.user.email);
+      } else {
+        console.log('ℹ️ User profile already exists for:', data.user.email);
       }
+    } catch (profileError) {
+      console.error('Error creating user profile:', profileError);
+      // Don't fail registration if profile creation fails
+      // The profile will be created on first sign in
     }
 
     // Return success response
