@@ -70,11 +70,71 @@ const toolMetadata: Record<string, { ar: { title: string; description: string };
   "profit-margin-calculator": {
     ar: {
       title: "حاسبة هامش الربح - باين كالك",
-      description: "احسب هامش الربح ونسبة الزيادة بسهولة. أداة مجانية لأصحاب المتاجر الإلكترونية",
+      description: "احسب هامش الربح ونسبة الزيادة بدقة. أداة مجانية تساعدك في تحديد الأسعار المناسبة وزيادة أرباحك. سهلة الاستخدام ومناسبة لجميع أنواع المنتجات.",
     },
     en: {
       title: "Profit Margin Calculator - PineCalc",
-      description: "Calculate profit margin and markup easily. Free tool for e-commerce store owners",
+      description: "Calculate profit margin and markup accurately. Free tool to help you set the right prices and increase profits. Easy to use and suitable for all product types.",
+    },
+  },
+  "payment-gateway-calculator": {
+    ar: {
+      title: "حاسبة رسوم بوابات الدفع - باين كالك",
+      description: "قارن رسوم بوابات الدفع المختلفة (فيزا، مدى، PayPal، تابي) واختر الأنسب لمتجرك. احسب التكلفة الحقيقية وزد أرباحك.",
+    },
+    en: {
+      title: "Payment Gateway Calculator - PineCalc",
+      description: "Compare different payment gateway fees (Visa, Mada, PayPal, Tabby) and choose the best for your store. Calculate real costs and increase profits.",
+    },
+  },
+  "net-profit-calculator": {
+    ar: {
+      title: "حاسبة صافي الربح - باين كالك",
+      description: "احسب صافي الربح الحقيقي بعد خصم جميع التكاليف والرسوم. أداة شاملة تشمل تكاليف الشحن والتسويق والضرائب لحساب دقيق.",
+    },
+    en: {
+      title: "Net Profit Calculator - PineCalc",
+      description: "Calculate real net profit after deducting all costs and fees. Comprehensive tool including shipping, marketing, and tax costs for accurate calculation.",
+    },
+  },
+  "qr-code-generator": {
+    ar: {
+      title: "مولد رمز QR - باين كالك",
+      description: "أنشئ رموز QR مجانية لمتجرك، منتجاتك، أو روابطك. قابلة للتخصيص وعالية الجودة. مثالية للتسويق والمبيعات.",
+    },
+    en: {
+      title: "QR Code Generator - PineCalc",
+      description: "Create free QR codes for your store, products, or links. Customizable and high quality. Perfect for marketing and sales.",
+    },
+  },
+  "utm-builder": {
+    ar: {
+      title: "منشئ روابط UTM - باين كالك",
+      description: "أنشئ روابط UTM لتتبع حملاتك التسويقية بدقة. تابع مصادر الزيارات والمبيعات وحسّن استراتيجيتك التسويقية.",
+    },
+    en: {
+      title: "UTM Builder - PineCalc",
+      description: "Create UTM links to track your marketing campaigns accurately. Monitor traffic sources and sales, optimize your marketing strategy.",
+    },
+  },
+  "image-compressor": {
+    ar: {
+      title: "ضاغط الصور - باين كالك",
+      description: "اضغط صور منتجاتك بجودة عالية وحجم أصغر. حسّن سرعة موقعك وتجربة العملاء. يدعم جميع صيغ الصور الشائعة.",
+    },
+    en: {
+      title: "Image Compressor - PineCalc",
+      description: "Compress product images with high quality and smaller size. Improve site speed and customer experience. Supports all common image formats.",
+    },
+  },
+  "smart-profit-audit": {
+    ar: {
+      title: "تدقيق الأرباح الذكي - باين كالك",
+      description: "حلل بيانات مبيعاتك بالذكاء الاصطناعي واكتشف فرص زيادة الأرباح. تقرير شامل مع توصيات عملية لتحسين أداء متجرك.",
+    },
+    en: {
+      title: "Smart Profit Audit - PineCalc",
+      description: "Analyze your sales data with AI and discover profit opportunities. Comprehensive report with practical recommendations to improve store performance.",
     },
   },
 };

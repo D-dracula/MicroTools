@@ -75,12 +75,20 @@
       "saveCalculation": "Save Calculation",
       "loginToSave": "Login to save calculations",
       "seo": {
-        "whatIs": "What is the Profit Margin Calculator?",
-        "whatIsContent": "The Profit Margin Calculator is the most fundamental tool every e-commerce seller needs. It helps you instantly calculate your profit margin and markup percentage from any sale. Whether you're pricing new products, evaluating supplier offers, or analyzing your current pricing strategy, this calculator gives you the exact numbers you need to make informed decisions. Understanding your profit margin is the foundation of a successful business - without it, you're essentially flying blind.",
+        "whatIs": "What is a Profit Margin Calculator?",
+        "whatIsContent": "A profit margin calculator is a free tool that helps e-commerce store owners calculate profit margins and markup percentages accurately. Designed specifically for traders, marketers, and small business owners to determine appropriate prices and increase profits.",
         "formula": "How is profit margin calculated?",
         "formulaContent": "The calculator uses two key formulas: Profit = Selling Price - Cost Price. Profit Margin (%) = (Profit ÷ Selling Price) × 100. Markup (%) = (Profit ÷ Cost Price) × 100. For example, if you buy a product for $20 and sell it for $30: Profit = $10, Profit Margin = 33.33%, Markup = 50%. Note that margin and markup are different - margin is based on selling price while markup is based on cost price.",
-        "whyNeed": "Why do merchants need this?",
-        "whyNeedContent": "Every pricing decision you make affects your bottom line. Many new sellers confuse markup with margin, leading to lower profits than expected. This calculator helps you: set profitable prices for new products, quickly evaluate if a supplier's price allows for adequate profit, compare profitability across different products, ensure your prices cover all costs while remaining competitive, and make data-driven pricing decisions instead of guessing."
+        "whyNeed": "Why do you need this tool?",
+        "whyNeedContent": "Pricing products correctly is the key to any store's success. This tool helps you: determine competitive prices, ensure healthy profit margins, compare different products, and make informed financial decisions to increase your store's profits.",
+        "howItWorks": "How does the calculation work?",
+        "howItWorksContent": "The calculator uses precise mathematical formulas: Profit Margin = ((Selling Price - Cost) / Selling Price) × 100. And Markup = ((Selling Price - Cost) / Cost) × 100. This ensures accurate calculations for making correct pricing decisions."
+      },
+      "faq": {
+        "a1": "Profit margin is the percentage of profit from the selling price, while markup is the percentage of profit from the cost.",
+        "a2": "Yes, you can save your calculations after creating a free account and access them from any device.",
+        "q1": "What's the difference between profit margin and markup?",
+        "q2": "Can I save my calculations?"
       }
     },
     "netProfitCalculator": {
@@ -1969,5 +1977,22 @@
     "enterLanguageError": "Please enter a language name",
     "enterCurrencyError": "Please enter a currency code",
     "currencyCodeError": "Currency code must be 3 letters (e.g., USD)"
+  },
+  "seo": {
+    "browseAllTools": "Browse All Tools",
+    "exploreCategory": "Explore Category",
+    "faq": {
+      "generalA": "Yes, all PineCalc tools are completely free and don't require registration for basic usage.",
+      "generalQ": "Are the tools free?",
+      "title": "Frequently Asked Questions"
+    },
+    "moreTools": "More Tools",
+    "relatedTools": {
+      "description": "Other tools that might interest you to improve your store performance",
+      "title": "Related Tools",
+      "viewAll": "View All Tools"
+    },
+    "toolsCount": "Over {count} free tools",
+    "viewAllInCategory": "View all tools in this category"
   }
 }
