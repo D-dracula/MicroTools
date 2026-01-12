@@ -34,7 +34,9 @@
     "passwordRequirements": "At least 8 characters, uppercase, lowercase, and a number",
     "checkEmailConfirmation": "Your account has been created! Please check your email to confirm your account.",
     "emailSentTo": "Confirmation email sent to",
-    "backToLogin": "Back to login"
+    "backToLogin": "Back to login",
+    "emailConfirmed": "Your email has been confirmed! You can now log in.",
+    "authError": "An authentication error occurred. Please try again."
   },
   "dashboard": {
     "title": "Dashboard",

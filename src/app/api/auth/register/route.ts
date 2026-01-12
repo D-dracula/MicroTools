@@ -51,6 +51,9 @@ export async function POST(request: NextRequest) {
 
     const { email, password, name } = validationResult.data;
 
+    // Get the origin for redirect URL
+    const origin = request.headers.get('origin') || process.env.NEXTAUTH_URL || 'http://localhost:3000';
+
     // Create Supabase client
     const supabase = await createServerSupabaseClient();
     
@@ -59,6 +62,7 @@ export async function POST(request: NextRequest) {
       email,
       password,
       options: {
+        emailRedirectTo: `${origin}/api/auth/callback`,
         data: {
           name: name || '',
         },

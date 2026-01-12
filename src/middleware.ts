@@ -7,6 +7,17 @@ import { routing } from "./i18n/routing";
 const intlMiddleware = createMiddleware(routing);
 
 export async function middleware(request: NextRequest) {
+  const { searchParams, pathname } = new URL(request.url)
+  
+  // Handle Supabase auth callback code (email confirmation, password reset, etc.)
+  const code = searchParams.get('code')
+  if (code && pathname === '/') {
+    // Redirect to auth callback handler
+    const callbackUrl = new URL('/api/auth/callback', request.url)
+    callbackUrl.searchParams.set('code', code)
+    return NextResponse.redirect(callbackUrl)
+  }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
