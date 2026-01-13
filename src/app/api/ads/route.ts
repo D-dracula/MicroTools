@@ -67,10 +67,12 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error("Error fetching ad:", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
       {
         success: false,
         error: "Failed to fetch ad",
+        details: process.env.NODE_ENV === "development" ? errorMessage : undefined,
       },
       { status: 500 }
     );
