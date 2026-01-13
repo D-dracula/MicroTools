@@ -18,7 +18,9 @@
     "lines": "lines",
     "more": "more",
     "tryAgain": "Try again",
-    "reset": "Reset"
+    "reset": "Reset",
+    "tools": "Tools",
+    "home": "Home"
   },
   "auth": {
     "login": "Login",
@@ -1987,11 +1989,6 @@
       "title": "Frequently Asked Questions"
     },
     "moreTools": "More Tools",
-    "relatedTools": {
-      "description": "Other tools that might interest you to improve your store performance",
-      "title": "Related Tools",
-      "viewAll": "View All Tools"
-    },
     "toolsCount": "Over {count} free tools",
     "viewAllInCategory": "View all tools in this category"
   }

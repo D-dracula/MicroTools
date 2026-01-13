@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { ToolPageContent } from "@/components/tools/tool-page-content";
 import { generateToolMetadata } from "@/lib/metadata";
 import { generateToolStructuredData } from "@/lib/structured-data";
-import { Breadcrumb, RelatedTools, ToolSEOContent } from "@/components/seo";
+import { Breadcrumb } from "@/components/seo";
 
 interface ToolPageProps {
   params: Promise<{ locale: string; slug: string }>;
@@ -89,11 +89,7 @@ export default async function ToolPage({ params }: ToolPageProps) {
           <ToolPageContent slug={slug} locale={locale} />
         </section>
 
-        {/* SEO Content */}
-        <ToolSEOContent tool={tool} locale={locale} />
 
-        {/* Related Tools */}
-        <RelatedTools currentTool={tool} locale={locale} />
       </article>
     </>
   );
