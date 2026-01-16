@@ -9,6 +9,7 @@ export interface Database {
           id: string
           name: string | null
           image: string | null
+          is_admin: boolean
           created_at: string
           updated_at: string
         }
@@ -16,6 +17,7 @@ export interface Database {
           id: string
           name?: string | null
           image?: string | null
+          is_admin?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -23,6 +25,7 @@ export interface Database {
           id?: string
           name?: string | null
           image?: string | null
+          is_admin?: boolean
           created_at?: string
           updated_at?: string
         }

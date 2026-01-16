@@ -1,7 +1,7 @@
 'use client'
 
 import { useSession } from 'next-auth/react'
-import { useMemo } from 'react'
+import { useMemo, useEffect, useState } from 'react'
 import { isAdminEmail } from './admin-utils'
 
 // Re-export server-compatible utilities for backward compatibility
@@ -12,7 +12,8 @@ export { isAdminEmail, verifyAdminEmail, getAdminEmails } from './admin-utils'
  * 
  * Provides admin authentication state by checking:
  * 1. User is authenticated via NextAuth session
- * 2. User's email is in the ADMIN_EMAILS environment variable
+ * 2. User has is_admin = true in database profiles table
+ * 3. Fallback: User's email is in the ADMIN_EMAILS environment variable
  * 
  * Requirements: 1.1, 1.2
  */
@@ -34,22 +35,42 @@ export interface UseAdminAuthReturn {
 
 /**
  * Hook to check admin authentication status
- * 
- * Usage:
- * ```tsx
- * const { isAdmin, isLoading, user, error } = useAdminAuth()
- * 
- * if (isLoading) return <Loading />
- * if (!isAdmin) return <Unauthorized />
- * return <AdminContent user={user} />
- * ```
  */
 export function useAdminAuth(): UseAdminAuthReturn {
   const { data: session, status } = useSession()
+  const [dbAdminCheck, setDbAdminCheck] = useState<boolean | null>(null)
+  const [isCheckingDb, setIsCheckingDb] = useState(false)
+  
+  // Check database for admin status
+  useEffect(() => {
+    async function checkAdminInDb() {
+      if (status !== 'authenticated' || !session?.user) return
+      
+      const userId = (session.user as any).id
+      if (!userId) return
+      
+      setIsCheckingDb(true)
+      try {
+        const response = await fetch('/api/admin/check')
+        if (response.ok) {
+          const data = await response.json()
+          setDbAdminCheck(data.isAdmin === true)
+        } else {
+          setDbAdminCheck(false)
+        }
+      } catch {
+        setDbAdminCheck(false)
+      } finally {
+        setIsCheckingDb(false)
+      }
+    }
+    
+    checkAdminInDb()
+  }, [session, status])
   
   const result = useMemo<UseAdminAuthReturn>(() => {
-    // Still loading session
-    if (status === 'loading') {
+    // Still loading session or checking database
+    if (status === 'loading' || (status === 'authenticated' && dbAdminCheck === null)) {
       return {
         isAdmin: false,
         isLoading: true,
@@ -70,8 +91,10 @@ export function useAdminAuth(): UseAdminAuthReturn {
     
     const userEmail = session.user.email
     
-    // Check if user email is in admin list
-    if (!isAdminEmail(userEmail)) {
+    // Check database first, then fallback to email list
+    const isAdmin = dbAdminCheck === true || isAdminEmail(userEmail)
+    
+    if (!isAdmin) {
       return {
         isAdmin: false,
         isLoading: false,
@@ -95,7 +118,7 @@ export function useAdminAuth(): UseAdminAuthReturn {
       user: adminUser,
       error: null,
     }
-  }, [session, status])
+  }, [session, status, dbAdminCheck])
   
   return result
 }

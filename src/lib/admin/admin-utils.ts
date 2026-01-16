@@ -8,7 +8,7 @@
  */
 
 /**
- * Get admin emails from environment variable
+ * Get admin emails from environment variable (fallback)
  * ADMIN_EMAILS should be a comma-separated list of email addresses
  */
 export function getAdminEmails(): string[] {
@@ -20,7 +20,7 @@ export function getAdminEmails(): string[] {
 }
 
 /**
- * Check if an email is in the admin list
+ * Check if an email is in the admin list (environment variable fallback)
  */
 export function isAdminEmail(email: string | null | undefined): boolean {
   if (!email) return false
@@ -34,4 +34,25 @@ export function isAdminEmail(email: string | null | undefined): boolean {
  */
 export function verifyAdminEmail(email: string | null | undefined): boolean {
   return isAdminEmail(email)
+}
+
+/**
+ * Check if user is admin from database
+ * This is the preferred method - checks is_admin field in profiles table
+ */
+export async function isAdminFromDatabase(userId: string): Promise<boolean> {
+  try {
+    const response = await fetch('/api/admin/check', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId }),
+    })
+    
+    if (!response.ok) return false
+    
+    const data = await response.json()
+    return data.isAdmin === true
+  } catch {
+    return false
+  }
 }
