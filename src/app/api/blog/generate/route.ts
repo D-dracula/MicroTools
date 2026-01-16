@@ -244,11 +244,51 @@ export async function POST(request: NextRequest): Promise<NextResponse<GenerateR
     // Get Exa search results
     let exaResults: ExaSearchResult[] = body.exaResults || [];
     
-    // If no Exa results provided, use mock data for development
-    // In production, this would integrate with Exa MCP
+    // If no Exa results provided, fetch from search API
     if (exaResults.length === 0) {
-      // Generate mock Exa results for development
-      exaResults = generateMockExaResults();
+      console.log('[Generate] No search results provided, fetching from search API...');
+      
+      try {
+        // Call the search API internally
+        const searchUrl = new URL('/api/blog/search', request.url);
+        const searchResponse = await fetch(searchUrl.toString(), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cookie': request.headers.get('cookie') || '', // Forward auth cookies
+          },
+          body: JSON.stringify({
+            category: body.category,
+            numResults: 5,
+            fetchFullContent: true,
+          }),
+        });
+        
+        if (searchResponse.ok) {
+          const searchData = await searchResponse.json();
+          if (searchData.success && searchData.data?.results) {
+            // Map unified search results to ExaSearchResult format
+            exaResults = searchData.data.results.map((r: any) => ({
+              title: r.title,
+              url: r.url,
+              publishedDate: r.publishedDate,
+              score: r.score,
+              text: r.fullContent || r.text || '',
+            }));
+            console.log(`[Generate] Fetched ${exaResults.length} results from search API`);
+          }
+        } else {
+          console.warn('[Generate] Search API returned error:', searchResponse.status);
+        }
+      } catch (searchError) {
+        console.error('[Generate] Failed to fetch from search API:', searchError);
+      }
+      
+      // If still no results, use fallback mock data
+      if (exaResults.length === 0) {
+        console.log('[Generate] Using fallback mock data');
+        exaResults = generateMockExaResults();
+      }
     }
 
     // Generate article using the full flow
