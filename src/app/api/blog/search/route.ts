@@ -170,21 +170,29 @@ async function searchWithNewsApi(
   const timeoutId = setTimeout(() => controller.abort(), 15000);
 
   try {
-    // Get articles from last 30 days (free plan limitation)
+    // Get articles from last 30 days
     const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const fromDateStr = fromDate.toISOString().split('T')[0];
 
-    // Simple query without domains filter (free plan doesn't support it well)
+    // Enhanced query to ensure e-commerce relevance
+    // Add e-commerce keywords to improve relevance
+    const enhancedQuery = query.toLowerCase().includes('ecommerce') || 
+                          query.toLowerCase().includes('e-commerce') ||
+                          query.toLowerCase().includes('online store') ||
+                          query.toLowerCase().includes('seller')
+      ? query
+      : `${query} AND (ecommerce OR "e-commerce" OR "online store" OR "online retail" OR Amazon OR Shopify)`;
+
     const params = new URLSearchParams({
-      q: query,
+      q: enhancedQuery,
       from: fromDateStr,
-      sortBy: 'publishedAt',
+      sortBy: 'relevancy', // Changed to relevancy for better results
       language: 'en',
-      pageSize: String(Math.min(numResults * 2, 20)), // Get more to filter
+      pageSize: String(Math.min(numResults * 3, 30)), // Get more to filter
       apiKey,
     });
 
-    console.log(`[NewsAPI] Searching: "${query}"`);
+    console.log(`[NewsAPI] Searching: "${enhancedQuery}"`);
 
     const response = await fetch(
       `https://newsapi.org/v2/everything?${params.toString()}`,
@@ -207,15 +215,27 @@ async function searchWithNewsApi(
 
     console.log(`[NewsAPI] Found ${data.articles.length} articles`);
 
-    // Filter and map results
+    // Filter and map results - with relevance check
+    const ecommerceKeywords = ['ecommerce', 'e-commerce', 'online store', 'retail', 'seller', 
+      'amazon', 'shopify', 'dropshipping', 'marketplace', 'shopping', 'merchant', 'commerce',
+      'woocommerce', 'ebay', 'etsy', 'fulfillment', 'inventory', 'checkout', 'cart'];
+    
     return data.articles
-      .filter(article => 
-        article.title && 
-        article.url && 
-        article.description &&
-        !article.title.includes('[Removed]') &&
-        article.description.length > 50
-      )
+      .filter(article => {
+        if (!article.title || !article.url || !article.description) return false;
+        if (article.title.includes('[Removed]')) return false;
+        if (article.description.length < 50) return false;
+        
+        // Check if article is relevant to e-commerce
+        const content = `${article.title} ${article.description}`.toLowerCase();
+        const isRelevant = ecommerceKeywords.some(keyword => content.includes(keyword));
+        
+        if (!isRelevant) {
+          console.log(`[NewsAPI] Filtered out (not e-commerce): ${article.title.substring(0, 50)}...`);
+        }
+        
+        return isRelevant;
+      })
       .slice(0, numResults)
       .map(article => ({
         title: article.title,
@@ -261,7 +281,11 @@ async function searchWithExa(
     const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const fromDateStr = fromDate.toISOString().split('T')[0];
 
-    console.log(`[Exa] Searching: "${query}"`);
+    // Enhance query for better e-commerce results
+    const enhancedQuery = `${query} e-commerce online retail business`;
+
+    console.log(`[Exa] Searching: "${enhancedQuery}"`);
+    console.log(`[Exa] API Key present: ${!!apiKey}`);
 
     const response = await fetch('https://api.exa.ai/search', {
       method: 'POST',
@@ -270,7 +294,7 @@ async function searchWithExa(
         'x-api-key': apiKey,
       },
       body: JSON.stringify({
-        query,
+        query: enhancedQuery,
         numResults,
         type: 'neural',
         useAutoprompt: true,
@@ -278,7 +302,7 @@ async function searchWithExa(
         excludeDomains: EXCLUDED_DOMAINS,
         contents: {
           text: {
-            maxCharacters: 3000, // Get more content
+            maxCharacters: 3000,
           },
         },
       }),
@@ -289,18 +313,18 @@ async function searchWithExa(
 
     if (!response.ok) {
       const errorText = await response.text().catch(() => '');
-      console.log('[Exa] Error:', response.status, errorText);
+      console.error('[Exa] Error:', response.status, errorText);
       return [];
     }
 
     const data: ExaApiResponse = await response.json();
 
     if (!data.results || data.results.length === 0) {
-      console.log('[Exa] No results found');
+      console.log('[Exa] No results found in response');
       return [];
     }
 
-    console.log(`[Exa] Found ${data.results.length} results`);
+    console.log(`[Exa] ✅ Found ${data.results.length} results`);
 
     return data.results
       .filter(result => result.title && result.url && result.text)
@@ -317,7 +341,7 @@ async function searchWithExa(
     
     if (error instanceof Error) {
       if (error.name === 'AbortError') {
-        console.log('[Exa] Request timeout');
+        console.error('[Exa] Request timeout after 30s');
       } else {
         console.error('[Exa] Error:', error.message);
       }
