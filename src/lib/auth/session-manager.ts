@@ -154,11 +154,40 @@ export class SessionManager {
       const { data, error } = await supabase.auth.refreshSession()
 
       if (error) {
+        // Check for specific errors that shouldn't be retried
+        const noRetryErrors = [
+          'refresh_token_not_found',
+          'invalid_refresh_token',
+          'token_expired',
+          'session_not_found',
+        ]
+        
+        const errorCode = (error as any).code || ''
+        const errorMessage = error.message?.toLowerCase() || ''
+        
+        const shouldNotRetry = noRetryErrors.some(e => 
+          errorCode.includes(e) || errorMessage.includes(e.replace(/_/g, ' '))
+        )
+        
+        if (shouldNotRetry) {
+          // Don't retry - clear session and let user re-login
+          console.log('🔐 Session expired or invalid, clearing session')
+          this.updateState({
+            isRefreshing: false,
+            isExpired: true,
+            session: null,
+            error,
+          })
+          this.clearStoredSession()
+          return null
+        }
+        
         this.retryCount++
         
         if (this.retryCount < this.config.maxRetries) {
-          // Retry after delay
-          await new Promise(resolve => setTimeout(resolve, this.config.retryDelay))
+          // Exponential backoff for retries
+          const delay = this.config.retryDelay * Math.pow(2, this.retryCount - 1)
+          await new Promise(resolve => setTimeout(resolve, delay))
           return this.performRefresh()
         } else {
           // Max retries reached, mark as expired
