@@ -236,6 +236,30 @@ export interface ExaSearchResult {
 }
 
 /**
+ * Unified search result from multiple sources (NewsAPI + Exa)
+ */
+export interface UnifiedSearchResult {
+  /** Article/page title */
+  title: string;
+  /** Full URL */
+  url: string;
+  /** Publication date */
+  publishedDate: string;
+  /** Combined relevance + recency score */
+  score: number;
+  /** Excerpt or full text */
+  text: string;
+  /** Source of the result */
+  source: 'exa' | 'newsapi' | 'fallback';
+  /** Name of the news source (for NewsAPI) */
+  sourceName?: string;
+  /** Author name */
+  author?: string;
+  /** Image URL */
+  imageUrl?: string;
+}
+
+/**
  * Article generation log entry
  * Matches public.article_generation_log table
  */

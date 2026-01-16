@@ -83,30 +83,40 @@ export function DashboardContent() {
     }
   }, [status]);
 
-  // Delete calculation
-  const handleDelete = async (id: string) => {
-    try {
-      setDeleting(id);
-      
-      const response = await fetch(`/api/calculations/${id}`, {
-        method: "DELETE",
-      });
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to delete calculation");
-      }
-      
-      if (data.success) {
-        setCalculations((prev) => prev.filter((calc) => calc.id !== id));
-        setPagination((prev) => ({ ...prev, total: prev.total - 1 }));
-        toast.success(t("common.delete"));
-      }
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "An error occurred");
-    } finally {
-      setDeleting(null);
-    }
+  // Delete calculation - optimized for INP
+  const handleDelete = (id: string) => {
+    // Set loading state immediately for visual feedback
+    setDeleting(id);
+    
+    // Defer the heavy work to avoid blocking the main thread
+    requestAnimationFrame(() => {
+      (async () => {
+        try {
+          // Optimistic update - remove from UI immediately
+          setCalculations((prev) => prev.filter((calc) => calc.id !== id));
+          setPagination((prev) => ({ ...prev, total: prev.total - 1 }));
+          
+          const response = await fetch(`/api/calculations/${id}`, {
+            method: "DELETE",
+          });
+          const data = await response.json();
+          
+          if (!response.ok) {
+            // Revert on error - refetch to restore state
+            fetchCalculations(pagination.page);
+            throw new Error(data.error || "Failed to delete calculation");
+          }
+          
+          if (data.success) {
+            toast.success(t("common.delete"));
+          }
+        } catch (err) {
+          toast.error(err instanceof Error ? err.message : "An error occurred");
+        } finally {
+          setDeleting(null);
+        }
+      })();
+    });
   };
 
   // Format date based on locale

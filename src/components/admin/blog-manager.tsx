@@ -224,34 +224,56 @@ export function BlogManager({ locale }: BlogManagerProps) {
     fetchArticles();
   }, [fetchArticles]);
 
-  // Handle delete
-  const handleDelete = async (article: AdminArticleListItem) => {
-    if (!confirm(t.confirm.delete)) {
-      return;
-    }
+  // Pending delete state for confirmation
+  const [pendingDelete, setPendingDelete] = useState<AdminArticleListItem | null>(null);
 
+  // Handle delete - optimized for INP (no blocking confirm)
+  const handleDelete = (article: AdminArticleListItem) => {
+    // Show confirmation state instead of blocking confirm()
+    setPendingDelete(article);
+  };
+
+  // Confirm delete action
+  const confirmDelete = () => {
+    if (!pendingDelete) return;
+    
+    const article = pendingDelete;
+    setPendingDelete(null);
     setIsDeleting(article.id);
 
-    try {
-      const response = await fetch("/api/admin/blog", {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: article.id }),
-      });
+    // Defer heavy work to avoid blocking main thread
+    requestAnimationFrame(() => {
+      (async () => {
+        try {
+          // Optimistic update - remove from UI immediately
+          setArticles((prev) => prev.filter((a) => a.id !== article.id));
+          setTotal((prev) => prev - 1);
 
-      const result = await response.json();
+          const response = await fetch("/api/admin/blog", {
+            method: "DELETE",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id: article.id }),
+          });
 
-      if (!response.ok || !result.success) {
-        throw new Error(result.error?.message || "Failed to delete article");
-      }
+          const result = await response.json();
 
-      // Refresh the list
-      fetchArticles();
-    } catch (err) {
-      alert(err instanceof Error ? err.message : "Failed to delete article");
-    } finally {
-      setIsDeleting(null);
-    }
+          if (!response.ok || !result.success) {
+            // Revert on error
+            fetchArticles();
+            throw new Error(result.error?.message || "Failed to delete article");
+          }
+        } catch (err) {
+          alert(err instanceof Error ? err.message : "Failed to delete article");
+        } finally {
+          setIsDeleting(null);
+        }
+      })();
+    });
+  };
+
+  // Cancel delete
+  const cancelDelete = () => {
+    setPendingDelete(null);
   };
 
   // Handle publish/unpublish
@@ -590,6 +612,29 @@ export function BlogManager({ locale }: BlogManagerProps) {
           )}
         </CardContent>
       </Card>
+
+      {/* Delete Confirmation Dialog */}
+      {pendingDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+          <Card className="w-full max-w-md mx-4">
+            <CardHeader>
+              <CardTitle className="text-lg">{t.confirm.deleteTitle}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-muted-foreground">{t.confirm.delete}</p>
+              <p className="font-medium truncate">{pendingDelete.title}</p>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" onClick={cancelDelete}>
+                  {isRTL ? "إلغاء" : "Cancel"}
+                </Button>
+                <Button variant="destructive" onClick={confirmDelete}>
+                  {t.actions.delete}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
     </div>
   );
 }

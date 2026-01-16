@@ -4,7 +4,8 @@
  * Generate Article Content Component
  * 
  * Professional AI-powered article generation interface.
- * Uses Exa for topic research and OpenRouter for content generation.
+ * Uses multi-source search (NewsAPI + Exa) for fresh topics
+ * and OpenRouter for content generation.
  * Shows detailed progress for each step.
  */
 
@@ -68,12 +69,15 @@ interface GeneratedArticle {
   createdAt: string;
 }
 
-interface ExaSearchResult {
+interface SearchResult {
   title: string;
   url: string;
   publishedDate: string;
   score: number;
   text: string;
+  source: 'exa' | 'newsapi' | 'fallback';
+  sourceName?: string;
+  author?: string;
 }
 
 interface StepLog {
@@ -106,7 +110,7 @@ type GenerationStep =
 function getTranslations(isRTL: boolean) {
   return {
     title: isRTL ? "توليد مقال بالذكاء الاصطناعي" : "Generate Article with AI",
-    subtitle: isRTL ? "أنشئ مقالاً احترافياً باستخدام Exa + AI" : "Create a professional article using Exa + AI",
+    subtitle: isRTL ? "أنشئ مقالاً احترافياً باستخدام NewsAPI + Exa + AI" : "Create a professional article using NewsAPI + Exa + AI",
     back: isRTL ? "العودة" : "Back",
     
     apiKey: {
@@ -117,15 +121,22 @@ function getTranslations(isRTL: boolean) {
     },
     
     exaKey: {
-      title: isRTL ? "مفتاح Exa API" : "Exa API Key",
+      title: isRTL ? "مفتاح Exa API (اختياري)" : "Exa API Key (optional)",
       placeholder: isRTL ? "أدخل مفتاح Exa..." : "Enter Exa key...",
-      hint: isRTL ? "للبحث عن أحدث المواضيع" : "For searching latest topics",
+      hint: isRTL ? "للبحث العميق - اختياري إذا كان NewsAPI متاحاً" : "For deep search - optional if NewsAPI available",
+      getKey: isRTL ? "احصل على مفتاح" : "Get Key",
+    },
+    
+    newsApiKey: {
+      title: isRTL ? "مفتاح NewsAPI (اختياري)" : "NewsAPI Key (optional)",
+      placeholder: isRTL ? "أدخل مفتاح NewsAPI..." : "Enter NewsAPI key...",
+      hint: isRTL ? "للأخبار الحديثة - 100 طلب/يوم مجاناً" : "For fresh news - 100 requests/day free",
       getKey: isRTL ? "احصل على مفتاح" : "Get Key",
     },
     
     searchQuery: {
       title: isRTL ? "موضوع البحث" : "Search Topic",
-      placeholder: isRTL ? "مثال: اتجاهات التجارة الإلكترونية 2025" : "e.g., e-commerce trends 2025",
+      placeholder: isRTL ? "مثال: اتجاهات التجارة الإلكترونية 2026" : "e.g., e-commerce trends 2026",
       hint: isRTL ? "اتركه فارغاً للبحث التلقائي" : "Leave empty for auto-search",
     },
     
@@ -160,7 +171,7 @@ function getTranslations(isRTL: boolean) {
     
     steps: {
       validating: isRTL ? "التحقق من المدخلات..." : "Validating inputs...",
-      searching: isRTL ? "البحث في Exa عن أحدث المواضيع..." : "Searching Exa for latest topics...",
+      searching: isRTL ? "البحث في NewsAPI + Exa عن أحدث المواضيع..." : "Searching NewsAPI + Exa for latest topics...",
       analyzing: isRTL ? "تحليل نتائج البحث..." : "Analyzing search results...",
       selecting: isRTL ? "اختيار أفضل موضوع..." : "Selecting best topic...",
       generating: isRTL ? "توليد المحتوى بالذكاء الاصطناعي..." : "Generating content with AI...",
@@ -181,7 +192,13 @@ function getTranslations(isRTL: boolean) {
       success: isRTL ? "🎉 تم توليد المقال بنجاح!" : "🎉 Article generated successfully!",
       error: isRTL ? "حدث خطأ" : "An error occurred",
       apiKeyRequired: isRTL ? "مفتاح OpenRouter مطلوب" : "OpenRouter key required",
-      exaKeyRequired: isRTL ? "مفتاح Exa مطلوب" : "Exa key required",
+      searchKeyRequired: isRTL ? "مطلوب مفتاح واحد على الأقل (Exa أو NewsAPI)" : "At least one search key required (Exa or NewsAPI)",
+    },
+    
+    sources: {
+      newsapi: "NewsAPI",
+      exa: "Exa",
+      fallback: isRTL ? "مخزن مؤقت" : "Cached",
     },
   };
 }
@@ -301,6 +318,7 @@ export function GenerateArticleContent() {
   // State
   const [apiKey, setApiKey] = useState("");
   const [exaKey, setExaKey] = useState("");
+  const [newsApiKey, setNewsApiKey] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState<ArticleCategory | "auto">("auto");
   const [rateLimit, setRateLimit] = useState<RateLimitStatus | null>(null);
@@ -308,12 +326,13 @@ export function GenerateArticleContent() {
   const [generationStep, setGenerationStep] = useState<GenerationStep>("idle");
   const [error, setError] = useState<string | null>(null);
   const [generatedArticle, setGeneratedArticle] = useState<GeneratedArticle | null>(null);
-  const [searchResults, setSearchResults] = useState<ExaSearchResult[]>([]);
-  const [selectedTopic, setSelectedTopic] = useState<ExaSearchResult | null>(null);
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [selectedTopic, setSelectedTopic] = useState<SearchResult | null>(null);
   const [stepLogs, setStepLogs] = useState<StepLog[]>([]);
   const [showLogs, setShowLogs] = useState(true);
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
+  const [sourcesUsed, setSourcesUsed] = useState<string[]>([]);
 
   const stepStartTimeRef = useRef<Date | null>(null);
 
@@ -321,8 +340,10 @@ export function GenerateArticleContent() {
   useEffect(() => {
     const savedOpenRouterKey = localStorage.getItem("openrouter_api_key");
     const savedExaKey = localStorage.getItem("exa_api_key");
+    const savedNewsApiKey = localStorage.getItem("newsapi_key");
     if (savedOpenRouterKey) setApiKey(savedOpenRouterKey);
     if (savedExaKey) setExaKey(savedExaKey);
+    if (savedNewsApiKey) setNewsApiKey(savedNewsApiKey);
   }, []);
 
   // Elapsed time counter
@@ -345,6 +366,11 @@ export function GenerateArticleContent() {
   const handleExaKeyChange = (value: string) => {
     setExaKey(value);
     if (value) localStorage.setItem("exa_api_key", value);
+  };
+
+  const handleNewsApiKeyChange = (value: string) => {
+    setNewsApiKey(value);
+    if (value) localStorage.setItem("newsapi_key", value);
   };
 
   // Fetch rate limit
@@ -396,8 +422,9 @@ export function GenerateArticleContent() {
       setError(t.messages.apiKeyRequired);
       return;
     }
-    if (!exaKey.trim()) {
-      setError(t.messages.exaKeyRequired);
+    // At least one search key required
+    if (!exaKey.trim() && !newsApiKey.trim()) {
+      setError(t.messages.searchKeyRequired);
       return;
     }
 
@@ -409,6 +436,7 @@ export function GenerateArticleContent() {
     setStepLogs([]);
     setStartTime(new Date());
     setElapsedTime(0);
+    setSourcesUsed([]);
     stepStartTimeRef.current = new Date();
 
     try {
@@ -418,15 +446,20 @@ export function GenerateArticleContent() {
       await new Promise(r => setTimeout(r, 500));
       updateLogStatus("validating", "complete", "✓ All inputs valid");
 
-      // Step 2: Searching with Exa
+      // Step 2: Searching with NewsAPI + Exa
       setGenerationStep("searching");
-      addLog("searching", t.steps.searching, `Query: "${searchQuery || 'e-commerce trends'}"...`);
+      const searchSources = [
+        newsApiKey.trim() ? "NewsAPI" : null,
+        exaKey.trim() ? "Exa" : null,
+      ].filter(Boolean).join(" + ");
+      addLog("searching", t.steps.searching, `Searching ${searchSources}...`);
       
       const searchResponse = await fetch("/api/blog/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          exaKey: exaKey.trim(),
+          exaKey: exaKey.trim() || undefined,
+          newsApiKey: newsApiKey.trim() || undefined,
           query: searchQuery.trim() || undefined,
           category: category !== "auto" ? category : undefined,
         }),
@@ -440,11 +473,14 @@ export function GenerateArticleContent() {
 
       const results = searchResult.data.results || [];
       const usingFallback = searchResult.data.usingFallback;
+      const sources = searchResult.data.sourcesUsed || [];
       setSearchResults(results);
+      setSourcesUsed(sources);
+      
       updateLogStatus("searching", "complete", 
         usingFallback 
-          ? `Using ${results.length} cached topics (Exa unavailable)` 
-          : `Found ${results.length} relevant topics from Exa`
+          ? `Using ${results.length} cached topics` 
+          : `Found ${results.length} topics from ${sources.join(" + ")}`
       );
 
       // Step 3: Analyzing results
@@ -533,11 +569,14 @@ export function GenerateArticleContent() {
     setError(null);
     setStartTime(null);
     setElapsedTime(0);
+    setSourcesUsed([]);
   };
 
   const getCategoryLabel = (cat: ArticleCategory) => t.categories[cat] || cat;
+  const getSourceLabel = (source: string) => (t.sources as Record<string, string>)[source] || source;
   const isGenerating = !['idle', 'complete', 'error'].includes(generationStep);
   const formatTime = (ms: number) => `${(ms / 1000).toFixed(1)}s`;
+  const hasSearchKey = exaKey.trim() || newsApiKey.trim();
 
 
   return (
@@ -596,9 +635,36 @@ export function GenerateArticleContent() {
                 />
               </div>
               
+              {/* NewsAPI Key - Primary for fresh news */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium">{t.exaKey.title}</label>
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    {t.newsApiKey.title}
+                    <Badge variant="secondary" className="text-xs">Fresh News</Badge>
+                  </label>
+                  <a href="https://newsapi.org/register" target="_blank" rel="noopener noreferrer"
+                     className="text-xs text-primary hover:underline flex items-center gap-1">
+                    {t.newsApiKey.getKey} <ExternalLink className="h-3 w-3" />
+                  </a>
+                </div>
+                <Input
+                  type="password"
+                  value={newsApiKey}
+                  onChange={(e) => handleNewsApiKeyChange(e.target.value)}
+                  placeholder={t.newsApiKey.placeholder}
+                  disabled={isGenerating}
+                  className="font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">{t.newsApiKey.hint}</p>
+              </div>
+              
+              {/* Exa Key - For deep search */}
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <label className="text-sm font-medium flex items-center gap-2">
+                    {t.exaKey.title}
+                    <Badge variant="outline" className="text-xs">Deep Search</Badge>
+                  </label>
                   <a href="https://exa.ai" target="_blank" rel="noopener noreferrer"
                      className="text-xs text-primary hover:underline flex items-center gap-1">
                     {t.exaKey.getKey} <ExternalLink className="h-3 w-3" />
@@ -612,6 +678,7 @@ export function GenerateArticleContent() {
                   disabled={isGenerating}
                   className="font-mono text-sm"
                 />
+                <p className="text-xs text-muted-foreground">{t.exaKey.hint}</p>
               </div>
             </CardContent>
           </Card>
@@ -658,7 +725,7 @@ export function GenerateArticleContent() {
               size="lg"
               className="w-full"
               onClick={handleGenerate}
-              disabled={!apiKey.trim() || !exaKey.trim() || (rateLimit?.remaining === 0)}
+              disabled={!apiKey.trim() || !hasSearchKey || (rateLimit?.remaining === 0)}
             >
               <Sparkles className={`h-4 w-4 ${isRTL ? "ml-2" : "mr-2"}`} />
               {t.actions.generate}
@@ -706,6 +773,15 @@ export function GenerateArticleContent() {
                 <CardTitle className="text-sm flex items-center gap-2">
                   <Globe className="h-4 w-4" />
                   {t.progress.searchResults} ({searchResults.length})
+                  {sourcesUsed.length > 0 && (
+                    <div className="flex gap-1 ml-auto">
+                      {sourcesUsed.map(source => (
+                        <Badge key={source} variant="outline" className="text-xs">
+                          {getSourceLabel(source)}
+                        </Badge>
+                      ))}
+                    </div>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -719,11 +795,17 @@ export function GenerateArticleContent() {
                     >
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-medium line-clamp-1 flex-1">{result.title}</p>
-                        <Badge variant="outline" className="text-xs flex-shrink-0">
-                          {(result.score * 100).toFixed(0)}%
-                        </Badge>
+                        <div className="flex items-center gap-1 flex-shrink-0">
+                          <Badge variant={result.source === 'newsapi' ? 'default' : 'secondary'} className="text-xs">
+                            {getSourceLabel(result.source)}
+                          </Badge>
+                          <Badge variant="outline" className="text-xs">
+                            {(result.score * 100).toFixed(0)}%
+                          </Badge>
+                        </div>
                       </div>
                       <p className="text-xs text-muted-foreground line-clamp-1 mt-1">
+                        {result.sourceName && <span className="font-medium">{result.sourceName} • </span>}
                         {result.text.substring(0, 100)}...
                       </p>
                     </div>
