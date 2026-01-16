@@ -717,25 +717,30 @@ ${uniquenessInstruction}
 
 RESPOND ONLY WITH VALID JSON. No additional text.`;
 
-  // Use full content if available, otherwise use text (up to 4000 chars for better context)
-  const researchContent = (topic.text || '').substring(0, 4000);
+  // Use full content if available (up to 6000 chars for comprehensive context)
+  const researchContent = (topic.text || '').substring(0, 6000);
   
   const userPrompt = `Based on this research, write an original article about e-commerce:
 
 RESEARCH TOPIC: ${topic.title}
 
-RESEARCH CONTENT (from ${topic.url}):
+SOURCE URL: ${topic.url}
+
+RESEARCH CONTENT:
 ${researchContent}
 
-IMPORTANT INSTRUCTIONS:
-1. Use the research content above as your PRIMARY source of information
-2. Extract key facts, statistics, and insights from the research
-3. Expand on the topic with practical advice for e-commerce sellers
-4. DO NOT copy text directly - paraphrase and add your own insights
-5. Include specific examples and actionable tips
-6. Make the article comprehensive (800-1200 words)
+=== CRITICAL INSTRUCTIONS ===
 
-Create an original, well-researched article that provides real value to e-commerce sellers.`;
+1. WORD COUNT: Write ${MIN_WORD_COUNT}-${MAX_WORD_COUNT} words (MANDATORY)
+2. Use the research content above as your PRIMARY source of information
+3. Extract key facts, statistics, and insights from the research
+4. Expand on the topic with practical advice for e-commerce sellers
+5. DO NOT copy text directly - paraphrase and add your own insights
+6. Include at least 2-3 specific examples or case studies
+7. Add actionable tips in every section
+8. Use ALL the formatting elements from the system prompt (pro-tips, warnings, tables, CTA)
+
+Create an original, comprehensive, SEO-optimized article that provides real value to e-commerce sellers.`;
 
   const messages = [
     { role: 'system' as const, content: systemPrompt },
@@ -805,6 +810,15 @@ Create an original, well-researched article that provides real value to e-commer
   // Validate required fields
   if (!articleData.title || !articleData.content) {
     throw new Error('Generated article missing required fields');
+  }
+
+  // Validate word count
+  const wordCount = articleData.content.split(/\s+/).filter((w: string) => w.length > 0).length;
+  console.log(`📝 Generated article word count: ${wordCount}`);
+  
+  if (wordCount < MIN_WORD_COUNT * 0.8) { // Allow 20% tolerance
+    console.warn(`⚠️ Article too short: ${wordCount} words (minimum: ${MIN_WORD_COUNT})`);
+    // Don't throw error, but log warning - AI sometimes counts differently
   }
 
   // Create source from the research
