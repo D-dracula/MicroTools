@@ -123,14 +123,14 @@ function getTranslations(isRTL: boolean) {
     exaKey: {
       title: isRTL ? "مفتاح Exa API (اختياري)" : "Exa API Key (optional)",
       placeholder: isRTL ? "أدخل مفتاح Exa..." : "Enter Exa key...",
-      hint: isRTL ? "للبحث العميق - اختياري إذا كان NewsAPI متاحاً" : "For deep search - optional if NewsAPI available",
+      hint: isRTL ? "للبحث العميق - يستخدم مفتاح السيرفر إذا فارغ" : "For deep search - uses server key if empty",
       getKey: isRTL ? "احصل على مفتاح" : "Get Key",
     },
     
     newsApiKey: {
       title: isRTL ? "مفتاح NewsAPI (اختياري)" : "NewsAPI Key (optional)",
       placeholder: isRTL ? "أدخل مفتاح NewsAPI..." : "Enter NewsAPI key...",
-      hint: isRTL ? "للأخبار الحديثة - 100 طلب/يوم مجاناً" : "For fresh news - 100 requests/day free",
+      hint: isRTL ? "للأخبار الحديثة - يستخدم مفتاح السيرفر إذا فارغ" : "For fresh news - uses server key if empty",
       getKey: isRTL ? "احصل على مفتاح" : "Get Key",
     },
     
@@ -422,11 +422,7 @@ export function GenerateArticleContent() {
       setError(t.messages.apiKeyRequired);
       return;
     }
-    // At least one search key required
-    if (!exaKey.trim() && !newsApiKey.trim()) {
-      setError(t.messages.searchKeyRequired);
-      return;
-    }
+    // Note: Search keys are optional - server will use env keys if not provided
 
     // Reset state
     setError(null);
@@ -451,7 +447,7 @@ export function GenerateArticleContent() {
       const searchSources = [
         newsApiKey.trim() ? "NewsAPI" : null,
         exaKey.trim() ? "Exa" : null,
-      ].filter(Boolean).join(" + ");
+      ].filter(Boolean).join(" + ") || "Server Keys";
       addLog("searching", t.steps.searching, `Searching ${searchSources}...`);
       
       const searchResponse = await fetch("/api/blog/search", {
@@ -462,6 +458,7 @@ export function GenerateArticleContent() {
           newsApiKey: newsApiKey.trim() || undefined,
           query: searchQuery.trim() || undefined,
           category: category !== "auto" ? category : undefined,
+          fetchFullContent: true, // Enable deep content fetching
         }),
       });
 
@@ -576,7 +573,6 @@ export function GenerateArticleContent() {
   const getSourceLabel = (source: string) => (t.sources as Record<string, string>)[source] || source;
   const isGenerating = !['idle', 'complete', 'error'].includes(generationStep);
   const formatTime = (ms: number) => `${(ms / 1000).toFixed(1)}s`;
-  const hasSearchKey = exaKey.trim() || newsApiKey.trim();
 
 
   return (
@@ -725,7 +721,7 @@ export function GenerateArticleContent() {
               size="lg"
               className="w-full"
               onClick={handleGenerate}
-              disabled={!apiKey.trim() || !hasSearchKey || (rateLimit?.remaining === 0)}
+              disabled={!apiKey.trim() || (rateLimit?.remaining === 0)}
             >
               <Sparkles className={`h-4 w-4 ${isRTL ? "ml-2" : "mr-2"}`} />
               {t.actions.generate}

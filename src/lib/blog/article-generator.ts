@@ -648,16 +648,25 @@ OUTPUT FORMAT (JSON):
 
 RESPOND ONLY WITH VALID JSON. No additional text.`;
 
+  // Use full content if available, otherwise use text (up to 4000 chars for better context)
+  const researchContent = (topic.text || '').substring(0, 4000);
+  
   const userPrompt = `Based on this research, write an original article about e-commerce:
 
 RESEARCH TOPIC: ${topic.title}
 
-RESEARCH CONTENT:
-${topic.text.substring(0, 2000)}
+RESEARCH CONTENT (from ${topic.url}):
+${researchContent}
 
-SOURCE URL: ${topic.url}
+IMPORTANT INSTRUCTIONS:
+1. Use the research content above as your PRIMARY source of information
+2. Extract key facts, statistics, and insights from the research
+3. Expand on the topic with practical advice for e-commerce sellers
+4. DO NOT copy text directly - paraphrase and add your own insights
+5. Include specific examples and actionable tips
+6. Make the article comprehensive (800-1200 words)
 
-Create an original, comprehensive article that expands on this topic with practical insights for e-commerce sellers. The article should be unique and not copy the source directly.`;
+Create an original, well-researched article that provides real value to e-commerce sellers.`;
 
   const messages = [
     { role: 'system' as const, content: systemPrompt },
@@ -666,7 +675,7 @@ Create an original, comprehensive article that expands on this topic with practi
 
   const response = await chat(apiKey, messages, {
     temperature: 0.7,
-    maxTokens: 3000,
+    maxTokens: 4000, // Increased for longer articles
   });
 
   // Parse the JSON response with improved error handling

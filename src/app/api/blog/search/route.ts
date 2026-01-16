@@ -1,5 +1,5 @@
 /**
- * Blog Topic Search API Route - Multi-Source Search
+ * Blog Topic Search API Route - Multi-Source Search with Deep Content
  * 
  * POST /api/blog/search
  * 
@@ -8,6 +8,7 @@
  * - Exa AI: Deep neural search for educational content
  * 
  * Results are merged, deduplicated, and ranked by recency + relevance.
+ * Optionally fetches full content from sources for better article generation.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
@@ -26,6 +27,7 @@ interface SearchRequest {
   query?: string;
   category?: ArticleCategory;
   numResults?: number;
+  fetchFullContent?: boolean; // New: fetch full content from sources
 }
 
 interface UnifiedSearchResult {
@@ -38,6 +40,7 @@ interface UnifiedSearchResult {
   sourceName?: string;
   author?: string;
   imageUrl?: string;
+  fullContent?: string; // New: full fetched content
 }
 
 interface ExaApiResponse {
@@ -54,6 +57,8 @@ interface ExaApiResponse {
 interface NewsApiResponse {
   status: string;
   totalResults: number;
+  code?: string;
+  message?: string;
   articles: Array<{
     source: { id: string | null; name: string };
     author: string | null;
@@ -66,6 +71,7 @@ interface NewsApiResponse {
   }>;
 }
 
+
 // ============================================================================
 // Constants
 // ============================================================================
@@ -77,65 +83,51 @@ function getDynamicQueries(category?: ArticleCategory): string[] {
   
   const baseQueries: Record<ArticleCategory | 'default', string[]> = {
     marketing: [
-      `e-commerce marketing strategies ${currentMonth} ${currentYear}`,
-      `social media marketing online stores ${currentYear}`,
-      `digital marketing trends e-commerce latest`,
-      `influencer marketing e-commerce brands`,
-      `email marketing automation online retail`,
+      `ecommerce marketing strategies ${currentYear}`,
+      `social media marketing online stores`,
+      `digital marketing ecommerce trends`,
+      `influencer marketing brands`,
+      `email marketing automation retail`,
     ],
     'seller-tools': [
-      `best e-commerce seller tools ${currentYear}`,
-      `Amazon seller software new features`,
-      `e-commerce analytics tools latest`,
-      `inventory management software updates`,
-      `AI tools for online sellers`,
+      `ecommerce seller tools ${currentYear}`,
+      `Amazon seller software`,
+      `ecommerce analytics tools`,
+      `inventory management software`,
+      `AI tools online sellers`,
     ],
     logistics: [
-      `e-commerce shipping solutions ${currentYear}`,
-      `fulfillment strategies online retail latest`,
-      `dropshipping logistics news`,
+      `ecommerce shipping solutions ${currentYear}`,
+      `fulfillment strategies retail`,
+      `dropshipping logistics`,
       `last mile delivery innovations`,
-      `supply chain e-commerce updates`,
+      `supply chain ecommerce`,
     ],
     trends: [
-      `e-commerce trends ${currentMonth} ${currentYear}`,
-      `future of online retail predictions`,
-      `emerging e-commerce technologies`,
-      `AI in e-commerce latest developments`,
-      `social commerce trends ${currentYear}`,
+      `ecommerce trends ${currentMonth} ${currentYear}`,
+      `future online retail`,
+      `emerging ecommerce technologies`,
+      `AI ecommerce developments`,
+      `social commerce trends`,
     ],
     'case-studies': [
-      `e-commerce success stories ${currentYear}`,
-      `online business growth case study`,
-      `Amazon seller success strategies`,
-      `Shopify store success stories`,
-      `D2C brand growth stories`,
+      `ecommerce success stories ${currentYear}`,
+      `online business growth`,
+      `Amazon seller success`,
+      `Shopify store success`,
+      `D2C brand growth`,
     ],
     default: [
-      `e-commerce news ${currentMonth} ${currentYear}`,
-      `online selling tips latest`,
-      `marketplace trends this week`,
-      `e-commerce business growth strategies`,
+      `ecommerce news ${currentYear}`,
+      `online selling tips`,
+      `marketplace trends`,
+      `ecommerce business growth`,
       `digital commerce innovations`,
     ],
   };
 
   return category ? baseQueries[category] : baseQueries.default;
 }
-
-/** Trusted e-commerce news domains for NewsAPI */
-const TRUSTED_DOMAINS = [
-  'techcrunch.com',
-  'forbes.com',
-  'businessinsider.com',
-  'entrepreneur.com',
-  'inc.com',
-  'wired.com',
-  'theverge.com',
-  'cnbc.com',
-  'reuters.com',
-  'bloomberg.com',
-].join(',');
 
 /** Domains to exclude from Exa search */
 const EXCLUDED_DOMAINS = [
@@ -164,8 +156,9 @@ async function checkAdminAccess(): Promise<boolean> {
   return adminEmails.includes(session.user.email.toLowerCase());
 }
 
+
 // ============================================================================
-// NewsAPI Search
+// NewsAPI Search (Fixed for Free Plan)
 // ============================================================================
 
 async function searchWithNewsApi(
@@ -177,23 +170,21 @@ async function searchWithNewsApi(
   const timeoutId = setTimeout(() => controller.abort(), 15000);
 
   try {
-    // Get articles from last 7 days
-    const fromDate = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    // Get articles from last 30 days (free plan limitation)
+    const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const fromDateStr = fromDate.toISOString().split('T')[0];
 
+    // Simple query without domains filter (free plan doesn't support it well)
     const params = new URLSearchParams({
       q: query,
       from: fromDateStr,
-      sortBy: 'publishedAt', // Most recent first
+      sortBy: 'publishedAt',
       language: 'en',
-      pageSize: String(numResults),
+      pageSize: String(Math.min(numResults * 2, 20)), // Get more to filter
       apiKey,
     });
 
-    // Add trusted domains if not searching for specific topic
-    if (!query.includes('site:')) {
-      params.set('domains', TRUSTED_DOMAINS);
-    }
+    console.log(`[NewsAPI] Searching: "${query}"`);
 
     const response = await fetch(
       `https://newsapi.org/v2/everything?${params.toString()}`,
@@ -202,23 +193,30 @@ async function searchWithNewsApi(
 
     clearTimeout(timeoutId);
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      console.log('[NewsAPI] Error:', response.status, errorData);
+    const data: NewsApiResponse = await response.json();
+
+    if (!response.ok || data.status !== 'ok') {
+      console.log('[NewsAPI] Error:', data.code, data.message);
       return [];
     }
 
-    const data: NewsApiResponse = await response.json();
-
-    if (data.status !== 'ok' || !data.articles) {
-      console.log('[NewsAPI] Invalid response:', data.status);
+    if (!data.articles || data.articles.length === 0) {
+      console.log('[NewsAPI] No articles found');
       return [];
     }
 
     console.log(`[NewsAPI] Found ${data.articles.length} articles`);
 
+    // Filter and map results
     return data.articles
-      .filter(article => article.title && article.url && article.description)
+      .filter(article => 
+        article.title && 
+        article.url && 
+        article.description &&
+        !article.title.includes('[Removed]') &&
+        article.description.length > 50
+      )
+      .slice(0, numResults)
       .map(article => ({
         title: article.title,
         url: article.url,
@@ -233,18 +231,21 @@ async function searchWithNewsApi(
   } catch (error) {
     clearTimeout(timeoutId);
     
-    if (error instanceof Error && error.name === 'AbortError') {
-      console.log('[NewsAPI] Request timeout');
-    } else {
-      console.error('[NewsAPI] Error:', error);
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.log('[NewsAPI] Request timeout');
+      } else {
+        console.error('[NewsAPI] Error:', error.message);
+      }
     }
     
     return [];
   }
 }
 
+
 // ============================================================================
-// Exa Search (Enhanced)
+// Exa Search (Enhanced with more content)
 // ============================================================================
 
 async function searchWithExa(
@@ -256,9 +257,11 @@ async function searchWithExa(
   const timeoutId = setTimeout(() => controller.abort(), 30000);
 
   try {
-    // Get articles from last 14 days for Exa (deeper content)
-    const fromDate = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
+    // Get articles from last 30 days
+    const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const fromDateStr = fromDate.toISOString().split('T')[0];
+
+    console.log(`[Exa] Searching: "${query}"`);
 
     const response = await fetch('https://api.exa.ai/search', {
       method: 'POST',
@@ -275,7 +278,7 @@ async function searchWithExa(
         excludeDomains: EXCLUDED_DOMAINS,
         contents: {
           text: {
-            maxCharacters: 1500,
+            maxCharacters: 3000, // Get more content
           },
         },
       }),
@@ -285,15 +288,21 @@ async function searchWithExa(
     clearTimeout(timeoutId);
 
     if (!response.ok) {
-      console.log('[Exa] Error:', response.status);
+      const errorText = await response.text().catch(() => '');
+      console.log('[Exa] Error:', response.status, errorText);
       return [];
     }
 
     const data: ExaApiResponse = await response.json();
 
-    console.log(`[Exa] Found ${data.results?.length || 0} results`);
+    if (!data.results || data.results.length === 0) {
+      console.log('[Exa] No results found');
+      return [];
+    }
 
-    return (data.results || [])
+    console.log(`[Exa] Found ${data.results.length} results`);
+
+    return data.results
       .filter(result => result.title && result.url && result.text)
       .map(result => ({
         title: result.title,
@@ -306,15 +315,128 @@ async function searchWithExa(
   } catch (error) {
     clearTimeout(timeoutId);
     
-    if (error instanceof Error && error.name === 'AbortError') {
-      console.log('[Exa] Request timeout');
-    } else {
-      console.error('[Exa] Error:', error);
+    if (error instanceof Error) {
+      if (error.name === 'AbortError') {
+        console.log('[Exa] Request timeout');
+      } else {
+        console.error('[Exa] Error:', error.message);
+      }
     }
     
     return [];
   }
 }
+
+
+// ============================================================================
+// Deep Content Fetching (NEW)
+// ============================================================================
+
+/**
+ * Fetch full content from a URL using simple fetch
+ * This enriches the search results with more context for better article generation
+ */
+async function fetchFullContent(url: string): Promise<string | null> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 10000);
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; MicroToolsBot/1.0)',
+        'Accept': 'text/html,application/xhtml+xml',
+      },
+      signal: controller.signal,
+    });
+
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const html = await response.text();
+    
+    // Extract text content from HTML (simple extraction)
+    const textContent = extractTextFromHtml(html);
+    
+    // Return first 5000 characters
+    return textContent.substring(0, 5000);
+  } catch {
+    clearTimeout(timeoutId);
+    return null;
+  }
+}
+
+/**
+ * Simple HTML to text extraction
+ */
+function extractTextFromHtml(html: string): string {
+  // Remove scripts, styles, and other non-content elements
+  let text = html
+    .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
+    .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
+    .replace(/<nav[^>]*>[\s\S]*?<\/nav>/gi, '')
+    .replace(/<header[^>]*>[\s\S]*?<\/header>/gi, '')
+    .replace(/<footer[^>]*>[\s\S]*?<\/footer>/gi, '')
+    .replace(/<aside[^>]*>[\s\S]*?<\/aside>/gi, '')
+    .replace(/<!--[\s\S]*?-->/g, '');
+
+  // Try to extract article content
+  const articleMatch = text.match(/<article[^>]*>([\s\S]*?)<\/article>/i);
+  if (articleMatch) {
+    text = articleMatch[1];
+  } else {
+    // Try main content
+    const mainMatch = text.match(/<main[^>]*>([\s\S]*?)<\/main>/i);
+    if (mainMatch) {
+      text = mainMatch[1];
+    }
+  }
+
+  // Remove remaining HTML tags
+  text = text.replace(/<[^>]+>/g, ' ');
+  
+  // Clean up whitespace
+  text = text
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  return text;
+}
+
+/**
+ * Enrich results with full content from top sources
+ */
+async function enrichResultsWithContent(
+  results: UnifiedSearchResult[],
+  maxToEnrich: number = 3
+): Promise<UnifiedSearchResult[]> {
+  const topResults = results.slice(0, maxToEnrich);
+  const restResults = results.slice(maxToEnrich);
+
+  console.log(`[Content] Fetching full content for top ${topResults.length} results...`);
+
+  const enrichedResults = await Promise.all(
+    topResults.map(async (result) => {
+      const fullContent = await fetchFullContent(result.url);
+      if (fullContent && fullContent.length > result.text.length) {
+        console.log(`[Content] Enriched: ${result.title.substring(0, 50)}... (+${fullContent.length - result.text.length} chars)`);
+        return { ...result, fullContent, text: fullContent };
+      }
+      return result;
+    })
+  );
+
+  return [...enrichedResults, ...restResults];
+}
+
 
 // ============================================================================
 // Scoring & Ranking
@@ -329,13 +451,12 @@ function calculateRecencyScore(publishedDate?: string): number {
     const now = new Date();
     const hoursSincePublished = (now.getTime() - published.getTime()) / (1000 * 60 * 60);
     
-    // Score based on hours since publication
-    if (hoursSincePublished <= 24) return 1.0;      // Last 24 hours
-    if (hoursSincePublished <= 48) return 0.95;     // Last 2 days
-    if (hoursSincePublished <= 72) return 0.9;      // Last 3 days
-    if (hoursSincePublished <= 168) return 0.8;     // Last week
-    if (hoursSincePublished <= 336) return 0.6;     // Last 2 weeks
-    if (hoursSincePublished <= 720) return 0.4;     // Last month
+    if (hoursSincePublished <= 24) return 1.0;
+    if (hoursSincePublished <= 48) return 0.95;
+    if (hoursSincePublished <= 72) return 0.9;
+    if (hoursSincePublished <= 168) return 0.8;
+    if (hoursSincePublished <= 336) return 0.6;
+    if (hoursSincePublished <= 720) return 0.4;
     return 0.2;
   } catch {
     return 0.5;
@@ -348,11 +469,9 @@ function deduplicateResults(results: UnifiedSearchResult[]): UnifiedSearchResult
   const seenTitles = new Set<string>();
   
   for (const result of results) {
-    // Skip if URL already seen
     const normalizedUrl = result.url.toLowerCase().replace(/\/$/, '');
     if (seen.has(normalizedUrl)) continue;
     
-    // Skip if title is too similar to existing
     const normalizedTitle = result.title.toLowerCase().replace(/[^a-z0-9]/g, '');
     let isDuplicate = false;
     
@@ -392,15 +511,18 @@ function calculateTitleSimilarity(title1: string, title2: string): number {
 /** Rank results by combined score */
 function rankResults(results: UnifiedSearchResult[]): UnifiedSearchResult[] {
   return results.sort((a, b) => {
-    // Prioritize NewsAPI (fresher news) slightly
-    const sourceBonus = (r: UnifiedSearchResult) => r.source === 'newsapi' ? 0.1 : 0;
+    // Prioritize results with more content
+    const contentBonus = (r: UnifiedSearchResult) => r.text.length > 1000 ? 0.1 : 0;
+    // Slight bonus for NewsAPI (fresher)
+    const sourceBonus = (r: UnifiedSearchResult) => r.source === 'newsapi' ? 0.05 : 0;
     
-    const scoreA = a.score + sourceBonus(a);
-    const scoreB = b.score + sourceBonus(b);
+    const scoreA = a.score + contentBonus(a) + sourceBonus(a);
+    const scoreB = b.score + contentBonus(b) + sourceBonus(b);
     
     return scoreB - scoreA;
   });
 }
+
 
 // ============================================================================
 // Fallback Results
@@ -415,7 +537,7 @@ function getFallbackResults(): UnifiedSearchResult[] {
       url: 'https://example.com/ecommerce-trends',
       publishedDate: new Date().toISOString(),
       score: 0.95,
-      text: `The e-commerce landscape is rapidly evolving with AI-powered personalization becoming the cornerstone of successful online retail strategies. Merchants are leveraging machine learning algorithms to create hyper-personalized shopping experiences that significantly boost conversion rates. From dynamic pricing to personalized product recommendations, AI is transforming how sellers connect with customers.`,
+      text: `The e-commerce landscape is rapidly evolving with AI-powered personalization becoming the cornerstone of successful online retail strategies. Merchants are leveraging machine learning algorithms to create hyper-personalized shopping experiences that significantly boost conversion rates. From dynamic pricing to personalized product recommendations, AI is transforming how sellers connect with customers. Studies show that personalized experiences can increase sales by up to 20% and improve customer satisfaction scores dramatically.`,
       source: 'fallback',
     },
     {
@@ -423,7 +545,7 @@ function getFallbackResults(): UnifiedSearchResult[] {
       url: 'https://example.com/social-commerce',
       publishedDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
       score: 0.88,
-      text: `Social commerce is reshaping how consumers discover and purchase products. Platforms like TikTok Shop, Instagram Shopping, and Pinterest are becoming primary sales channels for many brands. The integration of entertainment and shopping creates unique opportunities for sellers who can create engaging content.`,
+      text: `Social commerce is reshaping how consumers discover and purchase products. Platforms like TikTok Shop, Instagram Shopping, and Pinterest are becoming primary sales channels for many brands. The integration of entertainment and shopping creates unique opportunities for sellers who can create engaging content. Live shopping events and influencer partnerships are driving significant sales growth.`,
       source: 'fallback',
     },
     {
@@ -431,14 +553,15 @@ function getFallbackResults(): UnifiedSearchResult[] {
       url: 'https://example.com/dropshipping-strategies',
       publishedDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
       score: 0.82,
-      text: `Dropshipping continues to be a viable business model for entrepreneurs looking to enter e-commerce with minimal upfront investment. However, success requires strategic planning and execution. Top performers focus on niche selection, supplier relationships, and brand building.`,
+      text: `Dropshipping continues to be a viable business model for entrepreneurs looking to enter e-commerce with minimal upfront investment. However, success requires strategic planning and execution. Top performers focus on niche selection, supplier relationships, and brand building. The key differentiators include fast shipping times and excellent customer service.`,
       source: 'fallback',
     },
   ];
 }
 
+
 // ============================================================================
-// POST - Multi-Source Search
+// POST - Multi-Source Search with Deep Content
 // ============================================================================
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -464,17 +587,16 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Validate at least one API key
-    const hasExaKey = body.exaKey && typeof body.exaKey === 'string';
-    const hasNewsApiKey = body.newsApiKey && typeof body.newsApiKey === 'string';
+    // Check for API keys (from request or environment)
+    const exaKey = body.exaKey || process.env.EXA_API_KEY;
+    const newsApiKey = body.newsApiKey || process.env.NEWSAPI_KEY;
     
-    // Also check environment variables for NewsAPI
-    const envNewsApiKey = process.env.NEWSAPI_KEY || process.env.NEWS_API_KEY;
-    const effectiveNewsApiKey = body.newsApiKey || envNewsApiKey;
+    const hasExaKey = !!exaKey;
+    const hasNewsApiKey = !!newsApiKey;
     
-    if (!hasExaKey && !effectiveNewsApiKey) {
+    if (!hasExaKey && !hasNewsApiKey) {
       return NextResponse.json(
-        { success: false, error: { code: 'MISSING_API_KEY', message: 'At least one API key (Exa or NewsAPI) is required' } },
+        { success: false, error: { code: 'MISSING_API_KEY', message: 'At least one API key required' } },
         { status: 400 }
       );
     }
@@ -496,19 +618,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     console.log(`[Blog Search] Query: "${searchQuery}"`);
-    console.log(`[Blog Search] Sources: Exa=${hasExaKey}, NewsAPI=${!!effectiveNewsApiKey}`);
+    console.log(`[Blog Search] Sources: Exa=${hasExaKey}, NewsAPI=${hasNewsApiKey}`);
 
     // Search in parallel from both sources
     const searchPromises: Promise<UnifiedSearchResult[]>[] = [];
     const sourcesUsed: string[] = [];
 
     if (hasExaKey) {
-      searchPromises.push(searchWithExa(body.exaKey!, searchQuery, body.numResults || 5));
+      searchPromises.push(searchWithExa(exaKey!, searchQuery, body.numResults || 5));
       sourcesUsed.push('exa');
     }
 
-    if (effectiveNewsApiKey) {
-      searchPromises.push(searchWithNewsApi(effectiveNewsApiKey, searchQuery, body.numResults || 5));
+    if (hasNewsApiKey) {
+      searchPromises.push(searchWithNewsApi(newsApiKey!, searchQuery, body.numResults || 5));
       sourcesUsed.push('newsapi');
     }
 
@@ -527,8 +649,13 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Deduplicate and rank
-    const uniqueResults = deduplicateResults(allResults);
-    const rankedResults = rankResults(uniqueResults);
+    let uniqueResults = deduplicateResults(allResults);
+    let rankedResults = rankResults(uniqueResults);
+
+    // Optionally fetch full content for top results
+    if (body.fetchFullContent !== false && rankedResults.length > 0) {
+      rankedResults = await enrichResultsWithContent(rankedResults, 3);
+    }
 
     console.log(`[Blog Search] Final results: ${rankedResults.length}`);
 
