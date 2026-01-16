@@ -41,7 +41,11 @@
     "deploy:prod:full": "tsx scripts/deploy-production.ts",
     "deploy:prod:dry-run": "tsx scripts/deploy-production.ts --dry-run",
     "monitor:post-deploy": "tsx scripts/post-deploy-monitor.ts",
-    "monitor:production": "tsx scripts/post-deploy-monitor.ts --url=https://micro-tools.vercel.app --duration=600"
+    "monitor:production": "tsx scripts/post-deploy-monitor.ts --url=https://micro-tools.vercel.app --duration=600",
+    "index:list": "tsx scripts/index-urls.ts --list",
+    "index:all": "tsx scripts/index-urls.ts --all",
+    "index:tools": "tsx scripts/index-urls.ts --tools",
+    "index:url": "tsx scripts/index-urls.ts --url"
   },
   "dependencies": {
     "@prisma/client": "^7.2.0",
