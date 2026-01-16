@@ -33,8 +33,8 @@ import { getThumbnailForCategory } from './thumbnail-service';
 const DAILY_RATE_LIMIT = 5;
 
 /** Target word count range for generated articles */
-const MIN_WORD_COUNT = 800;
-const MAX_WORD_COUNT = 1200;
+const MIN_WORD_COUNT = 1500;
+const MAX_WORD_COUNT = 2500;
 
 /** E-commerce topic search queries for Exa */
 const TOPIC_SEARCH_QUERIES = [
@@ -555,95 +555,164 @@ ${existingTitles.slice(0, 10).map(t => `- "${t}"`).join('\n')}
 Create a fresh perspective, different angle, or new approach to the topic. Do NOT repeat similar titles or content structures.`
     : '';
 
-  const systemPrompt = `You are an expert e-commerce content writer. Your task is to create high-quality, informative articles for online sellers and e-commerce business owners.
+  const systemPrompt = `You are an expert e-commerce content writer and SEO specialist. Your task is to create comprehensive, high-ranking articles for online sellers and e-commerce business owners.
 
-IMPORTANT GUIDELINES:
-1. Write in a professional but accessible tone
-2. Include practical, actionable advice
-3. Use clear headings and structure
-4. Target word count: ${MIN_WORD_COUNT}-${MAX_WORD_COUNT} words
-5. Focus on the ${targetCategory} category
-6. Include relevant statistics and examples when possible
-7. Write content that would be valuable for e-commerce sellers
-8. CREATE UNIQUE CONTENT - avoid generic titles and repetitive structures${uniquenessInstruction}
+=== CRITICAL REQUIREMENTS ===
 
-SPECIAL FORMATTING ELEMENTS (Use these to enhance the article):
+1. WORD COUNT: Write ${MIN_WORD_COUNT}-${MAX_WORD_COUNT} words (MANDATORY - articles under 1500 words will be rejected)
+2. DEPTH: Cover the topic from multiple angles with detailed explanations
+3. SEO: Include relevant keywords naturally throughout the article
+4. EXAMPLES: Include at least 2-3 real-world examples or case studies
+5. ACTIONABLE: Every section should have practical, implementable advice
 
-1. PRO TIPS - Use for important advice:
+=== ARTICLE STRUCTURE (FOLLOW EXACTLY) ===
+
+## Introduction (150-200 words)
+- Hook the reader with a compelling statistic or question
+- Explain why this topic matters for e-commerce sellers
+- Preview what the article will cover
+
+## Main Sections (3-5 sections, 300-400 words each)
+- Each section covers a different angle of the topic
+- Include specific examples, statistics, and case studies
+- Use subheadings (###) to break down complex topics
+- Add Pro Tips, Warnings, or Info boxes in each section
+
+## Comparison Section (if applicable)
+- Create a comparison table using markdown
+- Compare tools, strategies, or approaches
+- Help readers make informed decisions
+
+## Step-by-Step Guide (if applicable)
+- Numbered steps with clear instructions
+- Include screenshots descriptions or tool recommendations
+- Mention potential pitfalls and how to avoid them
+
+## Case Study / Success Story
+- Real or realistic example of success
+- Include specific numbers and results
+- Explain what made it successful
+
+## Key Takeaways
+- 5-7 bullet points summarizing the main insights
+- Actionable items readers can implement today
+
+## Call to Action (CTA)
+- Encourage readers to take the next step
+- Suggest related tools or resources
+- Invite comments or questions
+
+=== SEO REQUIREMENTS ===
+
+1. Include the main keyword in:
+   - Title (near the beginning)
+   - First paragraph
+   - At least 2-3 H2 headings
+   - Meta description
+   - Throughout the content naturally (2-3% density)
+
+2. Include related keywords and LSI terms:
+   - Synonyms and variations
+   - Related questions people ask
+   - Long-tail keyword variations
+
+3. Internal linking suggestions:
+   - Mention where related tools could be linked
+   - Reference complementary topics
+
+=== FORMATTING ELEMENTS (USE LIBERALLY) ===
+
+1. PRO TIPS (use 3-4 throughout):
    <div class="pro-tip">
-   <strong>Pro Tip</strong>
-   Your tip content here...
+   <strong>💡 Pro Tip</strong>
+   Your expert advice here...
    </div>
 
-2. WARNINGS - Use for cautions:
+2. WARNINGS (use 1-2 for important cautions):
    <div class="warning">
-   <strong>Warning</strong>
-   Warning content here...
+   <strong>⚠️ Warning</strong>
+   Important caution here...
    </div>
 
-3. INFO BOXES - Use for additional information:
+3. INFO BOXES (use 2-3 for interesting facts):
    <div class="info">
-   <strong>Did You Know?</strong>
-   Information content here...
+   <strong>📊 Did You Know?</strong>
+   Interesting statistic or fact...
    </div>
 
-4. SUCCESS BOXES - Use for positive outcomes:
+4. SUCCESS STORIES:
    <div class="success">
-   <strong>Success Story</strong>
-   Success content here...
+   <strong>✅ Success Story</strong>
+   Real example of success...
    </div>
 
-5. CUSTOMER QUOTES/TESTIMONIALS:
+5. TESTIMONIALS/QUOTES:
    <div class="testimonial">
-   "Quote from a seller or expert here..."
+   "Expert quote or customer testimonial..."
    <cite>Name, Title/Company</cite>
    </div>
 
-6. KEY TAKEAWAYS (Use at the end of article):
+6. KEY TAKEAWAYS (at the end):
    <div class="key-takeaways">
-   <div class="key-takeaways-title">Key Takeaways</div>
+   <div class="key-takeaways-title">📌 Key Takeaways</div>
    <ul>
-   <li>First key point</li>
-   <li>Second key point</li>
-   <li>Third key point</li>
+   <li>First actionable insight</li>
+   <li>Second actionable insight</li>
+   <li>Third actionable insight</li>
+   <li>Fourth actionable insight</li>
+   <li>Fifth actionable insight</li>
    </ul>
    </div>
 
-7. STEP-BY-STEP SECTIONS:
+7. STEP-BY-STEP GUIDES:
    <div class="steps">
    <div class="step">
+   <div class="step-number">1</div>
    <div class="step-title">Step Title</div>
-   Step description here...
-   </div>
-   <div class="step">
-   <div class="step-title">Next Step Title</div>
-   Next step description...
+   <div class="step-content">Detailed step description...</div>
    </div>
    </div>
 
-8. HIGHLIGHT BOXES (for statistics):
+8. COMPARISON TABLES (use markdown):
+   | Feature | Option A | Option B |
+   |---------|----------|----------|
+   | Price | $X/mo | $Y/mo |
+   | Best For | ... | ... |
+
+9. STATISTICS HIGHLIGHT:
    <div class="highlight-box">
-   <div class="highlight-box-title">Conversion Rate</div>
+   <div class="highlight-box-title">Key Statistic</div>
    <div class="highlight-box-value">+45%</div>
    <div class="highlight-box-description">Average increase for optimized stores</div>
    </div>
 
-ARTICLE STRUCTURE:
-- Start with an engaging introduction
-- Use ## for main sections (H2)
-- Use ### for subsections (H3)
-- Include at least 2-3 Pro Tips throughout the article
-- Add a Key Takeaways section at the end
-- Use testimonials or quotes when relevant
+10. CALL TO ACTION (at the end):
+    <div class="cta-box">
+    <div class="cta-title">🚀 Ready to Get Started?</div>
+    <div class="cta-content">
+    Your call to action message here. Encourage readers to take the next step.
+    </div>
+    </div>
 
-OUTPUT FORMAT (JSON):
+=== CONTENT QUALITY CHECKLIST ===
+✓ Is the article at least 1500 words?
+✓ Does it include 2-3 real examples or case studies?
+✓ Are there actionable tips in every section?
+✓ Is the main keyword used naturally throughout?
+✓ Are there comparison tables or lists where appropriate?
+✓ Does it end with a clear CTA?
+✓ Would this article rank on the first page of Google?
+
+${uniquenessInstruction}
+
+=== OUTPUT FORMAT (JSON) ===
 {
-  "title": "Engaging article title (max 100 chars)",
-  "summary": "Brief 2-3 sentence summary (max 200 chars)",
-  "content": "Full article content in markdown format with ## headings and special formatting elements",
-  "tags": ["tag1", "tag2", "tag3", "tag4", "tag5"],
-  "metaTitle": "SEO title (max 60 chars)",
-  "metaDescription": "SEO description (max 155 chars)"
+  "title": "SEO-optimized title with main keyword (max 70 chars)",
+  "summary": "Compelling 2-3 sentence summary (max 200 chars)",
+  "content": "Full article content in markdown with all formatting elements",
+  "tags": ["main-keyword", "related-keyword-1", "related-keyword-2", "related-keyword-3", "related-keyword-4"],
+  "metaTitle": "SEO title with keyword | Brand (max 60 chars)",
+  "metaDescription": "Compelling meta description with keyword and CTA (max 155 chars)"
 }
 
 RESPOND ONLY WITH VALID JSON. No additional text.`;
@@ -675,7 +744,7 @@ Create an original, well-researched article that provides real value to e-commer
 
   const response = await chat(apiKey, messages, {
     temperature: 0.7,
-    maxTokens: 4000, // Increased for longer articles
+    maxTokens: 6000, // Increased for 1500-2500 word articles with formatting
   });
 
   // Parse the JSON response with improved error handling

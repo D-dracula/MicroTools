@@ -784,3 +784,272 @@
   background: hsl(var(--primary) / 0.08);
   border-color: hsl(var(--primary) / 0.25);
 }
+
+/* ===== CTA Box (Call to Action) ===== */
+.article-content .cta-box {
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--primary) / 0.05) 100%);
+  border: 2px solid hsl(var(--primary) / 0.3);
+  border-radius: 1rem;
+  padding: 2rem;
+  margin: 2.5rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.article-content .cta-box::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.5));
+}
+
+.article-content .cta-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.article-content .cta-content {
+  font-size: 1.0625rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.7;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.article-content .cta-content p {
+  margin-bottom: 0.75rem;
+}
+
+.article-content .cta-content p:last-child {
+  margin-bottom: 0;
+}
+
+/* CTA Button styling (if used) */
+.article-content .cta-box a,
+.article-content .cta-box button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.25rem;
+  padding: 0.875rem 2rem;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  border-radius: 0.5rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.article-content .cta-box a:hover,
+.article-content .cta-box button:hover {
+  background: hsl(var(--primary) / 0.9);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px hsl(var(--primary) / 0.3);
+}
+
+/* Dark mode CTA */
+.dark .article-content .cta-box {
+  background: linear-gradient(135deg, hsl(var(--primary) / 0.15) 0%, hsl(var(--primary) / 0.08) 100%);
+  border-color: hsl(var(--primary) / 0.4);
+}
+
+.dark .article-content .cta-box::before {
+  background: linear-gradient(90deg, hsl(var(--primary)), hsl(var(--primary) / 0.6));
+}
+
+/* RTL CTA */
+[dir="rtl"] .article-content .cta-box {
+  text-align: center;
+}
+
+/* ===== Pro Tip Box ===== */
+.article-content .pro-tip {
+  background: hsl(142 76% 36% / 0.1);
+  border-left: 4px solid hsl(142 76% 36%);
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+[dir="rtl"] .article-content .pro-tip {
+  border-left: none;
+  border-right: 4px solid hsl(142 76% 36%);
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.article-content .pro-tip strong {
+  display: block;
+  color: hsl(142 76% 36%);
+  margin-bottom: 0.5rem;
+}
+
+.dark .article-content .pro-tip {
+  background: hsl(142 76% 36% / 0.15);
+}
+
+/* ===== Warning Box ===== */
+.article-content .warning {
+  background: hsl(38 92% 50% / 0.1);
+  border-left: 4px solid hsl(38 92% 50%);
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+[dir="rtl"] .article-content .warning {
+  border-left: none;
+  border-right: 4px solid hsl(38 92% 50%);
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.article-content .warning strong {
+  display: block;
+  color: hsl(38 92% 50%);
+  margin-bottom: 0.5rem;
+}
+
+.dark .article-content .warning {
+  background: hsl(38 92% 50% / 0.15);
+}
+
+/* ===== Info Box ===== */
+.article-content .info {
+  background: hsl(217 91% 60% / 0.1);
+  border-left: 4px solid hsl(217 91% 60%);
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+[dir="rtl"] .article-content .info {
+  border-left: none;
+  border-right: 4px solid hsl(217 91% 60%);
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.article-content .info strong {
+  display: block;
+  color: hsl(217 91% 60%);
+  margin-bottom: 0.5rem;
+}
+
+.dark .article-content .info {
+  background: hsl(217 91% 60% / 0.15);
+}
+
+/* ===== Success Box ===== */
+.article-content .success {
+  background: hsl(142 71% 45% / 0.1);
+  border-left: 4px solid hsl(142 71% 45%);
+  border-radius: 0 0.5rem 0.5rem 0;
+  padding: 1.25rem 1.5rem;
+  margin: 1.5rem 0;
+}
+
+[dir="rtl"] .article-content .success {
+  border-left: none;
+  border-right: 4px solid hsl(142 71% 45%);
+  border-radius: 0.5rem 0 0 0.5rem;
+}
+
+.article-content .success strong {
+  display: block;
+  color: hsl(142 71% 45%);
+  margin-bottom: 0.5rem;
+}
+
+.dark .article-content .success {
+  background: hsl(142 71% 45% / 0.15);
+}
+
+/* ===== Steps (Alternative Layout) ===== */
+.article-content .steps {
+  margin: 1.5rem 0;
+}
+
+.article-content .steps .step {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+}
+
+.article-content .steps .step:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.article-content .steps .step-number {
+  flex-shrink: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.article-content .steps .step-title {
+  font-weight: 600;
+  font-size: 1.0625rem;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.375rem;
+}
+
+.article-content .steps .step-content {
+  flex: 1;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.6;
+}
+
+/* ===== Responsive Adjustments for New Elements ===== */
+@media (max-width: 640px) {
+  .article-content .cta-box {
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+  
+  .article-content .cta-title {
+    font-size: 1.25rem;
+  }
+  
+  .article-content .cta-content {
+    font-size: 1rem;
+  }
+  
+  .article-content .pro-tip,
+  .article-content .warning,
+  .article-content .info,
+  .article-content .success {
+    padding: 1rem 1.25rem;
+  }
+  
+  .article-content .steps .step {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .article-content .steps .step-number {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.875rem;
+  }
+}
