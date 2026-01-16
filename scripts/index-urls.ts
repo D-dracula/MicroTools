@@ -13,6 +13,10 @@
  *   NEXT_PUBLIC_SITE_URL - Base URL of the site (default: https://pinecalc.com)
  */
 
+// Load environment variables from .env file
+import { config } from 'dotenv';
+config();
+
 import { 
   submitUrl, 
   indexAllSiteUrls, 
