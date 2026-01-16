@@ -11,11 +11,7 @@ export const registerSchema = z.object({
     .email("Invalid email address"),
   password: z
     .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
-      "Password must contain uppercase, lowercase, and a number"
-    ),
+    .min(6, "Password must be at least 6 characters"),
   name: z
     .string()
     .min(2, "Name must be at least 2 characters")
