@@ -42,6 +42,14 @@ export async function POST(request: NextRequest) {
       passwordLength: body.password?.length,
       name: body.name 
     });
+    
+    // Environment debug
+    console.log('🔧 Environment check:', {
+      hasSupabaseUrl: !!process.env.NEXT_PUBLIC_SUPABASE_URL,
+      hasAnonKey: !!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+      hasServiceRoleKey: !!process.env.SUPABASE_SERVICE_ROLE_KEY,
+      serviceRoleKeyLength: process.env.SUPABASE_SERVICE_ROLE_KEY?.length,
+    });
 
     // Validate input with Zod
     const validationResult = registerSchema.safeParse(body);
@@ -63,7 +71,17 @@ export async function POST(request: NextRequest) {
 
     // Use Admin client to create user with auto-confirmation
     // This bypasses email confirmation requirement for immediate login
-    const supabaseAdmin = createAdminClient();
+    let supabaseAdmin;
+    try {
+      supabaseAdmin = createAdminClient();
+      console.log('✅ Admin client created successfully');
+    } catch (adminError) {
+      console.error('❌ Failed to create admin client:', adminError);
+      return NextResponse.json(
+        { success: false, error: 'Server configuration error', details: adminError instanceof Error ? adminError.message : 'Unknown error' },
+        { status: 500 }
+      );
+    }
     
     // Register user with Supabase Auth Admin API (auto-confirms email)
     const { data, error } = await supabaseAdmin.auth.admin.createUser({
