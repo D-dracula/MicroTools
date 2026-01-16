@@ -241,6 +241,20 @@ function transformCalloutBoxes(html: string): string {
 </div>`;
   });
 
+  // 6. Transform CTA box (Call to Action)
+  const ctaBoxRegex = /<div\s+class=["']cta-box["']>\s*<div\s+class=["']cta-title["']>(.*?)<\/div>\s*<div\s+class=["']cta-content["']>([\s\S]*?)<\/div>\s*<\/div>/gi;
+  
+  transformedHtml = transformedHtml.replace(ctaBoxRegex, (_match, title, content) => {
+    const finalTitle = title || '🚀 Ready to Get Started?';
+    
+    return `
+<div class="cta-box relative bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 rounded-xl p-8 my-10 text-center overflow-hidden">
+  <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/50"></div>
+  <h3 class="text-xl sm:text-2xl font-bold text-foreground mb-4 flex items-center justify-center gap-2">${finalTitle}</h3>
+  <div class="text-base sm:text-lg text-muted-foreground leading-relaxed max-w-xl mx-auto">${content.trim()}</div>
+</div>`;
+  });
+
   return transformedHtml;
 }
 
