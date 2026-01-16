@@ -20,7 +20,8 @@
     "tryAgain": "Try again",
     "reset": "Reset",
     "tools": "Tools",
-    "home": "Home"
+    "home": "Home",
+    "advertisement": "Advertisement"
   },
   "auth": {
     "login": "Login",
@@ -1991,5 +1992,531 @@
     "moreTools": "More Tools",
     "toolsCount": "Over {count} free tools",
     "viewAllInCategory": "View all tools in this category"
+  },
+  "blog": {
+    "title": "Blog",
+    "description": "Insights and tips for e-commerce success",
+    "heroTitle": "E-commerce Insights & Tips",
+    "heroDescription": "Learn from expert articles about online selling, marketing, and business growth",
+    "searchPlaceholder": "Search articles...",
+    "allCategories": "All Categories",
+    "readMore": "Read More",
+    "readingTime": "{minutes} min read",
+    "noArticles": "No articles found",
+    "noArticlesDescription": "Try adjusting your search or filters",
+    "loadingArticles": "Loading articles...",
+    "categories": {
+      "marketing": "Marketing",
+      "finance": "Finance",
+      "logistics": "Logistics",
+      "tools": "Tools & Tech",
+      "growth": "Business Growth",
+      "general": "General"
+    },
+    "article": {
+      "publishedOn": "Published on",
+      "updatedOn": "Updated on",
+      "sources": "Sources & References",
+      "shareArticle": "Share Article",
+      "copyLink": "Copy Link",
+      "linkCopied": "Link copied to clipboard!",
+      "relatedArticles": "Related Articles"
+    },
+    "pagination": "Pagination",
+    "firstPage": "First page",
+    "lastPage": "Last page",
+    "previousPage": "Previous page",
+    "nextPage": "Next page",
+    "page": "Page",
+    "sources": "Sources & References",
+    "shareArticle": "Share Article",
+    "copyLink": "Copy Link",
+    "copied": "Copied!",
+    "linkCopied": "Link copied to clipboard!",
+    "linkCopyFailed": "Failed to copy link. Please try again.",
+    "backToBlog": "Back to Blog",
+    "articleInfo": "Article Info",
+    "category": "Category",
+    "published": "Published",
+    "tags": "Tags",
+    "admin": {
+      "generateArticle": "Generate Article",
+      "apiKeyLabel": "OpenRouter API Key",
+      "apiKeyPlaceholder": "Enter your OpenRouter API key",
+      "apiKeyHint": "Your API key is stored locally and never sent to our servers",
+      "apiKeyRequired": "API key is required",
+      "rateLimitInfo": "{remaining} of {limit} articles remaining today",
+      "cancel": "Cancel",
+      "generate": "Generate",
+      "generating": "Generating...",
+      "progress": {
+        "searching": "Searching for trending topics...",
+        "selecting": "Selecting best topic...",
+        "generating": "Generating article content...",
+        "creatingThumbnail": "Creating thumbnail...",
+        "saving": "Saving article...",
+        "complete": "Article generated successfully!",
+        "error": "Generation failed",
+        "retry": "Try Again",
+        "close": "Close",
+        "generationProgress": "Article generation progress",
+        "steps": "Generation steps",
+        "inProgress": "In progress",
+        "completed": "Completed",
+        "overallProgress": "Overall progress"
+      },
+      "closeDialog": "Close dialog",
+      "rateLimitRemaining": "{remaining} of {limit} articles remaining today"
+    },
+    "readArticle": "Read article",
+    "articlesList": "Articles list",
+    "filterByCategory": "Filter by category",
+    "categoryFilter": "Category filter",
+    "articlesCount": "{count} articles",
+    "shareOnTwitter": "Share {title} on Twitter",
+    "shareOnLinkedIn": "Share {title} on LinkedIn",
+    "copyArticleLink": "Copy article link",
+    "source": "Source",
+    "opensInNewTab": "Opens in new tab",
+    "breadcrumb": "Breadcrumb navigation",
+    "filterByTag": "Filter by tag",
+    "sidebar": "Article sidebar",
+    "advertisement": "Advertisement",
+    "readingTimeLabel": "Reading Time",
+    "badge": "Articles & Insights",
+    "tableOfContents": "Table of Contents",
+    "keyTakeaways": "Key Takeaways",
+    "proTip": "Pro Tip",
+    "warning": "Warning",
+    "info": "Info",
+    "relatedArticles": "Related Articles"
+  },
+  "admin": {
+    "panel": "Admin Panel",
+    "backToSite": "Back to Site",
+    "sections": {
+      "overview": "Overview",
+      "blog": "Blog Manager",
+      "users": "User Manager",
+      "errors": "Error Monitor",
+      "migrations": "Migrations",
+      "health": "System Health",
+      "keys": "API Keys"
+    },
+    "descriptions": {
+      "overview": "Main dashboard overview",
+      "blog": "Create, edit, and delete articles",
+      "users": "View and manage users",
+      "errors": "Monitor system errors",
+      "migrations": "Manage database migrations",
+      "health": "Monitor system health",
+      "keys": "Manage API keys"
+    },
+    "common": {
+      "refresh": "Refresh",
+      "retry": "Retry",
+      "close": "Close",
+      "confirm": "Confirm",
+      "cancel": "Cancel",
+      "save": "Save",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View",
+      "search": "Search",
+      "filter": "Filter",
+      "loading": "Loading...",
+      "processing": "Processing...",
+      "noData": "No data available",
+      "error": "An error occurred",
+      "success": "Success",
+      "failed": "Failed",
+      "page": "Page",
+      "of": "of",
+      "previous": "Previous",
+      "next": "Next",
+      "all": "All",
+      "admin": "Admin"
+    },
+    "analytics": {
+      "title": "Analytics Overview",
+      "dateRange": "Date Range",
+      "ranges": {
+        "1d": "1 Day",
+        "7d": "7 Days",
+        "30d": "30 Days",
+        "90d": "90 Days"
+      },
+      "metrics": {
+        "totalTools": "Total Tools",
+        "totalCalculations": "Total Calculations",
+        "totalUsers": "Total Users",
+        "totalArticles": "Total Articles",
+        "calculationsToday": "Today's Calculations",
+        "newUsersThisMonth": "New Users This Month"
+      },
+      "sections": {
+        "calculationsChart": "Calculations Over Time",
+        "topTools": "Top 5 Tools",
+        "recentActivity": "Recent Activity"
+      },
+      "activityTypes": {
+        "calculation": "Calculation",
+        "user_signup": "User Signup",
+        "article_created": "Article Created",
+        "error": "Error"
+      },
+      "uses": "uses"
+    },
+    "blog": {
+      "title": "Blog Manager",
+      "subtitle": "Manage and organize blog articles",
+      "filters": {
+        "status": "Status",
+        "category": "Category",
+        "search": "Search...",
+        "all": "All",
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "categories": {
+        "marketing": "Marketing",
+        "seller-tools": "Seller Tools",
+        "logistics": "Logistics",
+        "trends": "Trends",
+        "case-studies": "Case Studies"
+      },
+      "actions": {
+        "generate": "Generate Article",
+        "view": "View",
+        "publish": "Publish",
+        "unpublish": "Unpublish",
+        "delete": "Delete"
+      },
+      "table": {
+        "article": "Article",
+        "category": "Category",
+        "status": "Status",
+        "date": "Date",
+        "actions": "Actions"
+      },
+      "states": {
+        "noArticles": "No articles found"
+      },
+      "confirm": {
+        "delete": "Are you sure you want to delete this article?"
+      },
+      "stats": {
+        "total": "Total Articles",
+        "published": "Published",
+        "draft": "Drafts"
+      },
+      "readingTime": "min read"
+    },
+    "users": {
+      "title": "User Manager",
+      "subtitle": "View and manage platform users",
+      "search": "Search by email...",
+      "actions": {
+        "confirmEmail": "Confirm Email",
+        "viewDetails": "View Details"
+      },
+      "stats": {
+        "totalUsers": "Total Users",
+        "activeUsers": "Active Users",
+        "newThisMonth": "New This Month",
+        "unconfirmed": "Unconfirmed"
+      },
+      "table": {
+        "user": "User",
+        "email": "Email",
+        "status": "Status",
+        "registered": "Registered",
+        "lastSignIn": "Last Sign In",
+        "calculations": "Calculations",
+        "actions": "Actions"
+      },
+      "status": {
+        "confirmed": "Confirmed",
+        "unconfirmed": "Unconfirmed",
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "states": {
+        "noUsers": "No users found",
+        "confirming": "Confirming..."
+      },
+      "modal": {
+        "userDetails": "User Details",
+        "userId": "User ID",
+        "emailStatus": "Email Status",
+        "registrationDate": "Registration Date",
+        "lastActivity": "Last Activity",
+        "totalCalculations": "Total Calculations",
+        "never": "Never signed in"
+      },
+      "messages": {
+        "emailConfirmed": "Email confirmed successfully",
+        "confirmFailed": "Failed to confirm email"
+      }
+    },
+    "errors": {
+      "title": "Error Monitor",
+      "subtitle": "Monitor and manage system errors",
+      "actions": {
+        "acknowledge": "Acknowledge",
+        "resolve": "Resolve",
+        "acknowledgeAll": "Acknowledge All",
+        "resolveAll": "Resolve All"
+      },
+      "filters": {
+        "severity": "Severity",
+        "timeRange": "Time Range",
+        "status": "Status",
+        "search": "Search errors...",
+        "all": "All",
+        "critical": "Critical",
+        "error": "Error",
+        "warning": "Warning",
+        "unresolved": "Unresolved",
+        "resolved": "Resolved",
+        "unacknowledged": "Unacknowledged"
+      },
+      "timeRanges": {
+        "1h": "1 Hour",
+        "6h": "6 Hours",
+        "24h": "24 Hours",
+        "7d": "7 Days",
+        "30d": "30 Days"
+      },
+      "metrics": {
+        "totalErrors": "Total Errors",
+        "criticalErrors": "Critical Errors",
+        "errorRate": "Error Rate",
+        "resolvedToday": "Resolved Today",
+        "perMinute": "/min"
+      },
+      "health": {
+        "title": "System Health",
+        "healthy": "Healthy",
+        "degraded": "Degraded",
+        "unhealthy": "Unhealthy",
+        "activeAlerts": "Active Alerts",
+        "criticalPatterns": "Critical Patterns"
+      },
+      "table": {
+        "error": "Error",
+        "severity": "Severity",
+        "timestamp": "Time",
+        "status": "Status",
+        "actions": "Actions",
+        "affectedUsers": "Affected Users",
+        "endpoints": "Endpoints"
+      },
+      "states": {
+        "noErrors": "No errors found"
+      },
+      "modal": {
+        "errorDetails": "Error Details",
+        "errorId": "Error ID",
+        "pattern": "Pattern",
+        "stackTrace": "Stack Trace",
+        "firstSeen": "First Seen",
+        "lastSeen": "Last Seen",
+        "occurrences": "Occurrences"
+      },
+      "messages": {
+        "acknowledged": "Error acknowledged successfully",
+        "resolved": "Error resolved successfully",
+        "failed": "Operation failed"
+      },
+      "severity": {
+        "critical": "Critical",
+        "high": "High",
+        "error": "Error",
+        "medium": "Medium",
+        "warning": "Warning",
+        "low": "Low"
+      },
+      "statusLabels": {
+        "new": "New",
+        "acknowledged": "Acknowledged",
+        "resolved": "Resolved"
+      }
+    },
+    "migrations": {
+      "title": "Migration Manager",
+      "subtitle": "Manage database schema migrations",
+      "actions": {
+        "runMigrations": "Run Migrations",
+        "dryRun": "Dry Run",
+        "rollback": "Rollback",
+        "rollbackLast": "Rollback Last"
+      },
+      "stats": {
+        "total": "Total Migrations",
+        "executed": "Executed",
+        "pending": "Pending",
+        "failed": "Failed",
+        "rolledBack": "Rolled Back"
+      },
+      "status": {
+        "executed": "Executed",
+        "pending": "Pending",
+        "failed": "Failed",
+        "rolledBack": "Rolled Back"
+      },
+      "table": {
+        "migration": "Migration",
+        "status": "Status",
+        "executedAt": "Executed At",
+        "duration": "Duration",
+        "batch": "Batch",
+        "checksum": "Checksum"
+      },
+      "states": {
+        "noMigrations": "No migrations found",
+        "running": "Running..."
+      },
+      "results": {
+        "title": "Operation Result",
+        "success": "Success",
+        "failed": "Failed",
+        "executed": "Executed",
+        "skipped": "Skipped",
+        "rolledBack": "Rolled Back",
+        "totalTime": "Total Time",
+        "batchId": "Batch ID"
+      },
+      "confirm": {
+        "rollback": "Are you sure you want to rollback these migrations? This action cannot be undone.",
+        "runMigrations": "Are you sure you want to run pending migrations?"
+      },
+      "guidelines": {
+        "title": "Migration Guidelines",
+        "items": [
+          "Always run a dry run first to preview changes",
+          "Migrations are executed in filename order",
+          "Rollbacks are performed in reverse order",
+          "Each migration generates automatic rollback SQL",
+          "Use the CLI for production deployments"
+        ]
+      }
+    },
+    "health": {
+      "title": "System Health",
+      "subtitle": "Monitor services and resources status",
+      "actions": {
+        "refreshing": "Refreshing..."
+      },
+      "status": {
+        "healthy": "Healthy",
+        "degraded": "Degraded",
+        "unhealthy": "Unhealthy",
+        "down": "Down"
+      },
+      "services": {
+        "title": "Service Status",
+        "database": "Database",
+        "supabase": "Supabase",
+        "api": "API",
+        "auth": "Authentication",
+        "storage": "Storage",
+        "cache": "Cache",
+        "responseTime": "Response Time",
+        "lastChecked": "Last Checked"
+      },
+      "metrics": {
+        "title": "System Metrics",
+        "uptime": "Uptime",
+        "memory": "Memory",
+        "cpu": "CPU",
+        "errorRate": "Error Rate",
+        "avgResponseTime": "Avg Response Time",
+        "totalErrors": "Total Errors",
+        "activeAlerts": "Active Alerts",
+        "perMinute": "/min"
+      },
+      "environment": {
+        "title": "Environment",
+        "current": "Current Environment",
+        "configured": "Configured",
+        "notConfigured": "Not Configured",
+        "isolated": "Isolated",
+        "notIsolated": "Not Isolated",
+        "missingVars": "Missing Variables",
+        "version": "Version"
+      },
+      "alerts": {
+        "title": "Alerts",
+        "noAlerts": "No alerts",
+        "error": "Error",
+        "warning": "Warning",
+        "info": "Info"
+      },
+      "time": {
+        "days": "days",
+        "hours": "hours",
+        "minutes": "minutes",
+        "seconds": "seconds",
+        "ms": "ms",
+        "justNow": "Just now",
+        "ago": "ago"
+      },
+      "resourceUsage": "Resource Usage"
+    },
+    "keys": {
+      "title": "API Keys Manager",
+      "subtitle": "Manage API keys and environment variables",
+      "categories": {
+        "ai": "AI Services",
+        "database": "Database",
+        "auth": "Authentication",
+        "other": "Other"
+      },
+      "actions": {
+        "test": "Test",
+        "reveal": "Reveal",
+        "hide": "Hide",
+        "update": "Update"
+      },
+      "status": {
+        "valid": "Valid",
+        "invalid": "Invalid",
+        "notSet": "Not Set",
+        "testing": "Testing..."
+      },
+      "fields": {
+        "lastUpdated": "Last Updated",
+        "never": "Never"
+      },
+      "messages": {
+        "updated": "API key updated successfully",
+        "testSuccess": "API key is valid",
+        "testFailed": "API key validation failed"
+      }
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "generateArticle": "Generate Article",
+      "viewErrors": "View Errors",
+      "runMigrations": "Run Migrations",
+      "viewUsers": "View Users"
+    },
+    "blog": {
+      "author": {
+        "name": "Author",
+        "role": "Role",
+        "bio": "Biography",
+        "writtenBy": "Written by",
+        "defaultName": "PineCalc",
+        "defaultRole": "PineCalc Team"
+      },
+      "callout": {
+        "tip": "Tip",
+        "warning": "Warning",
+        "info": "Info",
+        "note": "Note"
+      }
+    }
   }
 }

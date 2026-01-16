@@ -26,12 +26,12 @@ describe('Real Net Profit Calculator', () => {
       fc.assert(
         fc.property(
           fc.record({
-            revenue: fc.float({ min: 0.01, max: 1000000, noNaN: true }),
-            productCost: fc.float({ min: 0, max: 500000, noNaN: true }),
-            adSpend: fc.float({ min: 0, max: 500000, noNaN: true }),
-            shippingCost: fc.float({ min: 0, max: 100000, noNaN: true }),
-            returnRate: fc.float({ min: 0, max: 100, noNaN: true }),
-            otherCosts: fc.float({ min: 0, max: 100000, noNaN: true }),
+            revenue: fc.float({ min: Math.fround(0.01), max: Math.fround(1000000), noNaN: true }),
+            productCost: fc.float({ min: Math.fround(0), max: Math.fround(500000), noNaN: true }),
+            adSpend: fc.float({ min: Math.fround(0), max: Math.fround(500000), noNaN: true }),
+            shippingCost: fc.float({ min: Math.fround(0), max: Math.fround(100000), noNaN: true }),
+            returnRate: fc.float({ min: Math.fround(0), max: Math.fround(100), noNaN: true }),
+            otherCosts: fc.float({ min: Math.fround(0), max: Math.fround(100000), noNaN: true }),
           }),
           (input) => {
             const result = calculateRealNetProfit(input);
@@ -126,11 +126,11 @@ describe('Real Net Profit Calculator', () => {
       fc.assert(
         fc.property(
           fc.record({
-            revenue: fc.float({ min: 0.01, max: 100000, noNaN: true }),
-            productCost: fc.float({ min: 0, max: 50000, noNaN: true }),
-            adSpend: fc.float({ min: 0, max: 50000, noNaN: true }),
-            shippingCost: fc.float({ min: 0, max: 10000, noNaN: true }),
-            returnRate: fc.float({ min: 0, max: 100, noNaN: true }),
+            revenue: fc.float({ min: Math.fround(0.01), max: Math.fround(100000), noNaN: true }),
+            productCost: fc.float({ min: Math.fround(0), max: Math.fround(50000), noNaN: true }),
+            adSpend: fc.float({ min: Math.fround(0), max: Math.fround(50000), noNaN: true }),
+            shippingCost: fc.float({ min: Math.fround(0), max: Math.fround(10000), noNaN: true }),
+            returnRate: fc.float({ min: Math.fround(0), max: Math.fround(100), noNaN: true }),
           }),
           (input) => {
             const result = calculateRealNetProfit(input);

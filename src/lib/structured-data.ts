@@ -1,15 +1,84 @@
-import type { Tool } from './tools'
+import { routing } from '@/i18n/routing'
 
-// Generate JSON-LD structured data for tools
-export function generateToolStructuredData(tool: Tool, locale: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pinecalc.com'
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pinecalc.com'
+
+/**
+ * Helper function to convert locale code to language name
+ * Supports 13+ languages for future expansion
+ */
+function getLanguageName(locale: string): string {
+  const languageMap: Record<string, string> = {
+    'ar': 'Arabic',
+    'en': 'English',
+    'fr': 'French',
+    'es': 'Spanish',
+    'de': 'German',
+    'it': 'Italian',
+    'pt': 'Portuguese',
+    'ru': 'Russian',
+    'zh': 'Chinese',
+    'ja': 'Japanese',
+    'ko': 'Korean',
+    'hi': 'Hindi',
+    'tr': 'Turkish',
+    'nl': 'Dutch',
+    'pl': 'Polish',
+    'id': 'Indonesian',
+    'ms': 'Malay',
+    'th': 'Thai',
+    'vi': 'Vietnamese',
+  }
+  return languageMap[locale] || locale.toUpperCase()
+}
+
+/**
+ * Helper function to get locale code for inLanguage field
+ */
+function getLocaleCode(locale: string): string {
+  const localeMap: Record<string, string> = {
+    'ar': 'ar-SA',
+    'en': 'en-US',
+    'fr': 'fr-FR',
+    'es': 'es-ES',
+    'de': 'de-DE',
+    'it': 'it-IT',
+    'pt': 'pt-BR',
+    'ru': 'ru-RU',
+    'zh': 'zh-CN',
+    'ja': 'ja-JP',
+    'ko': 'ko-KR',
+    'hi': 'hi-IN',
+    'tr': 'tr-TR',
+  }
+  return localeMap[locale] || `${locale}-${locale.toUpperCase()}`
+}
+
+interface ToolStructuredDataParams {
+  slug: string
+  name: string
+  description: string
+  category: string
+  locale: string
+}
+
+// Generate JSON-LD structured data for tools (Requirements 4.1, 4.2, 4.3, 4.5, 5.5)
+export function generateToolStructuredData(params: ToolStructuredDataParams) {
+  const { slug, name, description, category, locale } = params
+  
+  // Generate sameAs links for all locales from routing.ts (Requirement 4.5)
+  const sameAs = routing.locales
+    .filter(l => l !== locale)
+    .map(l => `${baseUrl}/${l}/tools/${slug}`)
+  
+  // Set inLanguage based on current locale (Requirement 4.3)
+  const inLanguage = getLocaleCode(locale)
   
   return {
     '@context': 'https://schema.org',
     '@type': 'WebApplication',
-    name: getToolTitle(tool, locale),
-    description: getToolDescription(tool, locale),
-    url: `${baseUrl}/${locale}/tools/${tool.slug}`,
+    name,
+    description,
+    url: `${baseUrl}/${locale}/tools/${slug}`,
     applicationCategory: 'BusinessApplication',
     operatingSystem: 'Web Browser',
     offers: {
@@ -23,16 +92,13 @@ export function generateToolStructuredData(tool: Tool, locale: string) {
       name: locale === 'ar' ? 'باين كالك' : 'PineCalc',
       url: baseUrl
     },
-    featureList: getToolFeatures(tool, locale),
-    category: getToolCategory(tool.category, locale),
-    inLanguage: locale === 'ar' ? 'ar-SA' : 'en-US'
+    inLanguage,
+    sameAs,
   }
 }
 
 // Generate JSON-LD for website
 export function generateWebsiteStructuredData(locale: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://pinecalc.com'
-  
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -51,8 +117,89 @@ export function generateWebsiteStructuredData(locale: string) {
       name: locale === 'ar' ? 'باين كالك' : 'PineCalc',
       url: baseUrl
     },
-    inLanguage: locale === 'ar' ? 'ar-SA' : 'en-US'
+    inLanguage: getLocaleCode(locale)
   }
+}
+
+/**
+ * Generate Organization Schema - Scalable for future languages
+ * Reads available languages from routing.ts automatically
+ * Social links and contact info are optional (read from env)
+ */
+export function generateOrganizationStructuredData(locale: string) {
+  // Read available languages from routing.ts (auto-scales when adding new languages)
+  const availableLanguages = routing.locales.map(getLanguageName)
+  
+  // Read social links from environment variables (optional)
+  const socialLinks = [
+    process.env.NEXT_PUBLIC_TWITTER_URL,
+    process.env.NEXT_PUBLIC_FACEBOOK_URL,
+    process.env.NEXT_PUBLIC_INSTAGRAM_URL,
+    process.env.NEXT_PUBLIC_LINKEDIN_URL,
+    process.env.NEXT_PUBLIC_YOUTUBE_URL,
+    process.env.NEXT_PUBLIC_TIKTOK_URL,
+  ].filter(Boolean) as string[]
+  
+  // Read contact email from environment (optional)
+  const contactEmail = process.env.NEXT_PUBLIC_SUPPORT_EMAIL
+  
+  // Build the Organization schema
+  const organizationSchema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: locale === 'ar' ? 'باين كالك' : 'PineCalc',
+    alternateName: ['PineCalc', 'باين كالك', 'Pine Calc', 'Pinecalc'],
+    url: baseUrl,
+    logo: {
+      '@type': 'ImageObject',
+      url: `${baseUrl}/logo.svg`,
+      width: '512',
+      height: '512'
+    },
+    description: locale === 'ar' 
+      ? 'أدوات مجانية لأصحاب المتاجر الإلكترونية - حاسبات الأرباح والتكاليف والتسويق'
+      : 'Free business tools for e-commerce store owners - profit calculators, cost analysis, and marketing tools',
+    
+    // Founding information
+    foundingDate: '2024',
+    
+    // Area served - worldwide
+    areaServed: {
+      '@type': 'Place',
+      name: 'Worldwide'
+    },
+    
+    // Service type
+    knowsAbout: [
+      'E-commerce',
+      'Profit Calculation',
+      'Business Tools',
+      'Marketing Tools',
+      'Cost Analysis',
+      locale === 'ar' ? 'التجارة الإلكترونية' : 'Online Business',
+      locale === 'ar' ? 'حاسبات الأرباح' : 'Profit Calculators',
+    ],
+  }
+  
+  // Add social links if available
+  if (socialLinks.length > 0) {
+    organizationSchema.sameAs = socialLinks
+  }
+  
+  // Add contact point if email is available
+  if (contactEmail) {
+    organizationSchema.contactPoint = {
+      '@type': 'ContactPoint',
+      contactType: 'customer support',
+      email: contactEmail,
+      availableLanguage: availableLanguages,
+    }
+  } else {
+    // Even without email, include available languages
+    organizationSchema.availableLanguage = availableLanguages
+  }
+  
+  return organizationSchema
 }
 
 // Generate breadcrumb structured data
@@ -70,67 +217,4 @@ export function generateBreadcrumbStructuredData(
       item: item.url
     }))
   }
-}
-
-// Helper functions
-function getToolTitle(tool: Tool, locale: string): string {
-  // This would ideally come from translation files
-  const titles: Record<string, Record<string, string>> = {
-    'profit-margin-calculator': {
-      ar: 'حاسبة هامش الربح',
-      en: 'Profit Margin Calculator'
-    },
-    'payment-gateway-calculator': {
-      ar: 'حاسبة رسوم بوابات الدفع',
-      en: 'Payment Gateway Calculator'
-    },
-    // Add more tools as needed
-  }
-  
-  return titles[tool.slug]?.[locale] || tool.slug
-}
-
-function getToolDescription(tool: Tool, locale: string): string {
-  const descriptions: Record<string, Record<string, string>> = {
-    'profit-margin-calculator': {
-      ar: 'احسب هامش الربح ونسبة الزيادة بسهولة. أداة مجانية لأصحاب المتاجر الإلكترونية',
-      en: 'Calculate profit margin and markup easily. Free tool for e-commerce store owners'
-    },
-    'payment-gateway-calculator': {
-      ar: 'احسب رسوم بوابات الدفع المختلفة وقارن بينها لاختيار الأنسب لمتجرك',
-      en: 'Calculate different payment gateway fees and compare them to choose the best for your store'
-    },
-    // Add more tools as needed
-  }
-  
-  return descriptions[tool.slug]?.[locale] || `${tool.slug} tool`
-}
-
-function getToolFeatures(tool: Tool, locale: string): string[] {
-  const features: Record<string, Record<string, string[]>> = {
-    'profit-margin-calculator': {
-      ar: ['حساب هامش الربح', 'حساب نسبة الزيادة', 'مقارنة الأسعار', 'حفظ الحسابات'],
-      en: ['Calculate profit margin', 'Calculate markup', 'Price comparison', 'Save calculations']
-    },
-    'payment-gateway-calculator': {
-      ar: ['مقارنة الرسوم', 'حساب التكلفة الإجمالية', 'دعم العملات المختلفة', 'تحليل الأرباح'],
-      en: ['Compare fees', 'Calculate total cost', 'Multi-currency support', 'Profit analysis']
-    },
-    // Add more tools as needed
-  }
-  
-  return features[tool.slug]?.[locale] || []
-}
-
-function getToolCategory(category: string, locale: string): string {
-  const categories: Record<string, Record<string, string>> = {
-    financial: { ar: 'أدوات مالية', en: 'Financial Tools' },
-    logistics: { ar: 'أدوات لوجستية', en: 'Logistics Tools' },
-    images: { ar: 'أدوات الصور', en: 'Image Tools' },
-    marketing: { ar: 'أدوات التسويق', en: 'Marketing Tools' },
-    content: { ar: 'أدوات المحتوى', en: 'Content Tools' },
-    ai: { ar: 'أدوات الذكاء الاصطناعي', en: 'AI Tools' }
-  }
-  
-  return categories[category]?.[locale] || category
 }

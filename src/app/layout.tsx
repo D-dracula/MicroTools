@@ -1,20 +1,38 @@
 import type { Metadata } from "next";
-import { Inter, Cairo } from "next/font/google";
+import { Inter, Cairo, Source_Serif_4, Noto_Naskh_Arabic } from "next/font/google";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import "./globals.css";
 
-// Inter font for English text
+// Inter font for English body text
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
   display: "swap",
 });
 
-// Cairo font for Arabic text
+// Cairo font for Arabic text (headings)
 const cairo = Cairo({
   variable: "--font-cairo",
   subsets: ["arabic", "latin"],
   display: "swap",
+});
+
+// Source Serif 4 font for English headings
+const sourceSerif = Source_Serif_4({
+  variable: "--font-serif",
+  subsets: ["latin"],
+  display: "swap",
+  weight: ["400", "600", "700"],
+});
+
+// Noto Naskh Arabic font for Arabic body text
+// Note: Design spec calls for IBM Plex Sans Arabic, but it's not available in next/font/google
+// Using Noto Naskh Arabic as a high-quality alternative with similar characteristics
+const notoNaskhArabic = Noto_Naskh_Arabic({
+  variable: "--font-arabic-body",
+  subsets: ["arabic"],
+  display: "swap",
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -58,6 +76,9 @@ export const metadata: Metadata = {
   verification: {
     google: 'NKPgaq13THWhO9Eh9pkUH6mrnTISuZd4EtgGdIUZdNE',
   },
+  other: {
+    'google-adsense-account': 'ca-pub-4772296593716666',
+  },
 };
 
 export default function RootLayout({
@@ -68,7 +89,7 @@ export default function RootLayout({
   return (
     <html suppressHydrationWarning>
       <body
-        className={`${inter.variable} ${cairo.variable} font-inter antialiased`}
+        className={`${inter.variable} ${cairo.variable} ${sourceSerif.variable} ${notoNaskhArabic.variable} font-inter antialiased`}
       >
         <ThemeProvider
           attribute="class"

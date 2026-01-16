@@ -6,15 +6,30 @@ import { ArrowLeft, ArrowRight } from "lucide-react";
 import { getToolBySlug } from "@/lib/tools";
 import { Button } from "@/components/ui/button";
 import { ToolPageContent } from "@/components/tools/tool-page-content";
-import { generateToolMetadata } from "@/lib/metadata";
+import { generateDynamicToolMetadata } from "@/lib/metadata";
 import { generateToolStructuredData } from "@/lib/structured-data";
 import { Breadcrumb } from "@/components/seo";
+
+/**
+ * Convert slug to camelCase toolKey
+ * e.g., "profit-margin-calculator" → "profitMarginCalculator"
+ */
+function slugToToolKey(slug: string): string {
+  return slug
+    .split('-')
+    .map((word, index) => 
+      index === 0 
+        ? word 
+        : word.charAt(0).toUpperCase() + word.slice(1)
+    )
+    .join('');
+}
 
 interface ToolPageProps {
   params: Promise<{ locale: string; slug: string }>;
 }
 
-// Generate metadata for tool pages (Requirements 12.1, 12.2, 12.3, 12.4)
+// Generate metadata for tool pages (Requirements 2.5, 2.6)
 export async function generateMetadata({ params }: ToolPageProps): Promise<Metadata> {
   const { locale, slug } = await params;
   const tool = getToolBySlug(slug);
@@ -25,7 +40,11 @@ export async function generateMetadata({ params }: ToolPageProps): Promise<Metad
     };
   }
 
-  return generateToolMetadata(locale as "ar" | "en", slug);
+  // Convert slug to toolKey (e.g., "profit-margin-calculator" → "profitMarginCalculator")
+  const toolKey = slugToToolKey(slug);
+  
+  // Use dynamic metadata generator that reads from translations
+  return generateDynamicToolMetadata(locale, slug, toolKey);
 }
 
 export default async function ToolPage({ params }: ToolPageProps) {
@@ -40,8 +59,28 @@ export default async function ToolPage({ params }: ToolPageProps) {
     notFound();
   }
 
-  // Generate structured data
-  const structuredData = generateToolStructuredData(tool, locale);
+  // Convert slug to toolKey for translations
+  const toolKey = slugToToolKey(slug);
+  
+  // Read tool name and description from translations (Requirement 4.4)
+  const toolName = t.has(`tools.${toolKey}.seo.title`)
+    ? t(`tools.${toolKey}.seo.title`)
+    : t(tool.titleKey);
+  
+  const toolDescription = t.has(`tools.${toolKey}.seo.description`)
+    ? t(`tools.${toolKey}.seo.description`)
+    : t(tool.descriptionKey);
+  
+  const categoryName = t(tool.categoryKey);
+
+  // Generate structured data with translated content (Requirement 4.4)
+  const structuredData = generateToolStructuredData({
+    slug,
+    name: toolName,
+    description: toolDescription,
+    category: categoryName,
+    locale,
+  });
 
   // Determine arrow direction based on locale
   const BackArrow = locale === "ar" ? ArrowRight : ArrowLeft;

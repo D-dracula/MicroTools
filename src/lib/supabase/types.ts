@@ -261,6 +261,95 @@ export interface Database {
         }
         Relationships: []
       }
+      articles: {
+        Row: {
+          id: string
+          slug: string
+          title: string
+          summary: string
+          content: string
+          category: string
+          tags: string[]
+          thumbnail_url: string | null
+          reading_time: number
+          sources: any // JSONB
+          meta_title: string
+          meta_description: string
+          is_published: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          slug: string
+          title: string
+          summary: string
+          content: string
+          category: string
+          tags?: string[]
+          thumbnail_url?: string | null
+          reading_time: number
+          sources?: any // JSONB
+          meta_title: string
+          meta_description: string
+          is_published?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          slug?: string
+          title?: string
+          summary?: string
+          content?: string
+          category?: string
+          tags?: string[]
+          thumbnail_url?: string | null
+          reading_time?: number
+          sources?: any // JSONB
+          meta_title?: string
+          meta_description?: string
+          is_published?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      article_generation_log: {
+        Row: {
+          id: string
+          admin_id: string
+          generated_at: string
+          topic: string | null
+          success: boolean
+          error_message: string | null
+        }
+        Insert: {
+          id?: string
+          admin_id: string
+          generated_at?: string
+          topic?: string | null
+          success?: boolean
+          error_message?: string | null
+        }
+        Update: {
+          id?: string
+          admin_id?: string
+          generated_at?: string
+          topic?: string | null
+          success?: boolean
+          error_message?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "article_generation_log_admin_id_fkey"
+            columns: ["admin_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -285,6 +374,8 @@ export type VerificationToken = Database['public']['Tables']['verification_token
 export type Calculation = Database['public']['Tables']['calculations']['Row']
 export type ToolUsage = Database['public']['Tables']['tool_usage']['Row']
 export type CustomAd = Database['public']['Tables']['custom_ads']['Row']
+export type Article = Database['public']['Tables']['articles']['Row']
+export type ArticleGenerationLog = Database['public']['Tables']['article_generation_log']['Row']
 
 export type InsertProfile = Database['public']['Tables']['profiles']['Insert']
 export type InsertAccount = Database['public']['Tables']['accounts']['Insert']
@@ -293,6 +384,8 @@ export type InsertVerificationToken = Database['public']['Tables']['verification
 export type InsertCalculation = Database['public']['Tables']['calculations']['Insert']
 export type InsertToolUsage = Database['public']['Tables']['tool_usage']['Insert']
 export type InsertCustomAd = Database['public']['Tables']['custom_ads']['Insert']
+export type InsertArticle = Database['public']['Tables']['articles']['Insert']
+export type InsertArticleGenerationLog = Database['public']['Tables']['article_generation_log']['Insert']
 
 export type UpdateProfile = Database['public']['Tables']['profiles']['Update']
 export type UpdateAccount = Database['public']['Tables']['accounts']['Update']
@@ -301,6 +394,8 @@ export type UpdateVerificationToken = Database['public']['Tables']['verification
 export type UpdateCalculation = Database['public']['Tables']['calculations']['Update']
 export type UpdateToolUsage = Database['public']['Tables']['tool_usage']['Update']
 export type UpdateCustomAd = Database['public']['Tables']['custom_ads']['Update']
+export type UpdateArticle = Database['public']['Tables']['articles']['Update']
+export type UpdateArticleGenerationLog = Database['public']['Tables']['article_generation_log']['Update']
 
 // Database operation interfaces
 export interface DatabaseOperations {

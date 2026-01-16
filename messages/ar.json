@@ -20,7 +20,8 @@
     "tryAgain": "حاول مرة أخرى",
     "reset": "إعادة تعيين",
     "tools": "الأدوات",
-    "home": "الرئيسية"
+    "home": "الرئيسية",
+    "advertisement": "إعلان"
   },
   "auth": {
     "login": "تسجيل الدخول",
@@ -1990,6 +1991,530 @@
       "title": "الأسئلة الشائعة",
       "generalQ": "هل الأدوات مجانية؟",
       "generalA": "نعم، جميع أدوات باين كالك مجانية بالكامل ولا تتطلب تسجيل دخول للاستخدام الأساسي."
+    }
+  },
+  "blog": {
+    "allCategories": "جميع التصنيفات",
+    "article": {
+      "copyLink": "نسخ الرابط",
+      "linkCopied": "تم نسخ الرابط!",
+      "publishedOn": "نُشر في",
+      "relatedArticles": "مقالات ذات صلة",
+      "shareArticle": "مشاركة المقال",
+      "sources": "المصادر والمراجع",
+      "updatedOn": "آخر تحديث"
+    },
+    "categories": {
+      "finance": "المالية",
+      "general": "عام",
+      "growth": "نمو الأعمال",
+      "logistics": "اللوجستيات",
+      "marketing": "التسويق",
+      "tools": "الأدوات والتقنية"
+    },
+    "description": "رؤى ونصائح لنجاح التجارة الإلكترونية",
+    "heroDescription": "تعلم من مقالات الخبراء حول البيع عبر الإنترنت والتسويق ونمو الأعمال",
+    "heroTitle": "رؤى ونصائح التجارة الإلكترونية",
+    "loadingArticles": "جاري تحميل المقالات...",
+    "noArticles": "لم يتم العثور على مقالات",
+    "noArticlesDescription": "جرب تعديل البحث أو الفلاتر",
+    "readMore": "اقرأ المزيد",
+    "readingTime": "{minutes} دقيقة قراءة",
+    "searchPlaceholder": "ابحث في المقالات...",
+    "title": "المدونة",
+    "pagination": "\\u062a\\u0635\\u0641\\u062d \\u0627\\u0644\\u0635\\u0641\\u062d\\u0627\\u062a",
+    "firstPage": "\\u0627\\u0644\\u0635\\u0641\\u062d\\u0629 \\u0627\\u0644\\u0623\\u0648\\u0644\\u0649",
+    "lastPage": "\\u0627\\u0644\\u0635\\u0641\\u062d\\u0629 \\u0627\\u0644\\u0623\\u062e\\u064a\\u0631\\u0629",
+    "previousPage": "\\u0627\\u0644\\u0635\\u0641\\u062d\\u0629 \\u0627\\u0644\\u0633\\u0627\\u0628\\u0642\\u0629",
+    "nextPage": "\\u0627\\u0644\\u0635\\u0641\\u062d\\u0629 \\u0627\\u0644\\u062a\\u0627\\u0644\\u064a\\u0629",
+    "page": "\\u0635\\u0641\\u062d\\u0629",
+    "sources": "المصادر والمراجع",
+    "shareArticle": "مشاركة المقال",
+    "copyLink": "نسخ الرابط",
+    "copied": "تم النسخ!",
+    "linkCopied": "تم نسخ الرابط إلى الحافظة!",
+    "linkCopyFailed": "فشل نسخ الرابط. يرجى المحاولة مرة أخرى.",
+    "backToBlog": "العودة للمدونة",
+    "articleInfo": "معلومات المقال",
+    "category": "التصنيف",
+    "published": "تاريخ النشر",
+    "tags": "الوسوم",
+    "admin": {
+      "apiKeyHint": "يتم تخزين مفتاح API محلياً ولا يُرسل إلى خوادمنا",
+      "apiKeyLabel": "مفتاح OpenRouter API",
+      "apiKeyPlaceholder": "أدخل مفتاح OpenRouter API",
+      "apiKeyRequired": "مفتاح API مطلوب",
+      "cancel": "إلغاء",
+      "generate": "إنشاء",
+      "generateArticle": "إنشاء مقال",
+      "generating": "جاري الإنشاء...",
+      "progress": {
+        "close": "إغلاق",
+        "complete": "تم إنشاء المقال بنجاح!",
+        "creatingThumbnail": "إنشاء الصورة المصغرة...",
+        "error": "فشل الإنشاء",
+        "generating": "إنشاء محتوى المقال...",
+        "retry": "حاول مرة أخرى",
+        "saving": "حفظ المقال...",
+        "searching": "البحث عن المواضيع الرائجة...",
+        "selecting": "اختيار أفضل موضوع...",
+        "generationProgress": "تقدم إنشاء المقال",
+        "steps": "خطوات الإنشاء",
+        "inProgress": "قيد التنفيذ",
+        "completed": "مكتمل",
+        "overallProgress": "التقدم الإجمالي"
+      },
+      "rateLimitInfo": "{remaining} من {limit} مقال متبقي اليوم",
+      "closeDialog": "إغلاق النافذة",
+      "rateLimitRemaining": "{remaining} من {limit} مقالات متبقية اليوم"
+    },
+    "readArticle": "قراءة المقال",
+    "categoryFilter": "تصفية حسب التصنيف",
+    "articlesCount": "{count} مقالات",
+    "filterByCategory": "تصفية حسب التصنيف",
+    "articlesList": "قائمة المقالات",
+    "breadcrumb": "التنقل التفصيلي",
+    "copyArticleLink": "نسخ رابط المقال",
+    "shareOnTwitter": "مشاركة {title} على تويتر",
+    "shareOnLinkedIn": "مشاركة {title} على لينكد إن",
+    "opensInNewTab": "يفتح في علامة تبويب جديدة",
+    "source": "المصدر",
+    "sidebar": "الشريط الجانبي للمقال",
+    "advertisement": "إعلان",
+    "readingTimeLabel": "وقت القراءة",
+    "filterByTag": "تصفية حسب الوسم",
+    "badge": "مقالات ورؤى",
+    "tableOfContents": "جدول المحتويات",
+    "keyTakeaways": "النقاط الرئيسية",
+    "proTip": "نصيحة احترافية",
+    "warning": "تحذير",
+    "info": "معلومة",
+    "relatedArticles": "مقالات ذات صلة",
+    "author": {
+      "name": "الكاتب",
+      "role": "الدور",
+      "bio": "السيرة الذاتية",
+      "writtenBy": "كتبه",
+      "defaultName": "باين كالك",
+      "defaultRole": "فريق باين كالك"
+    },
+    "callout": {
+      "tip": "نصيحة",
+      "warning": "تحذير",
+      "info": "معلومة",
+      "note": "ملاحظة"
+    }
+  },
+  "admin": {
+    "panel": "لوحة الإدارة",
+    "backToSite": "العودة للموقع",
+    "sections": {
+      "overview": "نظرة عامة",
+      "blog": "إدارة المدونة",
+      "users": "إدارة المستخدمين",
+      "errors": "مراقبة الأخطاء",
+      "migrations": "الترحيلات",
+      "health": "صحة النظام",
+      "keys": "مفاتيح API"
+    },
+    "descriptions": {
+      "overview": "نظرة عامة على لوحة التحكم",
+      "blog": "إنشاء وتعديل وحذف المقالات",
+      "users": "عرض وإدارة المستخدمين",
+      "errors": "مراقبة أخطاء النظام",
+      "migrations": "إدارة ترحيلات قاعدة البيانات",
+      "health": "مراقبة صحة النظام",
+      "keys": "إدارة مفاتيح API"
+    },
+    "common": {
+      "refresh": "تحديث",
+      "retry": "إعادة المحاولة",
+      "close": "إغلاق",
+      "confirm": "تأكيد",
+      "cancel": "إلغاء",
+      "save": "حفظ",
+      "delete": "حذف",
+      "edit": "تعديل",
+      "view": "عرض",
+      "search": "بحث",
+      "filter": "تصفية",
+      "loading": "جاري التحميل...",
+      "processing": "جاري المعالجة...",
+      "noData": "لا توجد بيانات",
+      "error": "حدث خطأ",
+      "success": "نجاح",
+      "failed": "فشل",
+      "page": "صفحة",
+      "of": "من",
+      "previous": "السابق",
+      "next": "التالي",
+      "all": "الكل",
+      "admin": "مدير"
+    },
+    "analytics": {
+      "title": "نظرة عامة على التحليلات",
+      "dateRange": "النطاق الزمني",
+      "ranges": {
+        "1d": "يوم واحد",
+        "7d": "7 أيام",
+        "30d": "30 يوم",
+        "90d": "90 يوم"
+      },
+      "metrics": {
+        "totalTools": "إجمالي الأدوات",
+        "totalCalculations": "إجمالي الحسابات",
+        "totalUsers": "إجمالي المستخدمين",
+        "totalArticles": "إجمالي المقالات",
+        "calculationsToday": "حسابات اليوم",
+        "newUsersThisMonth": "مستخدمون جدد هذا الشهر"
+      },
+      "sections": {
+        "calculationsChart": "الحسابات عبر الزمن",
+        "topTools": "أفضل 5 أدوات",
+        "recentActivity": "النشاط الأخير"
+      },
+      "activityTypes": {
+        "calculation": "حساب",
+        "user_signup": "تسجيل مستخدم",
+        "article_created": "إنشاء مقال",
+        "error": "خطأ"
+      },
+      "uses": "استخدام"
+    },
+    "blog": {
+      "title": "إدارة المدونة",
+      "subtitle": "إدارة وتنظيم مقالات المدونة",
+      "filters": {
+        "status": "الحالة",
+        "category": "التصنيف",
+        "search": "بحث...",
+        "all": "الكل",
+        "published": "منشور",
+        "draft": "مسودة"
+      },
+      "categories": {
+        "marketing": "التسويق",
+        "seller-tools": "أدوات البائعين",
+        "logistics": "اللوجستيات",
+        "trends": "الاتجاهات",
+        "case-studies": "دراسات الحالة"
+      },
+      "actions": {
+        "generate": "إنشاء مقال",
+        "view": "عرض",
+        "publish": "نشر",
+        "unpublish": "إلغاء النشر",
+        "delete": "حذف"
+      },
+      "table": {
+        "article": "المقال",
+        "category": "التصنيف",
+        "status": "الحالة",
+        "date": "التاريخ",
+        "actions": "الإجراءات"
+      },
+      "states": {
+        "noArticles": "لا توجد مقالات"
+      },
+      "confirm": {
+        "delete": "هل أنت متأكد من حذف هذا المقال؟"
+      },
+      "stats": {
+        "total": "إجمالي المقالات",
+        "published": "منشورة",
+        "draft": "مسودات"
+      },
+      "readingTime": "دقيقة قراءة"
+    },
+    "users": {
+      "title": "إدارة المستخدمين",
+      "subtitle": "عرض وإدارة مستخدمي المنصة",
+      "search": "البحث بالبريد الإلكتروني...",
+      "actions": {
+        "confirmEmail": "تأكيد البريد",
+        "viewDetails": "عرض التفاصيل"
+      },
+      "stats": {
+        "totalUsers": "إجمالي المستخدمين",
+        "activeUsers": "المستخدمون النشطون",
+        "newThisMonth": "جدد هذا الشهر",
+        "unconfirmed": "غير مؤكدين"
+      },
+      "table": {
+        "user": "المستخدم",
+        "email": "البريد الإلكتروني",
+        "status": "الحالة",
+        "registered": "تاريخ التسجيل",
+        "lastSignIn": "آخر تسجيل دخول",
+        "calculations": "الحسابات",
+        "actions": "الإجراءات"
+      },
+      "status": {
+        "confirmed": "مؤكد",
+        "unconfirmed": "غير مؤكد",
+        "active": "نشط",
+        "inactive": "غير نشط"
+      },
+      "states": {
+        "noUsers": "لا يوجد مستخدمون",
+        "confirming": "جاري التأكيد..."
+      },
+      "modal": {
+        "userDetails": "تفاصيل المستخدم",
+        "userId": "معرف المستخدم",
+        "emailStatus": "حالة البريد",
+        "registrationDate": "تاريخ التسجيل",
+        "lastActivity": "آخر نشاط",
+        "totalCalculations": "إجمالي الحسابات",
+        "never": "لم يسجل دخول"
+      },
+      "messages": {
+        "emailConfirmed": "تم تأكيد البريد بنجاح",
+        "confirmFailed": "فشل تأكيد البريد"
+      }
+    },
+    "errors": {
+      "title": "مراقبة الأخطاء",
+      "subtitle": "مراقبة وإدارة أخطاء النظام",
+      "actions": {
+        "acknowledge": "إقرار",
+        "resolve": "حل",
+        "acknowledgeAll": "إقرار الكل",
+        "resolveAll": "حل الكل"
+      },
+      "filters": {
+        "severity": "الخطورة",
+        "timeRange": "النطاق الزمني",
+        "status": "الحالة",
+        "search": "البحث في الأخطاء...",
+        "all": "الكل",
+        "critical": "حرج",
+        "error": "خطأ",
+        "warning": "تحذير",
+        "unresolved": "غير محلول",
+        "resolved": "محلول",
+        "unacknowledged": "غير مُقر"
+      },
+      "timeRanges": {
+        "1h": "ساعة واحدة",
+        "6h": "6 ساعات",
+        "24h": "24 ساعة",
+        "7d": "7 أيام",
+        "30d": "30 يوم"
+      },
+      "metrics": {
+        "totalErrors": "إجمالي الأخطاء",
+        "criticalErrors": "الأخطاء الحرجة",
+        "errorRate": "معدل الأخطاء",
+        "resolvedToday": "تم حلها اليوم",
+        "perMinute": "/دقيقة"
+      },
+      "health": {
+        "title": "صحة النظام",
+        "healthy": "سليم",
+        "degraded": "متدهور",
+        "unhealthy": "غير سليم",
+        "activeAlerts": "التنبيهات النشطة",
+        "criticalPatterns": "الأنماط الحرجة"
+      },
+      "table": {
+        "error": "الخطأ",
+        "severity": "الخطورة",
+        "timestamp": "الوقت",
+        "status": "الحالة",
+        "actions": "الإجراءات",
+        "affectedUsers": "المستخدمون المتأثرون",
+        "endpoints": "نقاط النهاية"
+      },
+      "states": {
+        "noErrors": "لا توجد أخطاء"
+      },
+      "modal": {
+        "errorDetails": "تفاصيل الخطأ",
+        "errorId": "معرف الخطأ",
+        "pattern": "النمط",
+        "stackTrace": "تتبع المكدس",
+        "firstSeen": "أول ظهور",
+        "lastSeen": "آخر ظهور",
+        "occurrences": "مرات الحدوث"
+      },
+      "messages": {
+        "acknowledged": "تم الإقرار بالخطأ بنجاح",
+        "resolved": "تم حل الخطأ بنجاح",
+        "failed": "فشلت العملية"
+      },
+      "severity": {
+        "critical": "حرج",
+        "high": "عالي",
+        "error": "خطأ",
+        "medium": "متوسط",
+        "warning": "تحذير",
+        "low": "منخفض"
+      },
+      "statusLabels": {
+        "new": "جديد",
+        "acknowledged": "مُقر",
+        "resolved": "محلول"
+      }
+    },
+    "migrations": {
+      "title": "إدارة الترحيلات",
+      "subtitle": "إدارة ترحيلات مخطط قاعدة البيانات",
+      "actions": {
+        "runMigrations": "تشغيل الترحيلات",
+        "dryRun": "تشغيل تجريبي",
+        "rollback": "التراجع",
+        "rollbackLast": "التراجع عن الأخير"
+      },
+      "stats": {
+        "total": "إجمالي الترحيلات",
+        "executed": "تم تنفيذها",
+        "pending": "معلقة",
+        "failed": "فاشلة",
+        "rolledBack": "تم التراجع عنها"
+      },
+      "status": {
+        "executed": "تم التنفيذ",
+        "pending": "معلق",
+        "failed": "فاشل",
+        "rolledBack": "تم التراجع"
+      },
+      "table": {
+        "migration": "الترحيل",
+        "status": "الحالة",
+        "executedAt": "وقت التنفيذ",
+        "duration": "المدة",
+        "batch": "الدفعة",
+        "checksum": "المجموع الاختباري"
+      },
+      "states": {
+        "noMigrations": "لا توجد ترحيلات",
+        "running": "جاري التشغيل..."
+      },
+      "results": {
+        "title": "نتيجة العملية",
+        "success": "نجاح",
+        "failed": "فشل",
+        "executed": "تم التنفيذ",
+        "skipped": "تم التخطي",
+        "rolledBack": "تم التراجع",
+        "totalTime": "الوقت الإجمالي",
+        "batchId": "معرف الدفعة"
+      },
+      "confirm": {
+        "rollback": "هل أنت متأكد من التراجع عن هذه الترحيلات؟ لا يمكن التراجع عن هذا الإجراء.",
+        "runMigrations": "هل أنت متأكد من تشغيل الترحيلات المعلقة؟"
+      },
+      "guidelines": {
+        "title": "إرشادات الترحيل",
+        "items": [
+          "قم دائماً بتشغيل تجريبي أولاً لمعاينة التغييرات",
+          "يتم تنفيذ الترحيلات بترتيب اسم الملف",
+          "يتم التراجع بترتيب عكسي",
+          "كل ترحيل ينشئ SQL للتراجع تلقائياً",
+          "استخدم سطر الأوامر للنشر في الإنتاج"
+        ]
+      }
+    },
+    "health": {
+      "title": "صحة النظام",
+      "subtitle": "مراقبة حالة الخدمات والموارد",
+      "actions": {
+        "refreshing": "جاري التحديث..."
+      },
+      "status": {
+        "healthy": "سليم",
+        "degraded": "متدهور",
+        "unhealthy": "غير سليم",
+        "down": "متوقف"
+      },
+      "services": {
+        "title": "حالة الخدمات",
+        "database": "قاعدة البيانات",
+        "supabase": "Supabase",
+        "api": "API",
+        "auth": "المصادقة",
+        "storage": "التخزين",
+        "cache": "الذاكرة المؤقتة",
+        "responseTime": "وقت الاستجابة",
+        "lastChecked": "آخر فحص"
+      },
+      "metrics": {
+        "title": "مقاييس النظام",
+        "uptime": "وقت التشغيل",
+        "memory": "الذاكرة",
+        "cpu": "المعالج",
+        "errorRate": "معدل الأخطاء",
+        "avgResponseTime": "متوسط وقت الاستجابة",
+        "totalErrors": "إجمالي الأخطاء",
+        "activeAlerts": "التنبيهات النشطة",
+        "perMinute": "/دقيقة"
+      },
+      "environment": {
+        "title": "البيئة",
+        "current": "البيئة الحالية",
+        "configured": "مُعد",
+        "notConfigured": "غير مُعد",
+        "isolated": "معزول",
+        "notIsolated": "غير معزول",
+        "missingVars": "المتغيرات المفقودة",
+        "version": "الإصدار"
+      },
+      "alerts": {
+        "title": "التنبيهات",
+        "noAlerts": "لا توجد تنبيهات",
+        "error": "خطأ",
+        "warning": "تحذير",
+        "info": "معلومات"
+      },
+      "time": {
+        "days": "أيام",
+        "hours": "ساعات",
+        "minutes": "دقائق",
+        "seconds": "ثواني",
+        "ms": "مللي ثانية",
+        "justNow": "الآن",
+        "ago": "مضت"
+      },
+      "resourceUsage": "استخدام الموارد"
+    },
+    "keys": {
+      "title": "إدارة مفاتيح API",
+      "subtitle": "إدارة مفاتيح API ومتغيرات البيئة",
+      "categories": {
+        "ai": "خدمات الذكاء الاصطناعي",
+        "database": "قاعدة البيانات",
+        "auth": "المصادقة",
+        "other": "أخرى"
+      },
+      "actions": {
+        "test": "اختبار",
+        "reveal": "إظهار",
+        "hide": "إخفاء",
+        "update": "تحديث"
+      },
+      "status": {
+        "valid": "صالح",
+        "invalid": "غير صالح",
+        "notSet": "غير مُعين",
+        "testing": "جاري الاختبار..."
+      },
+      "fields": {
+        "lastUpdated": "آخر تحديث",
+        "never": "أبداً"
+      },
+      "messages": {
+        "updated": "تم تحديث مفتاح API بنجاح",
+        "testSuccess": "مفتاح API صالح",
+        "testFailed": "فشل التحقق من مفتاح API"
+      }
+    },
+    "quickActions": {
+      "title": "إجراءات سريعة",
+      "generateArticle": "إنشاء مقال",
+      "viewErrors": "عرض الأخطاء",
+      "runMigrations": "تشغيل الترحيلات",
+      "viewUsers": "عرض المستخدمين"
     }
   }
 }

@@ -5,6 +5,7 @@ import { Sparkles, Zap, Shield, Globe } from "lucide-react";
 import { ToolsGrid } from "@/components/tools/tools-grid";
 import { LandingAd } from "@/components/ads";
 import { generateLandingMetadata } from "@/lib/metadata";
+import { generateOrganizationStructuredData, generateWebsiteStructuredData } from "@/lib/structured-data";
 
 // Generate metadata for landing page (Requirements 12.1, 12.2, 12.3, 12.4)
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
@@ -16,8 +17,25 @@ export default function Home() {
   const t = useTranslations();
   const locale = useLocale();
 
+  // Generate structured data for SEO
+  const organizationSchema = generateOrganizationStructuredData(locale);
+  const websiteSchema = generateWebsiteStructuredData(locale);
+
   return (
-    <div className="flex flex-col min-h-screen">
+    <>
+      {/* Organization Schema - Helps Google understand your brand */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+      />
+      
+      {/* Website Schema - Enables search box in Google results */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+
+      <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section 
         className="relative py-24 px-4 gradient-hero overflow-hidden"
@@ -95,5 +113,6 @@ export default function Home() {
         </div>
       </section>
     </div>
+    </>
   );
 }

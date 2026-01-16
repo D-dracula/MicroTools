@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 
 type Locale = "ar" | "en";
 
@@ -145,6 +147,11 @@ const toolMetadata: Record<string, { ar: { title: string; description: string };
 export function generateSiteMetadata(locale: Locale): Metadata {
   const config = siteConfig[locale];
   
+  // Generate og:locale:alternate for other locales
+  const alternateLocales = routing.locales
+    .filter(l => l !== locale)
+    .map(l => l === "ar" ? "ar_SA" : "en_US");
+  
   return {
     metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
     title: {
@@ -173,6 +180,7 @@ export function generateSiteMetadata(locale: Locale): Metadata {
     openGraph: {
       type: "website",
       locale: locale === "ar" ? "ar_SA" : "en_US",
+      alternateLocale: alternateLocales,
       siteName: config.siteName,
       title: config.siteName,
       description: config.siteDescription,
@@ -198,6 +206,11 @@ export function generateLandingMetadata(locale: Locale): Metadata {
   const meta = pageMetadata.landing[locale];
   const config = siteConfig[locale];
   
+  // Generate og:locale:alternate for other locales
+  const alternateLocales = routing.locales
+    .filter(l => l !== locale)
+    .map(l => l === "ar" ? "ar_SA" : "en_US");
+  
   return {
     title: meta.title,
     description: meta.description,
@@ -205,6 +218,7 @@ export function generateLandingMetadata(locale: Locale): Metadata {
     openGraph: {
       type: "website",
       locale: locale === "ar" ? "ar_SA" : "en_US",
+      alternateLocale: alternateLocales,
       siteName: config.siteName,
       title: meta.title,
       description: meta.description,
@@ -232,6 +246,11 @@ export function generateAuthMetadata(locale: Locale, page: "login" | "register")
   const meta = pageMetadata[page][locale];
   const config = siteConfig[locale];
   
+  // Generate og:locale:alternate for other locales
+  const alternateLocales = routing.locales
+    .filter(l => l !== locale)
+    .map(l => l === "ar" ? "ar_SA" : "en_US");
+  
   return {
     title: meta.title,
     description: meta.description,
@@ -242,10 +261,16 @@ export function generateAuthMetadata(locale: Locale, page: "login" | "register")
     openGraph: {
       type: "website",
       locale: locale === "ar" ? "ar_SA" : "en_US",
+      alternateLocale: alternateLocales,
       siteName: config.siteName,
       title: meta.title,
       description: meta.description,
       url: `/${locale}/auth/${page}`,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: meta.title,
+      description: meta.description,
     },
     alternates: {
       canonical: `/${locale}/auth/${page}`,
@@ -264,6 +289,11 @@ export function generateDashboardMetadata(locale: Locale): Metadata {
   const meta = pageMetadata.dashboard[locale];
   const config = siteConfig[locale];
   
+  // Generate og:locale:alternate for other locales
+  const alternateLocales = routing.locales
+    .filter(l => l !== locale)
+    .map(l => l === "ar" ? "ar_SA" : "en_US");
+  
   return {
     title: meta.title,
     description: meta.description,
@@ -274,7 +304,13 @@ export function generateDashboardMetadata(locale: Locale): Metadata {
     openGraph: {
       type: "website",
       locale: locale === "ar" ? "ar_SA" : "en_US",
+      alternateLocale: alternateLocales,
       siteName: config.siteName,
+      title: meta.title,
+      description: meta.description,
+    },
+    twitter: {
+      card: "summary_large_image",
       title: meta.title,
       description: meta.description,
     },
@@ -287,6 +323,11 @@ export function generateDashboardMetadata(locale: Locale): Metadata {
 export function generateToolMetadata(locale: Locale, toolSlug: string): Metadata {
   const meta = toolMetadata[toolSlug];
   const config = siteConfig[locale];
+  
+  // Generate og:locale:alternate for other locales
+  const alternateLocales = routing.locales
+    .filter(l => l !== locale)
+    .map(l => l === "ar" ? "ar_SA" : "en_US");
   
   // Fallback for unknown tools
   if (!meta) {
@@ -305,6 +346,7 @@ export function generateToolMetadata(locale: Locale, toolSlug: string): Metadata
     openGraph: {
       type: "website",
       locale: locale === "ar" ? "ar_SA" : "en_US",
+      alternateLocale: alternateLocales,
       siteName: config.siteName,
       title: toolMeta.title,
       description: toolMeta.description,
@@ -333,4 +375,93 @@ export function registerToolMetadata(
   metadata: { ar: { title: string; description: string }; en: { title: string; description: string } }
 ): void {
   toolMetadata[slug] = metadata;
+}
+
+/**
+ * Generate dynamic metadata for tool pages from translation files
+ * Implements fallback chain: seo.title → title + siteName → slug
+ * Requirements: 2.1, 2.2, 2.3, 2.4, 5.4
+ */
+export async function generateDynamicToolMetadata(
+  locale: string,
+  toolSlug: string,
+  toolKey: string
+): Promise<Metadata> {
+  const t = await getTranslations({ locale });
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://pinecalc.com";
+  const siteName = t("common.siteName");
+  
+  // Generate og:locale:alternate for other locales
+  const alternateLocales = routing.locales
+    .filter(l => l !== locale)
+    .map(l => l === "ar" ? "ar_SA" : "en_US");
+  
+  // Fallback chain for title: seo.title → title + siteName → slug + siteName
+  let title: string;
+  const seoTitleKey = `tools.${toolKey}.seo.title`;
+  const titleKey = `tools.${toolKey}.title`;
+  
+  if (t.has(seoTitleKey)) {
+    title = t(seoTitleKey);
+  } else if (t.has(titleKey)) {
+    title = `${t(titleKey)} - ${siteName}`;
+  } else {
+    // Ultimate fallback: use slug
+    title = `${toolSlug.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')} - ${siteName}`;
+  }
+  
+  // Fallback chain for description: seo.description → description
+  let description: string;
+  const seoDescKey = `tools.${toolKey}.seo.description`;
+  const descKey = `tools.${toolKey}.description`;
+  
+  if (t.has(seoDescKey)) {
+    description = t(seoDescKey);
+  } else if (t.has(descKey)) {
+    description = t(descKey);
+  } else {
+    // Ultimate fallback: use site description
+    description = t("common.siteDescription");
+  }
+  
+  // Keywords (optional)
+  const keywords: string[] = [];
+  const seoKeywordsKey = `tools.${toolKey}.seo.keywords`;
+  if (t.has(seoKeywordsKey)) {
+    const keywordsStr = t(seoKeywordsKey);
+    keywords.push(...keywordsStr.split(',').map(k => k.trim()));
+  }
+  
+  // Generate alternates for all locales from routing.ts
+  const languages: Record<string, string> = {};
+  for (const loc of routing.locales) {
+    languages[loc] = `/${loc}/tools/${toolSlug}`;
+  }
+  
+  const path = `/tools/${toolSlug}`;
+  const canonicalUrl = `${baseUrl}/${locale}${path}`;
+  
+  return {
+    title,
+    description,
+    ...(keywords.length > 0 && { keywords }),
+    openGraph: {
+      type: "website",
+      locale: locale === "ar" ? "ar_SA" : "en_US",
+      alternateLocale: alternateLocales,
+      siteName,
+      title,
+      description,
+      url: canonicalUrl,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages,
+    },
+  };
 }
