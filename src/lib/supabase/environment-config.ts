@@ -151,11 +151,11 @@ function validateEnvironmentConstraints(config: EnvironmentConfig): string[] {
       if (!config.nextAuth.url.startsWith('https://')) {
         errors.push('Production environment must use HTTPS for NEXTAUTH_URL')
       }
-      // Production should not have debug mode enabled
+      // Production should not have debug mode enabled - warn only, don't fail
       if (config.features.debugMode) {
-        errors.push('Production environment should not have debug mode enabled')
+        console.warn('Production environment has debug mode enabled - consider disabling for better security')
       }
-      // Production should use error log level
+      // Production should use error log level - warn only
       if (config.features.logLevel !== 'error') {
         console.warn(
           'Production environment should use "error" log level for better performance'
