@@ -168,28 +168,48 @@ function transformCalloutBoxes(html: string): string {
     let stepIndex = 0;
     let stepsHtml = '';
     
-    // Match each step div with its nested content
+    // Match each step div with its nested content - simplified pattern
     const stepPattern = /<div\s+class=["']step["']>\s*<div\s+class=["']step-title["']>(.*?)<\/div>([\s\S]*?)<\/div>/gi;
     let stepMatch;
     
     while ((stepMatch = stepPattern.exec(content)) !== null) {
       stepIndex++;
       const stepTitle = stepMatch[1] || `Step ${stepIndex}`;
-      const stepDesc = stepMatch[2].trim();
+      let stepDesc = stepMatch[2].trim();
+      
+      // Clean up the description - remove extra whitespace and line breaks
+      stepDesc = stepDesc
+        .replace(/^[\s\n\r]+/g, '')
+        .replace(/[\s\n\r]+$/g, '')
+        .replace(/^(<br\s*\/?>)+/gi, '')
+        .replace(/(<br\s*\/?>)+$/gi, '')
+        .trim();
+      
+      // If wrapped in <p> tags, extract content
+      const pMatch = stepDesc.match(/^<p>([\s\S]*)<\/p>$/i);
+      if (pMatch) {
+        stepDesc = pMatch[1].trim();
+      }
       
       stepsHtml += `
-<div class="step flex gap-4 mb-4 last:mb-0">
-  <div class="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm">${stepIndex}</div>
+<div class="step flex gap-4 mb-6 last:mb-0">
+  <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-base shadow-sm">${stepIndex}</div>
   <div class="flex-1 pt-1">
-    <div class="font-semibold text-foreground mb-1">${stepTitle}</div>
-    <div class="text-muted-foreground text-sm">${stepDesc}</div>
+    <div class="font-semibold text-foreground mb-2 text-base">${stepTitle}</div>
+    <div class="text-muted-foreground text-sm leading-relaxed">${stepDesc}</div>
   </div>
 </div>`;
     }
 
     if (stepsHtml) {
       return `
-<div class="steps-container bg-muted/30 rounded-xl p-6 my-6 border border-border">
+<div class="steps-container bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-6 sm:p-8 my-8 border border-border shadow-sm">
+  <div class="flex items-center gap-2 mb-6">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+    </svg>
+    <h3 class="font-bold text-lg text-foreground m-0">Step-by-Step Guide</h3>
+  </div>
   ${stepsHtml}
 </div>`;
     }

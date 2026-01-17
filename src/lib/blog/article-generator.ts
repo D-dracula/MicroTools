@@ -667,9 +667,12 @@ Create a fresh perspective, different angle, or new approach to the topic. Do NO
 7. STEP-BY-STEP GUIDES:
    <div class="steps">
    <div class="step">
-   <div class="step-number">1</div>
    <div class="step-title">Step Title</div>
-   <div class="step-content">Detailed step description...</div>
+   Detailed step description...
+   </div>
+   <div class="step">
+   <div class="step-title">Another Step Title</div>
+   Another step description...
    </div>
    </div>
 
