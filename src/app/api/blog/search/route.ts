@@ -1,19 +1,21 @@
 /**
- * Blog Topic Search API Route - Multi-Source Search with Deep Content
+ * Blog Topic Search API Route - Multi-Source Search with AI Filtering
  * 
  * POST /api/blog/search
  * 
  * Admin-only endpoint for searching e-commerce topics using multiple sources:
  * - NewsAPI.org: Fresh news articles (last 7 days)
  * - Exa AI: Deep neural search for educational content
+ * - AI Agent: Filters and validates relevance to e-commerce
  * 
- * Results are merged, deduplicated, and ranked by recency + relevance.
+ * Results are merged, deduplicated, AI-filtered, and ranked by relevance.
  * Optionally fetches full content from sources for better article generation.
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
+import { chat } from '@/lib/ai-tools/openrouter-client';
 import type { ArticleCategory } from '@/lib/blog/types';
 import { isArticleCategory } from '@/lib/blog/types';
 
@@ -24,10 +26,12 @@ import { isArticleCategory } from '@/lib/blog/types';
 interface SearchRequest {
   exaKey?: string;
   newsApiKey?: string;
+  openRouterKey?: string; // For AI relevance filtering
   query?: string;
   category?: ArticleCategory;
   numResults?: number;
-  fetchFullContent?: boolean; // New: fetch full content from sources
+  fetchFullContent?: boolean;
+  useAIFilter?: boolean; // Enable AI-based filtering (default: true)
 }
 
 interface UnifiedSearchResult {
@@ -141,6 +145,198 @@ const EXCLUDED_DOMAINS = [
 ];
 
 // ============================================================================
+// AI Search Agent - Manages entire search process
+// ============================================================================
+
+interface AISearchPlan {
+  queries: string[];
+  reasoning: string;
+}
+
+interface AITopicSelection {
+  selectedIndex: number;
+  title: string;
+  relevanceScore: number;
+  uniqueAngle: string;
+  suggestedCategory: ArticleCategory;
+  reasoning: string;
+}
+
+/**
+ * AI Agent Step 1: Generate smart search queries
+ * Creates targeted e-commerce queries based on category and trends
+ */
+async function generateSearchQueries(
+  apiKey: string,
+  category?: ArticleCategory,
+  userQuery?: string
+): Promise<AISearchPlan> {
+  const currentDate = new Date().toLocaleDateString('en-US', { 
+    year: 'numeric', 
+    month: 'long',
+    day: 'numeric'
+  });
+
+  const systemPrompt = `You are an expert e-commerce content strategist. Your job is to generate search queries that will find the BEST, most RELEVANT topics for an e-commerce blog.
+
+Current date: ${currentDate}
+
+Target audience: Online sellers, e-commerce merchants, dropshippers, Amazon/Shopify sellers, digital marketers
+
+Your queries should find:
+- Fresh, trending e-commerce topics
+- Actionable strategies and tips
+- Industry news and updates
+- Success stories and case studies
+- Tool reviews and comparisons
+
+Generate 3-4 specific search queries that will return HIGH-QUALITY e-commerce content.
+
+RESPOND WITH JSON ONLY:
+{
+  "queries": ["query1", "query2", "query3"],
+  "reasoning": "Brief explanation of why these queries"
+}`;
+
+  const userPrompt = category 
+    ? `Generate search queries for e-commerce blog articles in the "${category}" category.${userQuery ? ` User hint: "${userQuery}"` : ''}`
+    : `Generate search queries for trending e-commerce blog topics.${userQuery ? ` User hint: "${userQuery}"` : ''}`;
+
+  try {
+    console.log('[AI Agent] Generating search queries...');
+    
+    const response = await chat(apiKey, [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt },
+    ], {
+      temperature: 0.7,
+      maxTokens: 500,
+    });
+
+    const content = response.content.trim();
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    if (jsonMatch) {
+      const plan = JSON.parse(jsonMatch[0]) as AISearchPlan;
+      console.log(`[AI Agent] Generated ${plan.queries.length} queries:`, plan.queries);
+      return plan;
+    }
+    
+    throw new Error('Failed to parse AI response');
+  } catch (error) {
+    console.error('[AI Agent] Query generation failed:', error);
+    // Fallback to default queries
+    return {
+      queries: getDynamicQueries(category).slice(0, 3),
+      reasoning: 'Using default queries (AI generation failed)',
+    };
+  }
+}
+
+/**
+ * AI Agent Step 2: Evaluate and select the best topic
+ * Analyzes all search results and picks the most valuable topic
+ */
+async function selectBestTopic(
+  apiKey: string,
+  results: UnifiedSearchResult[],
+  category?: ArticleCategory
+): Promise<{ selected: UnifiedSearchResult | null; analysis: AITopicSelection | null }> {
+  if (results.length === 0) {
+    return { selected: null, analysis: null };
+  }
+
+  // Prepare topics for AI analysis
+  const topicsForAnalysis = results.map((r, i) => ({
+    index: i,
+    title: r.title,
+    description: r.text.substring(0, 400),
+    source: r.sourceName || r.source,
+    publishedDate: r.publishedDate,
+  }));
+
+  const systemPrompt = `You are an expert e-commerce content curator. Analyze these search results and select the SINGLE BEST topic for a blog article.
+
+SELECTION CRITERIA (in order of importance):
+1. RELEVANCE: Must be directly about e-commerce, online selling, or digital commerce
+2. VALUE: Provides actionable insights for online sellers
+3. FRESHNESS: Recent and timely topics preferred
+4. UNIQUENESS: Offers a fresh perspective or angle
+5. ENGAGEMENT: Topic that readers will find interesting
+
+REJECT topics about:
+- General news not related to e-commerce
+- Politics, sports, entertainment, celebrities
+- Crime, drugs, illegal activities
+- Airlines, travel, weather
+- TV shows, movies, music
+
+RESPOND WITH JSON ONLY:
+{
+  "selectedIndex": <number>,
+  "title": "selected topic title",
+  "relevanceScore": <0-100>,
+  "uniqueAngle": "suggested unique angle for the article",
+  "suggestedCategory": "marketing|seller-tools|logistics|trends|case-studies",
+  "reasoning": "why this topic is the best choice"
+}
+
+If NO topics are relevant to e-commerce, respond with:
+{
+  "selectedIndex": -1,
+  "title": "",
+  "relevanceScore": 0,
+  "uniqueAngle": "",
+  "suggestedCategory": "trends",
+  "reasoning": "No relevant e-commerce topics found"
+}`;
+
+  const userPrompt = `Analyze these ${topicsForAnalysis.length} topics and select the BEST one for an e-commerce blog${category ? ` (category: ${category})` : ''}:
+
+${JSON.stringify(topicsForAnalysis, null, 2)}
+
+Select the single best topic that will provide the most value to online sellers.`;
+
+  try {
+    console.log(`[AI Agent] Analyzing ${results.length} topics to select the best...`);
+    
+    const response = await chat(apiKey, [
+      { role: 'system', content: systemPrompt },
+      { role: 'user', content: userPrompt },
+    ], {
+      temperature: 0.3, // Lower temperature for more consistent selection
+      maxTokens: 800,
+    });
+
+    const content = response.content.trim();
+    const jsonMatch = content.match(/\{[\s\S]*\}/);
+    
+    if (jsonMatch) {
+      const analysis = JSON.parse(jsonMatch[0]) as AITopicSelection;
+      
+      if (analysis.selectedIndex === -1 || analysis.relevanceScore < 40) {
+        console.log('[AI Agent] ❌ No relevant topics found');
+        return { selected: null, analysis };
+      }
+      
+      const selected = results[analysis.selectedIndex];
+      console.log(`[AI Agent] ✅ Selected: "${analysis.title}" (${analysis.relevanceScore}% relevant)`);
+      console.log(`[AI Agent] Angle: ${analysis.uniqueAngle}`);
+      
+      return { selected, analysis };
+    }
+    
+    throw new Error('Failed to parse AI response');
+  } catch (error) {
+    console.error('[AI Agent] Topic selection failed:', error);
+    // Fallback: return first result
+    return { 
+      selected: results[0], 
+      analysis: null 
+    };
+  }
+}
+
+// ============================================================================
 // Admin Access Check
 // ============================================================================
 
@@ -155,7 +351,6 @@ async function checkAdminAccess(): Promise<boolean> {
   const adminEmails = adminEmailsEnv.split(',').map(e => e.trim().toLowerCase());
   return adminEmails.includes(session.user.email.toLowerCase());
 }
-
 
 // ============================================================================
 // NewsAPI Search (Fixed for Free Plan)
@@ -174,25 +369,35 @@ async function searchWithNewsApi(
     const fromDate = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
     const fromDateStr = fromDate.toISOString().split('T')[0];
 
-    // Enhanced query to ensure e-commerce relevance
-    // Add e-commerce keywords to improve relevance
-    const enhancedQuery = query.toLowerCase().includes('ecommerce') || 
-                          query.toLowerCase().includes('e-commerce') ||
-                          query.toLowerCase().includes('online store') ||
-                          query.toLowerCase().includes('seller')
-      ? query
-      : `${query} AND (ecommerce OR "e-commerce" OR "online store" OR "online retail" OR Amazon OR Shopify)`;
+    // Build a more specific e-commerce focused query
+    // Always include e-commerce context to avoid irrelevant results
+    const ecommerceContext = '(ecommerce OR "e-commerce" OR "online store" OR "online selling" OR Shopify OR WooCommerce OR "Amazon seller" OR dropshipping)';
+    
+    // Check if query already has e-commerce terms
+    const queryLower = query.toLowerCase();
+    const hasEcommerceTerms = ['ecommerce', 'e-commerce', 'online store', 'shopify', 'amazon', 'seller', 'dropshipping', 'woocommerce'].some(term => queryLower.includes(term));
+    
+    // Build enhanced query
+    const enhancedQuery = hasEcommerceTerms 
+      ? query 
+      : `${query} AND ${ecommerceContext}`;
+
+    // Exclude irrelevant topics
+    const excludeTerms = '-drugs -illegal -crime -airline -flight -politics -sports -celebrity -weather -war';
+    const finalQuery = `${enhancedQuery} ${excludeTerms}`;
 
     const params = new URLSearchParams({
-      q: enhancedQuery,
+      q: finalQuery,
       from: fromDateStr,
-      sortBy: 'relevancy', // Changed to relevancy for better results
+      sortBy: 'relevancy',
       language: 'en',
-      pageSize: String(Math.min(numResults * 3, 30)), // Get more to filter
+      pageSize: String(Math.min(numResults * 4, 40)), // Get more to filter aggressively
       apiKey,
     });
 
-    console.log(`[NewsAPI] Searching: "${enhancedQuery}"`);
+    console.log(`[NewsAPI] Searching: "${finalQuery.substring(0, 100)}..."`);
+    console.log(`[NewsAPI] Original query: "${query}"`);
+
 
     const response = await fetch(
       `https://newsapi.org/v2/everything?${params.toString()}`,
@@ -215,26 +420,13 @@ async function searchWithNewsApi(
 
     console.log(`[NewsAPI] Found ${data.articles.length} articles`);
 
-    // Filter and map results - with relevance check
-    const ecommerceKeywords = ['ecommerce', 'e-commerce', 'online store', 'retail', 'seller', 
-      'amazon', 'shopify', 'dropshipping', 'marketplace', 'shopping', 'merchant', 'commerce',
-      'woocommerce', 'ebay', 'etsy', 'fulfillment', 'inventory', 'checkout', 'cart'];
-    
+    // Basic filtering - AI Agent will do intelligent relevance filtering
     return data.articles
       .filter(article => {
         if (!article.title || !article.url || !article.description) return false;
         if (article.title.includes('[Removed]')) return false;
         if (article.description.length < 50) return false;
-        
-        // Check if article is relevant to e-commerce
-        const content = `${article.title} ${article.description}`.toLowerCase();
-        const isRelevant = ecommerceKeywords.some(keyword => content.includes(keyword));
-        
-        if (!isRelevant) {
-          console.log(`[NewsAPI] Filtered out (not e-commerce): ${article.title.substring(0, 50)}...`);
-        }
-        
-        return isRelevant;
+        return true;
       })
       .slice(0, numResults)
       .map(article => ({
@@ -585,7 +777,7 @@ function getFallbackResults(): UnifiedSearchResult[] {
 
 
 // ============================================================================
-// POST - Multi-Source Search with Deep Content
+// POST - AI-Managed Multi-Source Search
 // ============================================================================
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
@@ -614,9 +806,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     // Check for API keys (from request or environment)
     const exaKey = body.exaKey || process.env.EXA_API_KEY;
     const newsApiKey = body.newsApiKey || process.env.NEWSAPI_KEY;
+    const openRouterKey = body.openRouterKey || process.env.OPENROUTER_API_KEY;
     
     const hasExaKey = !!exaKey;
     const hasNewsApiKey = !!newsApiKey;
+    const hasOpenRouterKey = !!openRouterKey;
+    const useAIAgent = body.useAIFilter !== false && hasOpenRouterKey; // Default: true if key available
     
     if (!hasExaKey && !hasNewsApiKey) {
       return NextResponse.json(
@@ -633,33 +828,49 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       );
     }
 
-    // Determine search query
-    let searchQuery = body.query?.trim();
-    
-    if (!searchQuery) {
-      const queries = getDynamicQueries(body.category);
-      searchQuery = queries[Math.floor(Math.random() * queries.length)];
-    }
-
-    console.log(`[Blog Search] Query: "${searchQuery}"`);
-    console.log(`[Blog Search] Sources: Exa=${hasExaKey}, NewsAPI=${hasNewsApiKey}`);
-
-    // Search in parallel from both sources
-    const searchPromises: Promise<UnifiedSearchResult[]>[] = [];
     const sourcesUsed: string[] = [];
+    let aiSearchPlan: AISearchPlan | null = null;
+    let aiTopicSelection: AITopicSelection | null = null;
 
-    if (hasExaKey) {
-      searchPromises.push(searchWithExa(exaKey!, searchQuery, body.numResults || 5));
-      sourcesUsed.push('exa');
+    // ========================================================================
+    // STEP 1: AI Agent generates smart search queries
+    // ========================================================================
+    let searchQueries: string[] = [];
+    
+    if (useAIAgent) {
+      console.log('[AI Agent] Step 1: Generating smart search queries...');
+      aiSearchPlan = await generateSearchQueries(openRouterKey!, body.category, body.query);
+      searchQueries = aiSearchPlan.queries;
+      sourcesUsed.push('ai-agent');
+      console.log(`[AI Agent] Generated queries: ${searchQueries.join(' | ')}`);
+    } else {
+      // Fallback to static queries
+      searchQueries = body.query 
+        ? [body.query] 
+        : getDynamicQueries(body.category).slice(0, 2);
     }
 
-    if (hasNewsApiKey) {
-      searchPromises.push(searchWithNewsApi(newsApiKey!, searchQuery, body.numResults || 5));
-      sourcesUsed.push('newsapi');
+    // ========================================================================
+    // STEP 2: Execute searches with AI-generated queries
+    // ========================================================================
+    console.log(`[Blog Search] Executing ${searchQueries.length} queries across sources...`);
+    
+    const allSearchPromises: Promise<UnifiedSearchResult[]>[] = [];
+    
+    for (const query of searchQueries) {
+      if (hasExaKey) {
+        allSearchPromises.push(searchWithExa(exaKey!, query, 5));
+      }
+      if (hasNewsApiKey) {
+        allSearchPromises.push(searchWithNewsApi(newsApiKey!, query, 5));
+      }
     }
+
+    if (hasExaKey) sourcesUsed.push('exa');
+    if (hasNewsApiKey) sourcesUsed.push('newsapi');
 
     // Wait for all searches
-    const searchResults = await Promise.all(searchPromises);
+    const searchResults = await Promise.all(allSearchPromises);
     
     // Merge all results
     let allResults = searchResults.flat();
@@ -672,31 +883,79 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
       allResults = getFallbackResults();
     }
 
-    // Deduplicate and rank
+    // Deduplicate results
     let uniqueResults = deduplicateResults(allResults);
+    console.log(`[Blog Search] After deduplication: ${uniqueResults.length}`);
+    
+    // Rank results by score
     let rankedResults = rankResults(uniqueResults);
 
-    // Optionally fetch full content for top results
+    // ========================================================================
+    // STEP 3: AI Agent selects the best topic
+    // ========================================================================
+    let selectedTopic: UnifiedSearchResult | null = null;
+    
+    if (useAIAgent && rankedResults.length > 0 && !rankedResults.every(r => r.source === 'fallback')) {
+      console.log('[AI Agent] Step 2: Selecting best topic from results...');
+      const { selected, analysis } = await selectBestTopic(openRouterKey!, rankedResults, body.category);
+      
+      if (selected && analysis && analysis.relevanceScore >= 40) {
+        selectedTopic = selected;
+        aiTopicSelection = analysis;
+        
+        // Move selected topic to top and boost its score
+        rankedResults = [
+          { ...selected, score: 1.0 },
+          ...rankedResults.filter(r => r.url !== selected.url),
+        ];
+        
+        console.log(`[AI Agent] ✅ Selected: "${analysis.title}" (${analysis.relevanceScore}% relevant)`);
+      } else {
+        console.log('[AI Agent] ⚠️ No highly relevant topic found, using top ranked result');
+      }
+    }
+
+    // ========================================================================
+    // STEP 4: Fetch full content for top results
+    // ========================================================================
     if (body.fetchFullContent !== false && rankedResults.length > 0) {
       rankedResults = await enrichResultsWithContent(rankedResults, 3);
     }
 
-    console.log(`[Blog Search] Final results: ${rankedResults.length}`);
-
     // Check if using fallback
     const usingFallback = rankedResults.every(r => r.source === 'fallback');
 
+    console.log(`[Blog Search] ✅ Final: ${rankedResults.length} results (AI Agent: ${useAIAgent})`);
+
+    // ========================================================================
+    // Return response with AI analysis
+    // ========================================================================
     return NextResponse.json({
       success: true,
       data: {
-        query: searchQuery,
+        query: searchQueries[0], // Primary query
         results: rankedResults,
         totalResults: rankedResults.length,
         sourcesUsed,
         usingFallback,
+        aiAgentUsed: useAIAgent,
+        // AI Agent analysis details
+        aiAnalysis: useAIAgent ? {
+          searchPlan: aiSearchPlan,
+          topicSelection: aiTopicSelection,
+          selectedTopic: selectedTopic ? {
+            title: selectedTopic.title,
+            url: selectedTopic.url,
+            relevanceScore: aiTopicSelection?.relevanceScore || 0,
+            uniqueAngle: aiTopicSelection?.uniqueAngle || '',
+            suggestedCategory: aiTopicSelection?.suggestedCategory || body.category,
+          } : null,
+        } : null,
         message: usingFallback 
           ? 'Using cached topics (external APIs unavailable)' 
-          : `Found ${rankedResults.length} topics from ${sourcesUsed.join(' + ')}`,
+          : useAIAgent && aiTopicSelection
+            ? `AI selected: "${aiTopicSelection.title}" (${aiTopicSelection.relevanceScore}% relevant)`
+            : `Found ${rankedResults.length} topics from ${sourcesUsed.join(' + ')}`,
       },
     });
   } catch (error) {
