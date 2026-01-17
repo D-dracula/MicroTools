@@ -929,10 +929,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     
     for (const query of searchQueries) {
       if (hasExaKey) {
-        allSearchPromises.push(searchWithExa(exaKey!, query, 5));
+        allSearchPromises.push(searchWithExa(exaKey!, query, 10)); // ← زيادة من 5 إلى 10
       }
       if (hasNewsApiKey) {
-        allSearchPromises.push(searchWithNewsApi(newsApiKey!, query, 5));
+        allSearchPromises.push(searchWithNewsApi(newsApiKey!, query, 10)); // ← زيادة من 5 إلى 10
       }
     }
 
@@ -966,10 +966,10 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let selectedTopic: UnifiedSearchResult | null = null;
     
     if (useAIAgent && rankedResults.length > 0 && !rankedResults.every(r => r.source === 'fallback')) {
-      console.log('[AI Agent] Step 2: Selecting best topic from results...');
+      console.log(`[AI Agent] Step 2: Selecting best topic from ${rankedResults.length} results...`);
       const { selected, analysis } = await selectBestTopic(
         openRouterKey!, 
-        rankedResults, 
+        rankedResults,  // ← إرسال جميع النتائج (بعد إزالة التكرار)
         body.category,
         existingTitles  // ← Pass existing titles to AI Agent
       );
