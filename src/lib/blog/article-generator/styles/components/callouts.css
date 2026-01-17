@@ -1,0 +1,176 @@
+/**
+ * Article Callout Boxes - Premium Clean Design
+ * صناديق التنبيه بتصميم أنيق
+ */
+
+/* ===== Base Callout ===== */
+.article-content .pro-tip,
+.article-content .warning,
+.article-content .info,
+.article-content .success,
+.article-content .testimonial,
+.article-content .key-takeaways,
+.article-content .cta-box,
+.article-content .highlight-box {
+    position: relative;
+    padding: var(--article-space-md) var(--article-space-md) var(--article-space-md) 4.5rem;
+    margin: var(--article-space-xl) 0;
+    border-radius: var(--article-radius-lg);
+    border-left: 4px solid;
+    box-shadow: var(--article-shadow-md);
+    transition: var(--article-transition-normal);
+}
+
+.article-content .pro-tip:hover,
+.article-content .warning:hover,
+.article-content .info:hover,
+.article-content .success:hover {
+    box-shadow: var(--article-shadow-lg);
+    transform: translateY(-2px);
+}
+
+/* Icon Container */
+.article-content .pro-tip::before,
+.article-content .warning::before,
+.article-content .info::before,
+.article-content .success::before {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    top: 1rem;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--article-radius-full);
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* RTL Support */
+[dir="rtl"] .article-content .pro-tip,
+[dir="rtl"] .article-content .warning,
+[dir="rtl"] .article-content .info,
+[dir="rtl"] .article-content .success,
+[dir="rtl"] .article-content .testimonial,
+[dir="rtl"] .article-content .key-takeaways,
+[dir="rtl"] .article-content .cta-box {
+    padding: var(--article-space-md) 4.5rem var(--article-space-md) var(--article-space-md);
+    border-left: none;
+    border-right: 4px solid;
+}
+
+[dir="rtl"] .article-content .pro-tip::before,
+[dir="rtl"] .article-content .warning::before,
+[dir="rtl"] .article-content .info::before,
+[dir="rtl"] .article-content .success::before {
+    left: auto;
+    right: 1rem;
+}
+
+/* ===== Pro Tip ===== */
+.article-content .pro-tip {
+    background: var(--callout-tip-bg);
+    border-color: var(--callout-tip-border);
+}
+
+.article-content .pro-tip::before {
+    background-color: var(--callout-tip-border);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5'/%3E%3Cpath d='M9 18h6'/%3E%3Cpath d='M10 22h4'/%3E%3C/svg%3E");
+}
+
+/* ===== Warning ===== */
+.article-content .warning {
+    background: var(--callout-warning-bg);
+    border-color: var(--callout-warning-border);
+}
+
+.article-content .warning::before {
+    background-color: var(--callout-warning-border);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3'/%3E%3Cpath d='M12 9v4'/%3E%3Cpath d='M12 17h.01'/%3E%3C/svg%3E");
+}
+
+/* ===== Info ===== */
+.article-content .info {
+    background: var(--callout-info-bg);
+    border-color: var(--callout-info-border);
+}
+
+.article-content .info::before {
+    background-color: var(--callout-info-border);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cpath d='M12 16v-4'/%3E%3Cpath d='M12 8h.01'/%3E%3C/svg%3E");
+}
+
+/* ===== Success ===== */
+.article-content .success {
+    background: var(--callout-success-bg);
+    border-color: var(--callout-success-border);
+}
+
+.article-content .success::before {
+    background-color: var(--callout-success-border);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='M22 11.08V12a10 10 0 1 1-5.93-9.14'/%3E%3Cpath d='m9 11 3 3L22 4'/%3E%3C/svg%3E");
+}
+
+/* ===== CTA Box ===== */
+.article-content .cta-box {
+    background: var(--callout-cta-bg);
+    border-color: var(--callout-cta-border);
+    text-align: center;
+    padding: var(--article-space-xl);
+}
+
+/* ===== Testimonial ===== */
+.article-content .testimonial {
+    background: hsl(var(--muted) / 0.3);
+    border-color: hsl(var(--primary) / 0.5);
+    padding: var(--article-space-lg);
+    font-style: italic;
+}
+
+.article-content .testimonial cite {
+    display: block;
+    margin-top: var(--article-space-sm);
+    font-style: normal;
+    font-weight: 600;
+    color: var(--article-text-muted);
+}
+
+/* ===== Key Takeaways ===== */
+.article-content .key-takeaways {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.05), hsl(var(--primary) / 0.1));
+    border-color: var(--article-accent);
+    padding: var(--article-space-lg);
+}
+
+.article-content .key-takeaways h4 {
+    margin-top: 0;
+    color: var(--article-accent);
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 640px) {
+
+    .article-content .pro-tip,
+    .article-content .warning,
+    .article-content .info,
+    .article-content .success {
+        padding-left: 3.5rem;
+    }
+
+    .article-content .pro-tip::before,
+    .article-content .warning::before,
+    .article-content .info::before,
+    .article-content .success::before {
+        width: 32px;
+        height: 32px;
+        background-size: 16px 16px;
+    }
+
+    [dir="rtl"] .article-content .pro-tip,
+    [dir="rtl"] .article-content .warning,
+    [dir="rtl"] .article-content .info,
+    [dir="rtl"] .article-content .success {
+        padding-right: 3.5rem;
+        padding-left: var(--article-space-md);
+    }
+}

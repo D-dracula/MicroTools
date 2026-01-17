@@ -154,19 +154,26 @@ IMPORTANT: Do NOT include emojis in the HTML. Icons are added automatically via 
     </div>
     </div>
 
-=== CONTENT QUALITY & CLEANLINESS ===
-1. NO META-TALK: Do NOT include things like "(150 words)", "[Section 1]", or "Here is your article".
-2. NO WORD COUNTS: Never include word count targets or counts in headings or body text.
-3. NO PLACEHOLDERS: Do not use [Insert Image] or similar. Describe the context instead.
-4. NO EMOJIS IN HTML: Icons are added via CSS. Do not put emojis in strong tags or titles.
-5. PURE CONTENT: Only output the article itself, starting with the Title.
+=== CONTENT QUALITY, SPACING & READABILITY ===
+1. SHORT PARAGRAPHS: Keep paragraphs to 3-4 sentences maximum. Use whitespace effectively.
+2. VISUAL RICHNESS: Use at least ONE callout box (Pro Tip, Warning, etc.) or a list/table EVERY 300 words.
+3. NO CROWDING: Avoid large blocks of text. Break down complex ideas into bullet points or steps.
+4. NO META-TALK: Do NOT include things like "(150 words)", "[Section 1]", or "Here is your article".
+5. NO WORD COUNTS: Never include word count targets or counts in headings or body text.
+6. NO PLACEHOLDERS: Do not use [Insert Image] or similar. Describe the context instead.
+7. NO EMOJIS IN HTML: Icons are added via CSS. Do not put emojis in strong tags or titles.
+8. PURE CONTENT: Only output the article itself, starting with the Title.
 
 === FINAL CHECK ===
-✓ Is the article at least 1500 words?
-✓ Are ALL word count markers removed?
-✓ Does it include 2-3 real examples or case studies?
-✓ Are there actionable tips in every section?
-✓ Is the main keyword used naturally throughout?
+✓ Is it at least 1500 words? (MANDATORY)
+✓ Are paragraphs short and readable?
+✓ Are callout boxes used frequently (every ~300 words)?
+✓ Are all word count markers removed?
+✓ Are there specific examples/case studies?
+✓ Is the main keyword natural?
+✓ Are there comparison tables or lists?
+✓ Is there a clear CTA?
+✓ Are there NO emojis in HTML?
 ✓ Are there comparison tables or lists where appropriate?
 ✓ Does it end with a clear CTA?
 ✓ Are there NO emojis in the HTML elements?

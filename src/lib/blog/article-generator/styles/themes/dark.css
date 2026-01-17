@@ -1,0 +1,68 @@
+/**
+ * Article Dark Mode - Theme Overrides
+ * تعديلات الوضع المظلم
+ */
+
+.dark {
+    /* Callout Colors - Dark Mode */
+    --callout-tip-bg: hsl(142 76% 10%);
+    --callout-tip-border: hsl(142 76% 45%);
+    --callout-tip-icon: hsl(142 76% 60%);
+
+    --callout-warning-bg: hsl(38 92% 10%);
+    --callout-warning-border: hsl(38 92% 50%);
+    --callout-warning-icon: hsl(38 92% 60%);
+
+    --callout-info-bg: hsl(217 91% 12%);
+    --callout-info-border: hsl(217 91% 60%);
+    --callout-info-icon: hsl(217 91% 70%);
+
+    --callout-success-bg: hsl(142 76% 10%);
+    --callout-success-border: hsl(142 76% 45%);
+    --callout-success-icon: hsl(142 76% 60%);
+
+    --callout-cta-bg: hsl(262 83% 12%);
+    --callout-cta-border: hsl(262 83% 58%);
+    --callout-cta-icon: hsl(262 83% 70%);
+
+    /* Shadows - Darker */
+    --article-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --article-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);
+    --article-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Dark Mode Overrides ===== */
+
+/* Blockquote */
+.dark .article-content blockquote {
+    background: hsl(var(--muted) / 0.2);
+}
+
+.dark .article-content blockquote::before {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24' fill='%23a78bfa'%3E%3Cpath d='M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z'/%3E%3C/svg%3E");
+}
+
+/* Pre/Code */
+.dark .article-content pre {
+    background: hsl(220 13% 10%);
+    border-color: hsl(220 13% 18%);
+}
+
+/* Tables */
+.dark .article-content .table-container {
+    border-color: hsl(var(--border) / 0.4);
+}
+
+.dark .article-content th {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.2), hsl(var(--primary) / 0.1));
+}
+
+.dark .article-content tr:nth-child(even) {
+    background: hsl(var(--muted) / 0.15);
+}
+
+/* Timeline */
+.dark .article-content .step {
+    background: hsl(var(--background));
+    border-color: hsl(var(--border) / 0.5);
+}

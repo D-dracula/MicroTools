@@ -1,0 +1,84 @@
+/**
+ * Article Tables - Responsive & Clean
+ * الجداول المتجاوبة
+ */
+
+/* ===== Container ===== */
+.article-content .table-container {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    margin: var(--article-space-xl) 0;
+    border-radius: var(--article-radius-lg);
+    border: 1px solid var(--article-border);
+    box-shadow: var(--article-shadow-md);
+    background: hsl(var(--background));
+}
+
+/* ===== Table ===== */
+.article-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 0;
+    font-size: var(--article-text-sm);
+}
+
+/* ===== Header ===== */
+.article-content th {
+    background: linear-gradient(135deg, hsl(var(--primary) / 0.1), hsl(var(--primary) / 0.05));
+    color: var(--article-accent);
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    text-align: left;
+    padding: var(--article-space-md);
+    border-bottom: 2px solid hsl(var(--primary) / 0.2);
+    white-space: nowrap;
+}
+
+[dir="rtl"] .article-content th {
+    text-align: right;
+    letter-spacing: 0;
+}
+
+/* ===== Cells ===== */
+.article-content td {
+    padding: var(--article-space-md);
+    border-bottom: 1px solid var(--article-border);
+    color: var(--article-text);
+    line-height: 1.6;
+}
+
+.article-content tr:last-child td {
+    border-bottom: none;
+}
+
+/* ===== Zebra Stripes ===== */
+.article-content tr:nth-child(even) {
+    background: hsl(var(--muted) / 0.3);
+}
+
+/* ===== Hover ===== */
+.article-content tr:hover td {
+    background: hsl(var(--primary) / 0.05);
+}
+
+/* ===== Scrollbar ===== */
+.article-content .table-container::-webkit-scrollbar {
+    height: 8px;
+}
+
+.article-content .table-container::-webkit-scrollbar-track {
+    background: hsl(var(--muted));
+    border-radius: 4px;
+}
+
+.article-content .table-container::-webkit-scrollbar-thumb {
+    background: hsl(var(--muted-foreground) / 0.3);
+    border-radius: 4px;
+}
+
+.article-content .table-container::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--muted-foreground) / 0.5);
+}

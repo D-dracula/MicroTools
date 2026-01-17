@@ -1,0 +1,49 @@
+/**
+ * Article Code Blocks - Syntax Highlighting
+ * كتل الكود
+ */
+
+/* ===== Pre Block ===== */
+.article-content pre {
+    position: relative;
+    background: hsl(220 13% 18%);
+    color: hsl(220 14% 96%);
+    border-radius: var(--article-radius-lg);
+    padding: var(--article-space-lg);
+    margin: var(--article-space-xl) 0;
+    overflow-x: auto;
+    max-width: 100%;
+    font-family: var(--article-font-code);
+    font-size: 0.875rem;
+    line-height: 1.7;
+    border: 1px solid hsl(220 13% 25%);
+}
+
+/* Code inside Pre */
+.article-content pre code {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    font-size: inherit;
+    color: inherit;
+    border: none;
+}
+
+/* ===== Scrollbar ===== */
+.article-content pre::-webkit-scrollbar {
+    height: 8px;
+}
+
+.article-content pre::-webkit-scrollbar-track {
+    background: hsl(220 13% 15%);
+    border-radius: 4px;
+}
+
+.article-content pre::-webkit-scrollbar-thumb {
+    background: hsl(220 13% 30%);
+    border-radius: 4px;
+}
+
+.article-content pre::-webkit-scrollbar-thumb:hover {
+    background: hsl(220 13% 40%);
+}

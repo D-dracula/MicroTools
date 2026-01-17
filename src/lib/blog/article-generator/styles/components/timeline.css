@@ -1,0 +1,141 @@
+/**
+ * Article Timeline - Step-by-Step Guides
+ * الخط الزمني للخطوات
+ */
+
+/* ===== Container ===== */
+.article-content .steps,
+.article-content .step-by-step {
+    position: relative;
+    margin: var(--article-space-xl) 0;
+    padding-left: 3rem;
+}
+
+/* Vertical Line */
+.article-content .steps::before,
+.article-content .step-by-step::before {
+    content: "";
+    position: absolute;
+    left: 1.25rem;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(to bottom,
+            var(--article-accent),
+            hsl(var(--primary) / 0.3));
+    border-radius: 2px;
+}
+
+/* RTL */
+[dir="rtl"] .article-content .steps,
+[dir="rtl"] .article-content .step-by-step {
+    padding-left: 0;
+    padding-right: 3rem;
+}
+
+[dir="rtl"] .article-content .steps::before,
+[dir="rtl"] .article-content .step-by-step::before {
+    left: auto;
+    right: 1.25rem;
+}
+
+/* ===== Step Card ===== */
+.article-content .step {
+    position: relative;
+    background: hsl(var(--background));
+    border: 1px solid var(--article-border);
+    border-radius: var(--article-radius-lg);
+    padding: var(--article-space-md);
+    margin-bottom: var(--article-space-lg);
+    box-shadow: var(--article-shadow-sm);
+    transition: var(--article-transition-normal);
+}
+
+.article-content .step:hover {
+    box-shadow: var(--article-shadow-md);
+    transform: translateX(4px);
+}
+
+[dir="rtl"] .article-content .step:hover {
+    transform: translateX(-4px);
+}
+
+/* ===== Step Number (from AI-generated HTML) ===== */
+.article-content .step-number {
+    position: absolute;
+    left: -2.5rem;
+    top: 1rem;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--article-accent);
+    color: white;
+    border-radius: var(--article-radius-full);
+    font-size: 1.25rem;
+    font-weight: 700;
+    box-shadow: var(--article-shadow-md);
+    z-index: 1;
+}
+
+[dir="rtl"] .article-content .step-number {
+    left: auto;
+    right: -2.5rem;
+}
+
+/* ===== Step Title ===== */
+.article-content .step h4,
+.article-content .step-title {
+    margin: 0 0 var(--article-space-sm) 0;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--article-text);
+}
+
+/* ===== Step Description ===== */
+.article-content .step p,
+.article-content .step-description {
+    margin: 0;
+    color: var(--article-text-muted);
+    line-height: var(--article-leading-relaxed);
+}
+
+/* ===== Nested Elements ===== */
+.article-content .step .pro-tip,
+.article-content .step .warning {
+    margin: var(--article-space-md) 0 0 0;
+    padding: var(--article-space-sm) var(--article-space-sm) var(--article-space-sm) 3rem;
+}
+
+.article-content .step .pro-tip::before,
+.article-content .step .warning::before {
+    width: 28px;
+    height: 28px;
+    background-size: 14px 14px;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 640px) {
+
+    .article-content .steps,
+    .article-content .step-by-step {
+        padding-left: 2.5rem;
+    }
+
+    .article-content .step-number {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+        left: -2rem;
+    }
+
+    [dir="rtl"] .article-content .steps,
+    [dir="rtl"] .article-content .step-by-step {
+        padding-right: 2.5rem;
+    }
+
+    [dir="rtl"] .article-content .step-number {
+        right: -2rem;
+    }
+}

@@ -1,0 +1,144 @@
+/**
+ * Article Typography - Base Styles
+ * أنماط الطباعة الأساسية مع تباعد مريح
+ */
+
+/* ===== Container ===== */
+.article-content {
+    font-family: var(--article-font-body);
+    font-size: var(--article-text-base);
+    line-height: var(--article-leading-normal);
+    color: var(--article-text);
+    max-width: 720px;
+    margin: 0 auto;
+    overflow-wrap: break-word;
+}
+
+/* ===== Paragraphs - Spacious ===== */
+.article-content p {
+    margin-bottom: var(--article-paragraph-gap);
+    letter-spacing: -0.01em;
+}
+
+.article-content p:last-child {
+    margin-bottom: 0;
+}
+
+/* ===== Headings ===== */
+.article-content h2 {
+    font-family: var(--article-font-heading);
+    font-size: clamp(1.5rem, 1.25rem + 0.75vw, 2rem);
+    font-weight: 700;
+    line-height: var(--article-leading-tight);
+    letter-spacing: -0.02em;
+    color: var(--article-text);
+    margin-top: var(--article-heading-margin-top);
+    margin-bottom: var(--article-heading-margin-bottom);
+    scroll-margin-top: 2rem;
+}
+
+.article-content h3 {
+    font-family: var(--article-font-heading);
+    font-size: clamp(1.25rem, 1.125rem + 0.5vw, 1.5rem);
+    font-weight: 600;
+    line-height: var(--article-leading-tight);
+    color: var(--article-text);
+    margin-top: var(--article-space-xl);
+    margin-bottom: var(--article-space-md);
+}
+
+.article-content h4 {
+    font-family: var(--article-font-heading);
+    font-size: clamp(1.125rem, 1.125rem + 0.25vw, 1.25rem);
+    font-weight: 600;
+    line-height: var(--article-leading-tight);
+    color: var(--article-text);
+    margin-top: var(--article-space-lg);
+    margin-bottom: var(--article-space-sm);
+}
+
+/* ===== Drop Cap ===== */
+.article-content p.has-drop-cap::first-letter {
+    float: left;
+    font-family: var(--article-font-heading);
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 0.8;
+    margin-right: 0.75rem;
+    margin-top: 0.1rem;
+    color: var(--article-accent);
+    text-transform: uppercase;
+}
+
+[dir="rtl"] .article-content p.has-drop-cap::first-letter {
+    float: right;
+    margin-right: 0;
+    margin-left: 0.75rem;
+}
+
+/* ===== Links ===== */
+.article-content a {
+    color: var(--article-accent);
+    text-decoration: underline;
+    text-decoration-color: hsl(var(--primary) / 0.3);
+    text-underline-offset: 0.25em;
+    transition: var(--article-transition-fast);
+}
+
+.article-content a:hover {
+    text-decoration-color: var(--article-accent);
+}
+
+/* ===== Emphasis ===== */
+.article-content strong {
+    font-weight: 700;
+    color: var(--article-text);
+}
+
+.article-content em {
+    font-style: italic;
+}
+
+/* ===== Inline Code ===== */
+.article-content code {
+    font-family: var(--article-font-code);
+    font-size: 0.875em;
+    background: hsl(var(--muted));
+    padding: 0.2em 0.4em;
+    border-radius: var(--article-radius-sm);
+    border: 1px solid var(--article-border);
+}
+
+/* ===== Horizontal Rule ===== */
+.article-content hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(to right, transparent, var(--article-border), transparent);
+    margin: var(--article-space-2xl) 0;
+}
+
+/* ===== Images ===== */
+.article-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--article-radius-lg);
+    margin: var(--article-space-lg) 0;
+}
+
+/* ===== Selection ===== */
+.article-content ::selection {
+    background: hsl(var(--primary) / 0.2);
+    color: inherit;
+}
+
+/* ===== Mobile ===== */
+@media (max-width: 640px) {
+    .article-content p.has-drop-cap::first-letter {
+        font-size: 3rem;
+        margin-right: 0.5rem;
+    }
+
+    [dir="rtl"] .article-content p.has-drop-cap::first-letter {
+        margin-left: 0.5rem;
+    }
+}

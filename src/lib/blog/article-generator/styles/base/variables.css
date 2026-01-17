@@ -1,0 +1,87 @@
+/**
+ * Article Design System - CSS Variables
+ * متغيرات التصميم الأساسية
+ */
+
+:root {
+    /* ===== Typography ===== */
+    --article-font-body: var(--font-inter), system-ui, sans-serif;
+    --article-font-heading: var(--font-serif), Georgia, serif;
+    --article-font-code: "JetBrains Mono", "Fira Code", monospace;
+
+    /* Font Sizes - Fluid */
+    --article-text-base: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
+    --article-text-sm: clamp(0.875rem, 0.85rem + 0.125vw, 0.9375rem);
+    --article-text-lg: clamp(1.25rem, 1.125rem + 0.5vw, 1.5rem);
+
+    /* Line Heights - Spacious for readability */
+    --article-leading-tight: 1.4;
+    --article-leading-normal: 2.0;
+    --article-leading-relaxed: 2.2;
+
+    /* ===== Spacing ===== */
+    --article-space-xs: 0.5rem;
+    --article-space-sm: 1rem;
+    --article-space-md: 1.5rem;
+    --article-space-lg: 2rem;
+    --article-space-xl: 3rem;
+    --article-space-2xl: 4rem;
+
+    /* Paragraph & Heading Spacing */
+    --article-paragraph-gap: 2rem;
+    --article-heading-margin-top: 3rem;
+    --article-heading-margin-bottom: 1.5rem;
+
+    /* ===== Colors - Light Mode ===== */
+    --article-text: hsl(var(--foreground));
+    --article-text-muted: hsl(var(--muted-foreground));
+    --article-bg: hsl(var(--background));
+    --article-border: hsl(var(--border));
+    --article-accent: hsl(var(--primary));
+
+    /* Callout Colors */
+    --callout-tip-bg: hsl(142 76% 96%);
+    --callout-tip-border: hsl(142 76% 45%);
+    --callout-tip-icon: hsl(142 76% 36%);
+
+    --callout-warning-bg: hsl(38 92% 95%);
+    --callout-warning-border: hsl(38 92% 50%);
+    --callout-warning-icon: hsl(38 92% 40%);
+
+    --callout-info-bg: hsl(217 91% 96%);
+    --callout-info-border: hsl(217 91% 60%);
+    --callout-info-icon: hsl(217 91% 50%);
+
+    --callout-success-bg: hsl(142 76% 96%);
+    --callout-success-border: hsl(142 76% 45%);
+    --callout-success-icon: hsl(142 76% 36%);
+
+    --callout-cta-bg: hsl(262 83% 97%);
+    --callout-cta-border: hsl(262 83% 58%);
+    --callout-cta-icon: hsl(262 83% 50%);
+
+    /* ===== Borders & Radius ===== */
+    --article-radius-sm: 8px;
+    --article-radius-md: 12px;
+    --article-radius-lg: 16px;
+    --article-radius-xl: 24px;
+    --article-radius-full: 9999px;
+
+    /* ===== Shadows - Premium Clean ===== */
+    --article-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --article-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+    --article-shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.08);
+    --article-shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.1);
+
+    /* ===== Transitions ===== */
+    --article-transition-fast: 150ms ease;
+    --article-transition-normal: 250ms ease;
+    --article-transition-slow: 400ms ease;
+}
+
+/* RTL Support */
+[dir="rtl"] {
+    --article-font-body: var(--font-cairo), system-ui, sans-serif;
+    --article-font-heading: var(--font-cairo), serif;
+    --article-leading-normal: 2.1;
+}
