@@ -165,11 +165,13 @@ interface AITopicSelection {
 /**
  * AI Agent Step 1: Generate smart search queries
  * Creates targeted e-commerce queries based on category and trends
+ * NOW WITH EXISTING ARTICLES AWARENESS
  */
 async function generateSearchQueries(
   apiKey: string,
   category?: ArticleCategory,
-  userQuery?: string
+  userQuery?: string,
+  existingTitles?: string[]
 ): Promise<AISearchPlan> {
   const currentDate = new Date().toLocaleDateString('en-US', { 
     year: 'numeric', 
@@ -177,7 +179,18 @@ async function generateSearchQueries(
     day: 'numeric'
   });
 
-  const systemPrompt = `You are an expert e-commerce content strategist. Your job is to generate search queries that will find the BEST, most RELEVANT topics for an e-commerce blog.
+  // Build existing articles context
+  const existingArticlesContext = existingTitles && existingTitles.length > 0
+    ? `\n\n🚨 CRITICAL - AVOID THESE EXISTING TOPICS:
+We already have ${existingTitles.length} articles. Your search queries MUST find DIFFERENT topics:
+
+${existingTitles.slice(0, 15).map((t, i) => `${i + 1}. "${t}"`).join('\n')}
+
+DO NOT generate queries that would find similar topics to these existing articles.
+Focus on FRESH angles, NEW trends, DIFFERENT aspects of e-commerce.`
+    : '';
+
+  const systemPrompt = `You are an expert e-commerce content strategist. Your job is to generate search queries that will find the BEST, most RELEVANT, and UNIQUE topics for an e-commerce blog.
 
 Current date: ${currentDate}
 
@@ -190,17 +203,19 @@ Your queries should find:
 - Success stories and case studies
 - Tool reviews and comparisons
 
-Generate 3-4 specific search queries that will return HIGH-QUALITY e-commerce content.
+${existingArticlesContext}
+
+Generate 3-4 specific search queries that will return HIGH-QUALITY, UNIQUE e-commerce content.
 
 RESPOND WITH JSON ONLY:
 {
   "queries": ["query1", "query2", "query3"],
-  "reasoning": "Brief explanation of why these queries"
+  "reasoning": "Brief explanation of why these queries will find unique topics"
 }`;
 
   const userPrompt = category 
-    ? `Generate search queries for e-commerce blog articles in the "${category}" category.${userQuery ? ` User hint: "${userQuery}"` : ''}`
-    : `Generate search queries for trending e-commerce blog topics.${userQuery ? ` User hint: "${userQuery}"` : ''}`;
+    ? `Generate search queries for UNIQUE e-commerce blog articles in the "${category}" category.${userQuery ? ` User hint: "${userQuery}"` : ''}`
+    : `Generate search queries for UNIQUE trending e-commerce blog topics.${userQuery ? ` User hint: "${userQuery}"` : ''}`;
 
   try {
     console.log('[AI Agent] Generating search queries...');
@@ -262,34 +277,44 @@ async function selectBestTopic(
 
   // Build existing articles warning if provided
   const existingArticlesWarning = existingTitles && existingTitles.length > 0
-    ? `\n\n⚠️ CRITICAL - AVOID DUPLICATE TOPICS:
-The following ${existingTitles.length} articles already exist. You MUST select a topic that is SIGNIFICANTLY DIFFERENT:
+    ? `\n\n🚨 CRITICAL - REJECT DUPLICATE OR SIMILAR TOPICS:
+We have ${existingTitles.length} existing articles. You MUST select a topic that is COMPLETELY DIFFERENT:
 
-${existingTitles.slice(0, 20).map((t, i) => `${i + 1}. "${t}"`).join('\n')}
+${existingTitles.slice(0, 25).map((t, i) => `${i + 1}. "${t}"`).join('\n')}
 
-DO NOT select topics about:
-- The same subject matter as existing articles
-- Similar trends or strategies already covered
-- Topics that would result in repetitive content
+REJECTION CRITERIA - DO NOT select topics that:
+1. Cover the same subject matter (even with different wording)
+2. Discuss similar trends, strategies, or tools
+3. Target the same problem or solution
+4. Use similar keywords or phrases
+5. Would result in repetitive or overlapping content
 
-SELECT a topic with a UNIQUE angle, different focus, or fresh perspective.`
+ACCEPTANCE CRITERIA - ONLY select topics that:
+1. Introduce a NEW concept, trend, or strategy
+2. Focus on a DIFFERENT aspect of e-commerce
+3. Target a DIFFERENT audience segment or use case
+4. Provide a FRESH perspective not covered before
+5. Are at least 70% DIFFERENT from all existing articles
+
+If ALL search results are too similar to existing articles, respond with selectedIndex: -1`
     : '';
 
   const systemPrompt = `You are an expert e-commerce content curator. Analyze these search results and select the SINGLE BEST topic for a blog article.
 
 SELECTION CRITERIA (in order of importance):
-1. RELEVANCE: Must be directly about e-commerce, online selling, or digital commerce
-2. VALUE: Provides actionable insights for online sellers
-3. FRESHNESS: Recent and timely topics preferred
-4. UNIQUENESS: Offers a fresh perspective or angle
+1. UNIQUENESS: Must be SIGNIFICANTLY DIFFERENT from existing articles (MOST IMPORTANT)
+2. RELEVANCE: Must be directly about e-commerce, online selling, or digital commerce
+3. VALUE: Provides actionable insights for online sellers
+4. FRESHNESS: Recent and timely topics preferred
 5. ENGAGEMENT: Topic that readers will find interesting
 
-REJECT topics about:
+AUTOMATIC REJECTION - Reject topics about:
 - General news not related to e-commerce
 - Politics, sports, entertainment, celebrities
 - Crime, drugs, illegal activities
 - Airlines, travel, weather
 - TV shows, movies, music
+- Topics too similar to existing articles (similarity > 30%)
 
 ${existingArticlesWarning}
 
@@ -856,13 +881,35 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let aiTopicSelection: AITopicSelection | null = null;
 
     // ========================================================================
-    // STEP 1: AI Agent generates smart search queries
+    // STEP 0: Fetch existing articles FIRST (before search)
+    // ========================================================================
+    let existingTitles: string[] = [];
+    
+    if (useAIAgent) {
+      try {
+        console.log('[AI Agent] Step 0: Fetching existing articles to avoid duplicates...');
+        const { getExistingArticlesForDedup } = await import('@/lib/blog/article-generator');
+        const existingArticles = await getExistingArticlesForDedup();
+        existingTitles = existingArticles.map(a => a.title);
+        console.log(`[AI Agent] ✅ Loaded ${existingTitles.length} existing articles for duplicate avoidance`);
+      } catch (error) {
+        console.error('[AI Agent] ⚠️ Failed to fetch existing articles:', error);
+      }
+    }
+
+    // ========================================================================
+    // STEP 1: AI Agent generates smart search queries (with existing articles context)
     // ========================================================================
     let searchQueries: string[] = [];
     
     if (useAIAgent) {
       console.log('[AI Agent] Step 1: Generating smart search queries...');
-      aiSearchPlan = await generateSearchQueries(openRouterKey!, body.category, body.query);
+      aiSearchPlan = await generateSearchQueries(
+        openRouterKey!, 
+        body.category, 
+        body.query,
+        existingTitles  // ← Pass existing titles to avoid similar queries
+      );
       searchQueries = aiSearchPlan.queries;
       sourcesUsed.push('ai-agent');
       console.log(`[AI Agent] Generated queries: ${searchQueries.join(' | ')}`);
@@ -914,26 +961,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     let rankedResults = rankResults(uniqueResults);
 
     // ========================================================================
-    // STEP 2.5: Fetch existing articles for deduplication (NEW)
-    // ========================================================================
-    let existingTitles: string[] = [];
-    
-    if (useAIAgent) {
-      try {
-        console.log('[AI Agent] Fetching existing articles to avoid duplicates...');
-        // Import the function from article-generator
-        const { getExistingArticlesForDedup } = await import('@/lib/blog/article-generator');
-        const existingArticles = await getExistingArticlesForDedup();
-        existingTitles = existingArticles.map(a => a.title);
-        console.log(`[AI Agent] Loaded ${existingTitles.length} existing articles for duplicate avoidance`);
-      } catch (error) {
-        console.error('[AI Agent] Failed to fetch existing articles:', error);
-        // Continue without existing articles
-      }
-    }
-
-    // ========================================================================
-    // STEP 3: AI Agent selects the best topic
+    // STEP 3: AI Agent selects the best topic (with existing articles awareness)
     // ========================================================================
     let selectedTopic: UnifiedSearchResult | null = null;
     
