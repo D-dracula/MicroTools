@@ -33,7 +33,8 @@
 .article-content .pro-tip::before,
 .article-content .warning::before,
 .article-content .info::before,
-.article-content .success::before {
+.article-content .success::before,
+.article-content .key-takeaways::before {
     content: "";
     position: absolute;
     left: 1rem;
@@ -137,14 +138,36 @@
 
 /* ===== Key Takeaways ===== */
 .article-content .key-takeaways {
-    background: linear-gradient(135deg, hsl(var(--primary) / 0.05), hsl(var(--primary) / 0.1));
-    border-color: var(--article-accent);
-    padding: var(--article-space-lg);
+    background: var(--callout-takeaways-bg);
+    border-color: var(--callout-takeaways-border);
 }
 
-.article-content .key-takeaways h4 {
-    margin-top: 0;
-    color: var(--article-accent);
+.article-content .key-takeaways::before {
+    background-color: var(--callout-takeaways-icon);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2'%3E%3Cpath d='m21 2-2 2'/%3E%3Ccircle cx='7' cy='17' r='5'/%3E%3Cpath d='m12 12 5-5'/%3E%3Cpath d='m17 7 2 2'/%3E%3Cpath d='m9 14 2 2'/%3E%3C/svg%3E");
+}
+
+.article-content .key-takeaways h4,
+.article-content .key-takeaways-title {
+    margin: 0 0 var(--article-space-md) 0;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--callout-takeaways-icon);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    display: block;
+}
+
+/* Ensure lists inside takeaways are styled nicely */
+.article-content .key-takeaways ul {
+    margin-top: var(--article-space-sm);
+    margin-bottom: 0;
+    padding-left: 0;
+}
+
+.article-content .key-takeaways ul li {
+    margin-bottom: var(--article-space-sm);
+    line-height: var(--article-leading-normal);
 }
 
 /* ===== Mobile ===== */

@@ -9,7 +9,7 @@
     font-size: var(--article-text-base);
     line-height: var(--article-leading-normal);
     color: var(--article-text);
-    max-width: 720px;
+    max-width: 800px;
     margin: 0 auto;
     overflow-wrap: break-word;
 }

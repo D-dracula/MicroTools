@@ -60,6 +60,10 @@
     --callout-cta-border: hsl(262 83% 58%);
     --callout-cta-icon: hsl(262 83% 50%);
 
+    --callout-takeaways-bg: hsl(262 83% 97%);
+    --callout-takeaways-border: hsl(262 83% 58%);
+    --callout-takeaways-icon: hsl(262 83% 50%);
+
     /* ===== Borders & Radius ===== */
     --article-radius-sm: 8px;
     --article-radius-md: 12px;

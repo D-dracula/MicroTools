@@ -25,6 +25,10 @@
     --callout-cta-border: hsl(262 83% 58%);
     --callout-cta-icon: hsl(262 83% 70%);
 
+    --callout-takeaways-bg: hsl(262 83% 12%);
+    --callout-takeaways-border: hsl(262 83% 58%);
+    --callout-takeaways-icon: hsl(262 83% 70%);
+
     /* Shadows - Darker */
     --article-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.2);
     --article-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.25);

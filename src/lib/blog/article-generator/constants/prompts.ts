@@ -95,15 +95,12 @@ IMPORTANT: Do NOT include emojis in the HTML. Icons are added automatically via 
    <cite>Name, Title/Company</cite>
    </div>
 
-6. KEY TAKEAWAYS (at the end):
+6. KEY TAKEAWAYS (MANDATORY FORMAT - MUST USE LIST):
    <div class="key-takeaways">
    <div class="key-takeaways-title">Key Takeaways</div>
    <ul>
-   <li>First actionable insight</li>
-   <li>Second actionable insight</li>
-   <li>Third actionable insight</li>
-   <li>Fourth actionable insight</li>
-   <li>Fifth actionable insight</li>
+   <li><strong>Insight:</strong> Actionable advice here...</li>
+   <li><strong>Metric:</strong> Specific result or fact...</li>
    </ul>
    </div>
 
