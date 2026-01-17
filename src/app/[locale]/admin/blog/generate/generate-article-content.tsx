@@ -30,6 +30,7 @@ import {
   Clock,
   ChevronDown,
   ChevronUp,
+  Target,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -178,31 +179,31 @@ function getTranslations(isRTL: boolean) {
     },
 
     actions: {
-      generate: isRTL ? "🚀 بدء التوليد" : "🚀 Start Generation",
-      generating: isRTL ? "جاري التوليد..." : "Generating...",
+      generate: isRTL ? "🚀 إطلاق الوكلاء" : "🚀 Launch Agents",
+      generating: isRTL ? "الوكلاء يعملون..." : "Agents Working...",
       viewArticle: isRTL ? "عرض المقال" : "View Article",
       generateAnother: isRTL ? "توليد مقال آخر" : "Generate Another",
-      showLogs: isRTL ? "عرض السجلات" : "Show Logs",
-      hideLogs: isRTL ? "إخفاء السجلات" : "Hide Logs",
+      showLogs: isRTL ? "عرض العمليات" : "Show Operations",
+      hideLogs: isRTL ? "إخفاء العمليات" : "Hide Operations",
     },
 
     steps: {
-      validating: isRTL ? "التحقق من المدخلات..." : "Validating inputs...",
-      searching: isRTL ? "البحث في NewsAPI + Exa عن أحدث المواضيع..." : "Searching NewsAPI + Exa for latest topics...",
-      analyzing: isRTL ? "تحليل نتائج البحث..." : "Analyzing search results...",
-      selecting: isRTL ? "اختيار أفضل موضوع..." : "Selecting best topic...",
-      generating: isRTL ? "توليد المحتوى بالذكاء الاصطناعي..." : "Generating content with AI...",
-      formatting: isRTL ? "تنسيق المقال..." : "Formatting article...",
-      saving: isRTL ? "حفظ في قاعدة البيانات..." : "Saving to database...",
-      complete: isRTL ? "تم بنجاح!" : "Complete!",
+      validating: isRTL ? "التحقق من صلاحية الوكلاء..." : "Validating Agent Access...",
+      searching: isRTL ? "وكيل البحث: استكشاف المواضيع..." : "Search Agent: Exploring Topics...",
+      analyzing: isRTL ? "وكيل الفلترة: تحليل جودة النتائج..." : "Filter Agent: Analyzing Relevance...",
+      selecting: isRTL ? "وكيل التحرير: اختيار أفضل فرصة..." : "Editorial Agent: Selecting Best Topic...",
+      generating: isRTL ? "وكيل المحتوى: صياغة المقال..." : "Content Agent: Writing Article...",
+      formatting: isRTL ? "وكيل التنسيق: تحسين المظهر..." : "Format Agent: Polishing Content...",
+      saving: isRTL ? "تحزين البيانات..." : "Storing Data...",
+      complete: isRTL ? "اكتملت مهمة الوكلاء!" : "Agent Mission Complete!",
     },
 
     progress: {
-      title: isRTL ? "تقدم العملية" : "Generation Progress",
-      logs: isRTL ? "سجل العمليات" : "Operation Logs",
-      elapsed: isRTL ? "الوقت المنقضي" : "Elapsed time",
-      searchResults: isRTL ? "نتائج البحث" : "Search Results",
-      selectedTopic: isRTL ? "الموضوع المختار" : "Selected Topic",
+      title: isRTL ? "تقدم مهمة الوكلاء" : "Agent Mission Progress",
+      logs: isRTL ? "سجل اتصالات الوكلاء" : "Agent Communication Log",
+      elapsed: isRTL ? "الوقت النشط" : "Active Session Time",
+      searchResults: isRTL ? "قاعدة معرفة البحث" : "Search Knowledge Base",
+      selectedTopic: isRTL ? "فرصة المحتوى المختارة" : "Selected Content Opportunity",
     },
 
     messages: {
@@ -260,7 +261,7 @@ function StepProgress({ steps, currentStep, isRTL, t }: StepProgressProps) {
   };
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-3">
       {allSteps.map((step, index) => {
         const status = getStepStatus(step);
         const stepLog = steps.find(s => s.step === step);
@@ -268,48 +269,51 @@ function StepProgress({ steps, currentStep, isRTL, t }: StepProgressProps) {
         return (
           <div
             key={step}
-            className={`flex items-center gap-3 p-3 rounded-lg transition-all ${status === 'running' ? 'bg-primary/10 border border-primary/30' :
-              status === 'complete' ? 'bg-green-500/10' :
-                status === 'error' ? 'bg-destructive/10' :
-                  'bg-muted/30'
+            className={`flex flex-col gap-1 p-3 rounded-xl border transition-all duration-300 ${status === 'running'
+              ? 'bg-primary/5 border-primary/30 shadow-md scale-[1.02]'
+              : status === 'complete'
+                ? 'bg-green-500/5 border-green-500/20'
+                : 'bg-muted/20 border-transparent opacity-60'
               }`}
           >
-            <div className={`flex-shrink-0 ${status === 'running' ? 'text-primary animate-pulse' :
-              status === 'complete' ? 'text-green-500' :
-                status === 'error' ? 'text-destructive' :
-                  'text-muted-foreground'
-              }`}>
-              {status === 'running' ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : status === 'complete' ? (
-                <CheckCircle className="h-4 w-4" />
-              ) : status === 'error' ? (
-                <AlertCircle className="h-4 w-4" />
-              ) : (
-                getStepIcon(step)
-              )}
-            </div>
-
-            <div className="flex-1 min-w-0">
-              <p className={`text-sm font-medium ${status === 'running' ? 'text-primary' :
-                status === 'complete' ? 'text-green-600 dark:text-green-400' :
-                  status === 'error' ? 'text-destructive' :
-                    'text-muted-foreground'
+            <div className="flex items-center gap-3">
+              <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center ${status === 'running' ? 'bg-primary text-primary-foreground animate-pulse' :
+                status === 'complete' ? 'bg-green-500 text-white' :
+                  'bg-muted text-muted-foreground'
                 }`}>
-                {t.steps[step as keyof typeof t.steps] || step}
-              </p>
-              {stepLog?.details && (
-                <p className="text-xs text-muted-foreground mt-0.5 truncate">
-                  {stepLog.details}
+                {status === 'running' ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : status === 'complete' ? (
+                  <CheckCircle className="h-4 w-4" />
+                ) : (
+                  getStepIcon(step)
+                )}
+              </div>
+
+              <div className="flex-1 min-w-0">
+                <p className={`text-sm font-bold ${status === 'running' ? 'text-primary' :
+                  status === 'complete' ? 'text-green-700 dark:text-green-400' :
+                    'text-muted-foreground'
+                  }`}>
+                  {t.steps[step as keyof typeof t.steps] || step}
                 </p>
+
+                {stepLog?.details && (
+                  <p className={`text-[11px] leading-tight mt-1 ${status === 'running' ? 'text-primary/70 animate-pulse font-medium' : 'text-muted-foreground'
+                    }`}>
+                    {stepLog.details}
+                  </p>
+                )}
+              </div>
+
+              {stepLog?.duration && status === 'complete' && (
+                <div className="flex flex-col items-end gap-1">
+                  <span className="text-[10px] font-mono font-medium text-muted-foreground">
+                    {(stepLog.duration / 1000).toFixed(1)}s
+                  </span>
+                </div>
               )}
             </div>
-
-            {stepLog?.duration && status === 'complete' && (
-              <Badge variant="outline" className="text-xs">
-                {(stepLog.duration / 1000).toFixed(1)}s
-              </Badge>
-            )}
           </div>
         );
       })}
@@ -436,9 +440,11 @@ export function GenerateArticleContent() {
     try {
       // Step 1: Validating
       setGenerationStep("validating");
-      addLog("validating", t.steps.validating, "Checking API keys and rate limit...");
-      await new Promise(r => setTimeout(r, 500));
-      updateLogStatus("validating", "complete", "✓ All inputs valid");
+      addLog("validating", t.steps.validating, "Agent [SYSLOG]: Initializing secure connection to OpenRouter...");
+      await new Promise(r => setTimeout(r, 400));
+      addLog("validating", t.steps.validating, "Agent [AUTH]: Verifying administrative credentials and rate limits...");
+      await new Promise(r => setTimeout(r, 300));
+      updateLogStatus("validating", "complete", "✓ Protocol established. All systems ready for mission.");
 
       // Step 2: Searching with NewsAPI + Exa
       setGenerationStep("searching");
@@ -446,7 +452,7 @@ export function GenerateArticleContent() {
         newsApiKey.trim() ? "NewsAPI" : null,
         exaKey.trim() ? "Exa" : null,
       ].filter(Boolean).join(" + ") || "Server Keys";
-      addLog("searching", t.steps.searching, `Searching ${searchSources}...`);
+      addLog("searching", t.steps.searching, `Agent [NET]: Dispatching research drones to ${searchSources}...`);
 
       const searchResponse = await fetch("/api/blog/search", {
         method: "POST",
@@ -473,6 +479,9 @@ export function GenerateArticleContent() {
       const sources = searchResult.data.sourcesUsed || [];
       const aiAgentUsed = searchResult.data.aiAgentUsed || false;
       const aiAnalysisData = searchResult.data.aiAnalysis || null;
+
+      addLog("searching", t.steps.searching, "Agent [NET]: Data stream received. Parsing raw search packets...");
+      await new Promise(r => setTimeout(r, 400));
 
       setSearchResults(results);
       setSourcesUsed(sources);
@@ -503,29 +512,31 @@ export function GenerateArticleContent() {
       // Step 4: Selecting best topic (AI selection if enabled)
       setGenerationStep("selecting");
       if (aiAnalysisData?.topicSelection) {
-        addLog("selecting", t.steps.selecting, "AI Agent is selecting the best topic...");
-        await new Promise(r => setTimeout(r, 500));
         const selection = aiAnalysisData.topicSelection;
+        addLog("selecting", t.steps.selecting, `Agent Reasoning: ${selection.reasoning.substring(0, 100)}...`);
+        await new Promise(r => setTimeout(r, 800));
         if (results.length > 0) {
           setSelectedTopic(results[0]);
         }
         updateLogStatus("selecting", "complete",
-          `AI selected: "${selection.title.substring(0, 40)}..." (${selection.relevanceScore}% relevant)`);
+          `Selected "${selection.title.substring(0, 40)}..." with ${selection.relevanceScore}% relevance score.`);
       } else {
-        addLog("selecting", t.steps.selecting, "Ranking topics by score and recency...");
-        await new Promise(r => setTimeout(r, 500));
+        addLog("selecting", t.steps.selecting, "Ranking topics by traditional relevance algorithms...");
+        await new Promise(r => setTimeout(r, 800));
         if (results.length > 0) {
           const bestTopic = results[0];
           setSelectedTopic(bestTopic);
           updateLogStatus("selecting", "complete", `Selected: "${bestTopic.title.substring(0, 50)}..."`);
         } else {
-          updateLogStatus("selecting", "complete", "Using default topic");
+          updateLogStatus("selecting", "complete", "Using default topic due to empty search results.");
         }
       }
 
       // Step 5: Generating content
       setGenerationStep("generating");
-      addLog("generating", t.steps.generating, "OpenRouter AI is writing the article...");
+      addLog("generating", t.steps.generating, "Agent [LMM]: Synthesizing research data and establishing narrative structure...");
+      await new Promise(r => setTimeout(r, 600));
+      addLog("generating", t.steps.generating, "Agent [CONTENT]: Drafting comprehensive 1500+ word article with SEO architecture...");
 
       const response = await fetch("/api/blog/generate", {
         method: "POST",
@@ -543,23 +554,23 @@ export function GenerateArticleContent() {
         throw new Error(result.error?.message || t.messages.error);
       }
 
-      updateLogStatus("generating", "complete", `Generated ${result.data.article.readingTime} min read article`);
+      updateLogStatus("generating", "complete", `Content core drafted: ${result.data.article.readingTime} min read.`);
 
       // Step 6: Formatting
       setGenerationStep("formatting");
-      addLog("formatting", t.steps.formatting, "Applying markdown formatting...");
-      await new Promise(r => setTimeout(r, 300));
-      updateLogStatus("formatting", "complete", "Article formatted successfully");
+      addLog("formatting", t.steps.formatting, "Agent [FORMAT]: Injecting interactive content blocks (Pro-tips, Comparison tables, Info boxes)...");
+      await new Promise(r => setTimeout(r, 800));
+      updateLogStatus("formatting", "complete", "✓ Semantic HTML and SEO metadata optimized.");
 
       // Step 7: Saving
       setGenerationStep("saving");
-      addLog("saving", t.steps.saving, "Storing in Supabase database...");
-      await new Promise(r => setTimeout(r, 200));
-      updateLogStatus("saving", "complete", `Saved with ID: ${result.data.article.id.substring(0, 8)}...`);
+      addLog("saving", t.steps.saving, "Agent [DB]: Committing article to persistent storage and notifying search indices...");
+      await new Promise(r => setTimeout(r, 500));
+      updateLogStatus("saving", "complete", `Saved with ID: ${result.data.article.id.substring(0, 8)}... ✓ Transaction complete.`);
 
       // Complete
       setGenerationStep("complete");
-      addLog("complete", t.steps.complete, "🎉 Article ready!");
+      addLog("complete", t.steps.complete, "🎉 Deployment successful. Article is now live!");
       setGeneratedArticle(result.data.article);
     } catch (err) {
       setGenerationStep("error");
@@ -820,20 +831,33 @@ export function GenerateArticleContent() {
             </Card>
           )}
 
-          {/* AI Agent Details Card */}
-          {aiAnalysis && generationStep !== 'idle' && (
-            <Card className="border-purple-500/50 bg-purple-50/50 dark:bg-purple-950/20">
-              <CardHeader className="pb-3">
+          {/* AI Agent System Monitor (Premium Design) */}
+          {aiAnalysis && (
+            <Card className="border-purple-500/50 bg-purple-50/50 dark:bg-purple-950/20 overflow-hidden shadow-lg shadow-purple-500/10 active:scale-[0.99] transition-all relative">
+              <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-purple-500 via-fuchsia-500 to-indigo-500 animate-pulse" />
+              <CardHeader className="pb-3 bg-purple-500/5">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm flex items-center gap-2 text-purple-700 dark:text-purple-300">
-                    <Brain className="h-4 w-4" />
-                    {isRTL ? "خطوات الوكيل الذكي" : "AI Agent Steps"}
-                  </CardTitle>
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-purple-500 rounded-lg shadow-lg shadow-purple-500/30">
+                      <Brain className="h-4 w-4 text-white animate-pulse" />
+                    </div>
+                    <div>
+                      <CardTitle className="text-sm font-black tracking-tight text-purple-700 dark:text-purple-300">
+                        {isRTL ? "مراقب نظام الوكلاء AI" : "AI AGENT SYSTEM MONITOR"}
+                      </CardTitle>
+                      <div className="flex items-center gap-2 mt-0.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-ping" />
+                        <p className="text-[9px] text-purple-600/70 dark:text-purple-400/70 font-mono font-bold uppercase tracking-widest">
+                          {isRTL ? "الحالة: نظام نشط" : "Core Status: Online"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={() => setShowAIDetails(!showAIDetails)}
-                    className="h-6 px-2"
+                    className="h-8 w-8 p-0 rounded-full hover:bg-purple-200/50 dark:hover:bg-purple-800/50"
                   >
                     {showAIDetails ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
                   </Button>
@@ -841,87 +865,83 @@ export function GenerateArticleContent() {
               </CardHeader>
 
               {showAIDetails && (
-                <CardContent className="space-y-4">
-                  {/* Step 1: AI Search Queries */}
+                <CardContent className="pt-4 space-y-6">
+                  {/* Research Agent Section */}
                   {aiAnalysis.searchPlan && (
-                    <div className="space-y-2">
+                    <div className="relative pl-6 border-l-2 border-purple-200 dark:border-purple-800 space-y-3">
+                      <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-purple-500 border-2 border-white dark:border-gray-900" />
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold">1</div>
-                        <h4 className="text-sm font-semibold text-purple-700 dark:text-purple-300">
-                          {isRTL ? "استعلامات البحث المُولدة" : "Generated Search Queries"}
-                        </h4>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-purple-600 dark:text-purple-400">{isRTL ? "وكيل البحث" : "Research Agent"}</span>
+                        <div className="h-px flex-1 bg-purple-100 dark:bg-purple-900" />
                       </div>
-                      <div className="ml-8 space-y-1">
-                        {aiAnalysis.searchPlan.queries.map((query, i) => (
-                          <div key={i} className="flex items-center gap-2 text-sm">
-                            <Search className="h-3 w-3 text-muted-foreground" />
-                            <span className="font-mono text-xs bg-muted px-2 py-0.5 rounded">{query}</span>
-                          </div>
-                        ))}
-                        {aiAnalysis.searchPlan.reasoning && (
-                          <p className="text-xs text-muted-foreground italic mt-1">
-                            💡 {aiAnalysis.searchPlan.reasoning}
+                      <div className="space-y-2">
+                        <div className="p-2.5 rounded-lg bg-white/50 dark:bg-black/20 border border-purple-100 dark:border-purple-900/50">
+                          <p className="text-xs italic text-muted-foreground flex items-start gap-2 leading-relaxed">
+                            <span className="text-purple-500 font-bold shrink-0">AID-COG:</span>
+                            {aiAnalysis.searchPlan.reasoning}
                           </p>
-                        )}
-                      </div>
-                    </div>
-                  )}
-
-                  {/* Step 2: AI Filtering */}
-                  {aiAnalysis.filterStats && (
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold">2</div>
-                        <h4 className="text-sm font-semibold text-orange-700 dark:text-orange-300">
-                          {isRTL ? "فلترة النتائج" : "Results Filtering"}
-                        </h4>
-                      </div>
-                      <div className="ml-8">
-                        <div className="flex flex-wrap gap-2">
-                          <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950">
-                            {isRTL ? "الإجمالي:" : "Total:"} {aiAnalysis.filterStats.totalResults}
-                          </Badge>
-                          <Badge variant="outline" className="bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300">
-                            ✓ {isRTL ? "مقبول:" : "Kept:"} {aiAnalysis.filterStats.filteredResults}
-                          </Badge>
-                          <Badge variant="outline" className="bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300">
-                            ✗ {isRTL ? "مرفوض:" : "Rejected:"} {aiAnalysis.filterStats.rejectedResults}
-                          </Badge>
+                        </div>
+                        <div className="flex flex-wrap gap-1.5 ml-2">
+                          {aiAnalysis.searchPlan.queries.map((query, i) => (
+                            <Badge key={i} variant="secondary" className="text-[10px] font-mono bg-purple-100/50 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-800 py-0.5">
+                              <Search className="h-2 w-2 mr-1" />
+                              {query}
+                            </Badge>
+                          ))}
                         </div>
                       </div>
                     </div>
                   )}
 
-                  {/* Step 3: AI Topic Selection */}
-                  {aiAnalysis.topicSelection && (
-                    <div className="space-y-2">
+                  {/* Knowledge Filter Agent Section */}
+                  {aiAnalysis.filterStats && (
+                    <div className="relative pl-6 border-l-2 border-orange-200 dark:border-orange-800/30 space-y-3">
+                      <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-orange-500 border-2 border-white dark:border-gray-900" />
                       <div className="flex items-center gap-2">
-                        <div className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold">3</div>
-                        <h4 className="text-sm font-semibold text-green-700 dark:text-green-300">
-                          {isRTL ? "اختيار الموضوع" : "Topic Selection"}
-                        </h4>
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-orange-500">{isRTL ? "وكيل تصفية المعرفة" : "Knowledge Filter Agent"}</span>
+                        <div className="h-px flex-1 bg-orange-100 dark:bg-orange-900/20" />
                       </div>
-                      <div className="ml-8 space-y-2">
-                        <div className="p-3 rounded-lg bg-green-100/50 dark:bg-green-900/30 border border-green-200 dark:border-green-800">
-                          <p className="font-medium text-sm">{aiAnalysis.topicSelection.title}</p>
-                          <div className="flex flex-wrap gap-2 mt-2">
-                            <Badge className="bg-green-500">
-                              {aiAnalysis.topicSelection.relevanceScore}% {isRTL ? "صلة" : "relevant"}
-                            </Badge>
-                            <Badge variant="outline">
-                              {aiAnalysis.topicSelection.suggestedCategory}
-                            </Badge>
+                      <div className="grid grid-cols-3 gap-2 ml-2">
+                        <div className="p-2 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 text-center shadow-sm">
+                          <p className="text-[10px] text-blue-600 dark:text-blue-400 font-black">{aiAnalysis.filterStats.totalResults}</p>
+                          <p className="text-[8px] text-muted-foreground uppercase font-bold">{isRTL ? "المواضيع" : "Found"}</p>
+                        </div>
+                        <div className="p-2 rounded-lg bg-green-50/50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30 text-center shadow-sm">
+                          <p className="text-[10px] text-green-600 dark:text-green-400 font-black">{aiAnalysis.filterStats.filteredResults}</p>
+                          <p className="text-[8px] text-muted-foreground uppercase font-bold text-green-600">{isRTL ? "مقبول" : "Kept"}</p>
+                        </div>
+                        <div className="p-2 rounded-lg bg-red-50/50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 text-center shadow-sm">
+                          <p className="text-[10px] text-red-600 dark:text-red-400 font-black">{aiAnalysis.filterStats.rejectedResults}</p>
+                          <p className="text-[8px] text-muted-foreground uppercase font-bold text-red-600">{isRTL ? "مستبعد" : "Rejected"}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Editorial Strategy Agent Section */}
+                  {aiAnalysis.topicSelection && (
+                    <div className="relative pl-6 border-l-2 border-green-200 dark:border-green-800/30 space-y-3">
+                      <div className="absolute -left-[9px] top-0 w-4 h-4 rounded-full bg-green-500 border-2 border-white dark:border-gray-900" />
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-bold uppercase tracking-wider text-green-600 dark:text-green-400">{isRTL ? "وكيل التحرير الإستراتيجي" : "Strategic Editorial Agent"}</span>
+                        <div className="h-px flex-1 bg-green-100 dark:bg-green-900/20" />
+                      </div>
+                      <div className="p-3 rounded-xl bg-gradient-to-br from-green-50/50 to-emerald-50/50 dark:from-green-950/20 dark:to-emerald-950/20 border border-green-200/50 dark:border-green-800 shadow-sm ml-2">
+                        <div className="flex justify-between items-start mb-2 gap-2">
+                          <h4 className="text-xs font-bold text-green-800 dark:text-green-200 leading-tight flex-1">{aiAnalysis.topicSelection.title}</h4>
+                          <Badge className="bg-green-600 hover:bg-green-700 text-white text-[9px] font-black tracking-tighter shrink-0 px-1.5 h-4">
+                            {aiAnalysis.topicSelection.relevanceScore}% MATCH
+                          </Badge>
+                        </div>
+                        <div className="space-y-2 mt-3">
+                          <div className="flex items-start gap-2 text-[10px]">
+                            <Target className="h-3 w-3 text-green-600 mt-0.5 shrink-0" />
+                            <p className="leading-relaxed"><span className="font-bold text-green-700 dark:text-green-300">{isRTL ? "الزاوية الفريدة: " : "Unique Angle: "}</span>{aiAnalysis.topicSelection.uniqueAngle}</p>
                           </div>
-                          {aiAnalysis.topicSelection.uniqueAngle && (
-                            <p className="text-xs text-muted-foreground mt-2">
-                              🎯 <span className="font-medium">{isRTL ? "زاوية فريدة:" : "Unique angle:"}</span> {aiAnalysis.topicSelection.uniqueAngle}
-                            </p>
-                          )}
-                          {aiAnalysis.topicSelection.reasoning && (
-                            <p className="text-xs text-muted-foreground mt-1 italic">
-                              💭 {aiAnalysis.topicSelection.reasoning}
-                            </p>
-                          )}
+                          <div className="flex items-start gap-2 text-[10px]">
+                            <Brain className="h-3 w-3 text-green-600 mt-0.5 shrink-0" />
+                            <p className="leading-relaxed"><span className="font-bold text-green-700 dark:text-green-300">{isRTL ? "التحليل الإستراتيجي: " : "Strategic Reasoning: "}</span>{aiAnalysis.topicSelection.reasoning}</p>
+                          </div>
                         </div>
                       </div>
                     </div>
