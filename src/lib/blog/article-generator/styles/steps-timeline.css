@@ -1,0 +1,476 @@
+/**
+ * Step-by-Step Timeline Design
+ * 
+ * تصميم الخطوات على شكل خط زمني عمودي احترافي
+ * Design A - Vertical Timeline with connected steps
+ * 
+ * @version 2.0
+ * @author Article Generator System
+ */
+
+/* ===== CSS Variables for Steps ===== */
+:root {
+  --steps-line-color: hsl(var(--primary) / 0.3);
+  --steps-line-width: 2px;
+  --steps-badge-size: 2.5rem;
+  --steps-badge-bg: hsl(var(--primary));
+  --steps-badge-color: hsl(var(--primary-foreground));
+  --steps-card-bg: hsl(var(--background));
+  --steps-card-border: hsl(var(--border));
+  --steps-card-shadow: 0 2px 8px hsl(var(--foreground) / 0.06);
+  --steps-gap: 0;
+  --steps-content-gap: 1rem;
+}
+
+/* ===== Steps Container - Timeline Layout ===== */
+.article-content .steps,
+.article-content .steps-container {
+  position: relative;
+  margin: 2.5rem 0;
+  padding: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+/* Vertical Timeline Line */
+.article-content .steps::before,
+.article-content .steps-container::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--steps-badge-size) / 2 - var(--steps-line-width) / 2);
+  top: var(--steps-badge-size);
+  bottom: var(--steps-badge-size);
+  width: var(--steps-line-width);
+  background: linear-gradient(
+    to bottom,
+    var(--steps-line-color),
+    hsl(var(--primary) / 0.5),
+    var(--steps-line-color)
+  );
+  border-radius: var(--steps-line-width);
+}
+
+/* RTL Timeline Line */
+[dir="rtl"] .article-content .steps::before,
+[dir="rtl"] .article-content .steps-container::before {
+  left: auto;
+  right: calc(var(--steps-badge-size) / 2 - var(--steps-line-width) / 2);
+}
+
+/* ===== Individual Step ===== */
+.article-content .step {
+  position: relative;
+  display: grid;
+  grid-template-columns: var(--steps-badge-size) 1fr;
+  gap: var(--steps-content-gap);
+  margin-bottom: 0;
+  padding: 0 0 1.5rem 0;
+  background: transparent;
+  border-radius: 0;
+}
+
+.article-content .step:last-child {
+  padding-bottom: 0;
+}
+
+/* RTL Step Layout */
+[dir="rtl"] .article-content .step {
+  grid-template-columns: 1fr var(--steps-badge-size);
+}
+
+/* ===== Step Number Badge ===== */
+.article-content .step-number,
+.article-content .step > .step-title::before {
+  position: relative;
+  z-index: 2;
+  width: var(--steps-badge-size);
+  height: var(--steps-badge-size);
+  border-radius: 50%;
+  background: var(--steps-badge-bg);
+  color: var(--steps-badge-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+  font-family: var(--font-article-body);
+  box-shadow: 
+    0 0 0 4px hsl(var(--background)),
+    0 2px 8px hsl(var(--primary) / 0.25);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+/* Badge Hover Effect */
+.article-content .step:hover .step-number {
+  transform: scale(1.1);
+  box-shadow: 
+    0 0 0 4px hsl(var(--background)),
+    0 4px 16px hsl(var(--primary) / 0.4);
+  background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--primary) / 0.85) 100%);
+}
+
+/* Checkmark for completed steps (optional) */
+.article-content .step.completed .step-number::after {
+  content: "";
+  position: absolute;
+  width: 10px;
+  height: 6px;
+  border-left: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  margin-top: -2px;
+}
+
+/* ===== Step Content Card ===== */
+.article-content .step-content {
+  background: var(--steps-card-bg);
+  border: 1px solid var(--steps-card-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--steps-card-shadow);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-width: 0;
+}
+
+/* Card Hover Effect */
+.article-content .step:hover .step-content {
+  border-color: hsl(var(--primary) / 0.3);
+  box-shadow: 
+    0 4px 12px hsl(var(--foreground) / 0.08),
+    0 0 0 1px hsl(var(--primary) / 0.1);
+  transform: translateX(4px);
+}
+
+[dir="rtl"] .article-content .step:hover .step-content {
+  transform: translateX(-4px);
+}
+
+/* Arrow pointer to timeline (optional visual enhancement) */
+.article-content .step-content::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--steps-badge-size) + var(--steps-content-gap) - 8px);
+  top: calc(var(--steps-badge-size) / 2 - 6px);
+  width: 12px;
+  height: 12px;
+  background: var(--steps-card-bg);
+  border-left: 1px solid var(--steps-card-border);
+  border-bottom: 1px solid var(--steps-card-border);
+  transform: rotate(45deg);
+  z-index: 1;
+}
+
+[dir="rtl"] .article-content .step-content::before {
+  left: auto;
+  right: calc(var(--steps-badge-size) + var(--steps-content-gap) - 8px);
+  border-left: none;
+  border-bottom: none;
+  border-right: 1px solid var(--steps-card-border);
+  border-top: 1px solid var(--steps-card-border);
+}
+
+/* ===== Step Title ===== */
+.article-content .step-title {
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.625rem;
+  line-height: 1.4;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ===== Step Description ===== */
+.article-content .step-description,
+.article-content .step-content > p {
+  color: hsl(var(--muted-foreground));
+  font-size: 0.9375rem;
+  line-height: 1.7;
+  margin: 0;
+}
+
+.article-content .step-content > p + p {
+  margin-top: 0.75rem;
+}
+
+/* ===== Step Details (Sub-bullets) ===== */
+.article-content .step-details {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: hsl(var(--muted) / 0.15);
+  border-radius: 0.5rem;
+  border-left: 3px solid hsl(var(--primary) / 0.3);
+}
+
+[dir="rtl"] .article-content .step-details {
+  border-left: none;
+  border-right: 3px solid hsl(var(--primary) / 0.3);
+}
+
+.article-content .step-details ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-content .step-details li {
+  position: relative;
+  padding-left: 1.25rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  color: hsl(var(--foreground) / 0.85);
+}
+
+.article-content .step-details li:last-child {
+  margin-bottom: 0;
+}
+
+.article-content .step-details li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.5rem;
+  width: 6px;
+  height: 6px;
+  background: hsl(var(--primary));
+  border-radius: 50%;
+}
+
+[dir="rtl"] .article-content .step-details li {
+  padding-left: 0;
+  padding-right: 1.25rem;
+}
+
+[dir="rtl"] .article-content .step-details li::before {
+  left: auto;
+  right: 0;
+}
+
+/* ===== Step Tool Recommendation ===== */
+.article-content .step-tool {
+  margin-top: 1rem;
+  padding: 0.875rem 1rem;
+  background: hsl(217 91% 60% / 0.08);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.article-content .step-tool::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: hsl(217 91% 60%);
+}
+
+[dir="rtl"] .article-content .step-tool::before {
+  left: auto;
+  right: 0;
+}
+
+/* Tool Icon (SVG) */
+.article-content .step-tool::after {
+  content: "";
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M11.42 15.17L17.25 21A2.652 2.652 0 0021 17.25l-5.877-5.877M11.42 15.17l2.496-3.03c.317-.384.74-.626 1.208-.766M11.42 15.17l-4.655 5.653a2.548 2.548 0 11-3.586-3.586l6.837-5.63m5.108-.233c.55-.164 1.163-.188 1.743-.14a4.5 4.5 0 004.486-6.336l-3.276 3.277a3.004 3.004 0 01-2.25-2.25l3.276-3.276a4.5 4.5 0 00-6.336 4.486c.091 1.076-.071 2.264-.904 2.95l-.102.085m-1.745 1.437L5.909 7.5H4.5L2.25 3.75l1.5-1.5L7.5 4.5v1.409l4.26 4.26m-1.745 1.437l1.745-1.437m6.615 8.206L15.75 15.75M4.867 19.125h.008v.008h-.008v-.008z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  order: -1;
+}
+
+.article-content .step-tool strong {
+  color: hsl(217 91% 50%);
+  font-weight: 600;
+}
+
+/* ===== Step Pitfall Warning ===== */
+.article-content .step-pitfall {
+  margin-top: 1rem;
+  padding: 0.875rem 1rem;
+  background: hsl(38 92% 50% / 0.08);
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.article-content .step-pitfall::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: hsl(38 92% 50%);
+}
+
+[dir="rtl"] .article-content .step-pitfall::before {
+  left: auto;
+  right: 0;
+}
+
+/* Pitfall Icon (SVG) */
+.article-content .step-pitfall::after {
+  content: "";
+  flex-shrink: 0;
+  width: 18px;
+  height: 18px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke-width='2' stroke='%23f59e0b'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  order: -1;
+}
+
+.article-content .step-pitfall strong {
+  color: hsl(38 92% 45%);
+  font-weight: 600;
+}
+
+/* ===== Dark Mode ===== */
+.dark .article-content .steps::before,
+.dark .article-content .steps-container::before {
+  background: linear-gradient(
+    to bottom,
+    hsl(var(--primary) / 0.4),
+    hsl(var(--primary) / 0.6),
+    hsl(var(--primary) / 0.4)
+  );
+}
+
+.dark .article-content .step-number {
+  box-shadow: 
+    0 0 0 4px hsl(var(--background)),
+    0 2px 12px hsl(var(--primary) / 0.4);
+}
+
+.dark .article-content .step-content {
+  background: hsl(var(--muted) / 0.15);
+  border-color: hsl(var(--border) / 0.5);
+  box-shadow: 0 2px 8px hsl(0 0% 0% / 0.15);
+}
+
+.dark .article-content .step:hover .step-content {
+  background: hsl(var(--muted) / 0.25);
+  box-shadow: 
+    0 4px 16px hsl(0 0% 0% / 0.25),
+    0 0 0 1px hsl(var(--primary) / 0.2);
+}
+
+.dark .article-content .step-content::before {
+  background: hsl(var(--muted) / 0.15);
+  border-color: hsl(var(--border) / 0.5);
+}
+
+.dark .article-content .step-details {
+  background: hsl(var(--muted) / 0.25);
+}
+
+.dark .article-content .step-tool {
+  background: hsl(217 91% 60% / 0.12);
+}
+
+.dark .article-content .step-pitfall {
+  background: hsl(38 92% 50% / 0.12);
+}
+
+/* ===== Mobile Responsive ===== */
+@media (max-width: 640px) {
+  :root {
+    --steps-badge-size: 2.25rem;
+    --steps-content-gap: 0.75rem;
+  }
+
+  .article-content .steps,
+  .article-content .steps-container {
+    margin: 2rem 0;
+  }
+
+  /* Stack layout on mobile */
+  .article-content .step {
+    grid-template-columns: var(--steps-badge-size) 1fr;
+    padding-bottom: 1.25rem;
+  }
+
+  .article-content .step-content {
+    padding: 1rem;
+  }
+
+  /* Hide arrow on mobile */
+  .article-content .step-content::before {
+    display: none;
+  }
+
+  .article-content .step-title {
+    font-size: 1rem;
+  }
+
+  .article-content .step-description,
+  .article-content .step-content > p {
+    font-size: 0.875rem;
+  }
+
+  /* Remove hover transforms on mobile */
+  .article-content .step:hover .step-content {
+    transform: none;
+  }
+
+  .article-content .step:hover .step-number {
+    transform: none;
+  }
+
+  /* Smaller details padding */
+  .article-content .step-details {
+    padding: 0.75rem;
+  }
+
+  .article-content .step-tool,
+  .article-content .step-pitfall {
+    padding: 0.75rem;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .article-content .step-tool::after,
+  .article-content .step-pitfall::after {
+    order: 0;
+    margin-bottom: 0.25rem;
+  }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  .article-content .steps::before,
+  .article-content .steps-container::before {
+    background: #999;
+  }
+
+  .article-content .step-number {
+    background: #666;
+    color: #fff;
+    box-shadow: none;
+  }
+
+  .article-content .step-content {
+    border: 1px solid #ddd;
+    box-shadow: none;
+  }
+
+  .article-content .step-content::before {
+    display: none;
+  }
+}

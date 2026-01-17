@@ -1,0 +1,18 @@
+/**
+ * Article Generator Styles
+ * 
+ * ملف الاستيراد الرئيسي لجميع أنماط مولد المقالات
+ * Main entry point for all article generator styles
+ * 
+ * @version 2.0
+ * @author Article Generator System
+ */
+
+/* Base Typography and Container */
+@import './typography.css';
+
+/* Step-by-Step Timeline Design */
+@import './steps-timeline.css';
+
+/* Callout Boxes with SVG Icons */
+@import './callout-boxes.css';

@@ -32,7 +32,7 @@ import { isArticleCategory } from '@/lib/blog/types';
  */
 async function checkAdminAccess(): Promise<{ isAdmin: boolean; userId: string | null }> {
   const session = await getServerSession(authOptions);
-  
+
   if (!session?.user?.email) {
     return { isAdmin: false, userId: null };
   }
@@ -41,12 +41,12 @@ async function checkAdminAccess(): Promise<{ isAdmin: boolean; userId: string | 
   const adminEmailsEnv = process.env.ADMIN_EMAILS || process.env.NEXT_PUBLIC_ADMIN_EMAILS || '';
   const adminEmails = adminEmailsEnv.split(',').map(e => e.trim().toLowerCase());
   const isAdmin = adminEmails.includes(session.user.email.toLowerCase());
-  
+
   // Get user ID from session
   const userId = (session.user as { id?: string }).id || null;
-  
-  return { 
-    isAdmin, 
+
+  return {
+    isAdmin,
     userId
   };
 }
@@ -62,6 +62,8 @@ interface GenerateRequest {
   category?: ArticleCategory;
   /** Optional: Exa search results (if provided externally) */
   exaResults?: ExaSearchResult[];
+  /** Optional: Maximum number of retry attempts (default: 2) */
+  maxRetries?: number;
 }
 
 interface GenerateResponse {
@@ -107,7 +109,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<GenerateR
   try {
     // Check admin access (Requirements: 2.1, 2.2)
     const { isAdmin, userId } = await checkAdminAccess();
-    
+
     if (!isAdmin || !userId) {
       return NextResponse.json(
         {
@@ -168,11 +170,11 @@ export async function POST(request: NextRequest): Promise<NextResponse<GenerateR
 
     // Get Exa search results
     let exaResults: ExaSearchResult[] = body.exaResults || [];
-    
+
     // If no Exa results provided, fetch from search API
     if (exaResults.length === 0) {
       console.log('[Generate] No search results provided, fetching from search API...');
-      
+
       try {
         // Call the search API internally
         const searchUrl = new URL('/api/blog/search', request.url);
@@ -188,7 +190,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<GenerateR
             fetchFullContent: true,
           }),
         });
-        
+
         if (searchResponse.ok) {
           const searchData = await searchResponse.json();
           if (searchData.success && searchData.data?.results) {
@@ -208,7 +210,7 @@ export async function POST(request: NextRequest): Promise<NextResponse<GenerateR
       } catch (searchError) {
         console.error('[Generate] Failed to fetch from search API:', searchError);
       }
-      
+
       // If still no results, use fallback mock data
       if (exaResults.length === 0) {
         console.log('[Generate] Using fallback mock data');
@@ -221,7 +223,10 @@ export async function POST(request: NextRequest): Promise<NextResponse<GenerateR
       userId,
       body.apiKey,
       exaResults,
-      { category: body.category }
+      {
+        category: body.category,
+        maxRetries: body.maxRetries ?? 2, // Default to 2 retries
+      }
     );
 
     if (!result.success || !result.article) {
