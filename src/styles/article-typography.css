@@ -531,14 +531,8 @@
       hsl(var(--primary) / 0.15) 100%);
 }
 
-/* Dark mode tables */
-.dark .article-content th {
-  background: hsl(var(--muted));
-}
+/* Removal of old table dark mode overrides that cause color loss */
 
-.dark .article-content tr:nth-child(even) {
-  background: hsl(var(--muted) / 0.2);
-}
 
 /* ===== Accessibility Enhancements ===== */
 /* Focus visible for keyboard navigation */
@@ -666,14 +660,14 @@
 /* ===== Steps Container ===== */
 .article-content .steps-container,
 .article-content .steps {
-  display: flex;
-  flex-direction: column;
+  display: flex !important;
+  flex-direction: column !important;
   background: linear-gradient(135deg, hsl(var(--muted) / 0.4) 0%, hsl(var(--muted) / 0.2) 100%);
   border-radius: 1rem;
   padding: 2rem;
-  margin: 2rem 0;
+  margin: 2.5rem 0;
   border: 1px solid hsl(var(--border));
-  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.05);
+  box-shadow: 0 4px 12px hsl(var(--foreground) / 0.05);
 }
 
 /* Steps header with icon */
@@ -688,15 +682,17 @@
 }
 
 .article-content .steps-container .step,
+.article-content .steps-container .step-item,
 .article-content .steps .step,
 .article-content .step {
-  display: flex;
-  gap: 1.25rem;
-  margin-bottom: 1.5rem;
-  padding: 1rem;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.25rem;
   background: hsl(var(--background) / 0.5);
-  border-radius: 0.75rem;
-  transition: all 0.2s ease;
+  border-radius: 0.875rem;
+  transition: all 0.3s ease;
 }
 
 .article-content .steps-container .step:hover,

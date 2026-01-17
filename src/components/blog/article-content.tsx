@@ -168,8 +168,8 @@ function transformCalloutBoxes(html: string): string {
     let stepIndex = 0;
     let stepsHtml = '';
 
-    // Match each step div with its nested content - simplified pattern
-    const stepPattern = /<div\s+class=["']step["']>\s*<div\s+class=["']step-title["']>(.*?)<\/div>([\s\S]*?)<\/div>/gi;
+    // Match each step div with its nested content - improved pattern
+    const stepPattern = /<div\s+class=["']step["']>\s*(?:<div\s+class=["']step-title["']>(.*?)<\/div>)?([\s\S]*?)<\/div>/gi;
     let stepMatch;
 
     while ((stepMatch = stepPattern.exec(content)) !== null) {
@@ -192,25 +192,27 @@ function transformCalloutBoxes(html: string): string {
       }
 
       stepsHtml += `
-<div class="step flex gap-4 mb-6 last:mb-0">
-  <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-base shadow-sm">${stepIndex}</div>
-  <div class="flex-1 pt-1">
-    <div class="step-title font-semibold text-foreground mb-2 text-base">${stepTitle}</div>
-    <div class="step-content">${stepDesc}</div>
+<div class="step-item flex gap-4 mb-8 last:mb-0">
+  <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-base shadow-sm ring-4 ring-primary/10">${stepIndex}</div>
+  <div class="flex-1 pt-0.5">
+    ${stepTitle ? `<div class="step-title font-bold text-foreground mb-2 text-lg leading-tight">${stepTitle}</div>` : ''}
+    <div class="step-content space-y-3">${stepDesc}</div>
   </div>
 </div>`;
     }
 
     if (stepsHtml) {
       return `
-<div class="steps-container bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-6 sm:p-8 my-8 border border-border shadow-sm">
-  <div class="flex items-center gap-2 mb-6">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
-      <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-    </svg>
-    <h3 class="font-bold text-lg text-foreground m-0">Step-by-Step Guide</h3>
+<div class="steps-container flex flex-col bg-gradient-to-br from-muted/40 to-muted/20 rounded-xl p-6 sm:p-10 my-10 border border-border shadow-sm">
+  <div class="flex items-center gap-3 mb-8 pb-4 border-bottom border-border/50">
+    <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="text-primary" aria-hidden="true">
+        <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+      </svg>
+    </div>
+    <h3 class="font-black text-xl text-foreground m-0 tracking-tight">Step-by-Step Guide</h3>
   </div>
-  ${stepsHtml}
+  <div class="steps-list flex flex-col w-full">${stepsHtml}</div>
 </div>`;
     }
     return _match; // Return original if no steps found
