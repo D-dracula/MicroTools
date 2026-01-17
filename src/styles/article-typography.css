@@ -60,6 +60,15 @@
   color: hsl(var(--foreground));
   max-width: 720px;
   margin: 0 auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+/* Ensure all direct children respect container width */
+.article-content > * {
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 /* ===== Drop Cap Styling ===== */
@@ -298,6 +307,7 @@
   padding: 1.5rem;
   margin: 2rem 0;
   overflow-x: auto;
+  max-width: 100%;
   font-family: var(--font-article-code);
   font-size: 0.875rem;
   line-height: var(--line-height-article-code);
@@ -415,6 +425,7 @@
 /* ===== Tables ===== */
 .article-content .table-container {
   width: 100%;
+  max-width: 100%;
   overflow-x: auto;
   margin: 2.5rem 0;
   border-radius: 0.875rem;
@@ -531,8 +542,14 @@
       hsl(var(--primary) / 0.15) 100%);
 }
 
-/* Removal of old table dark mode overrides that cause color loss */
+/* Dark mode tables */
+.dark .article-content th {
+  background: hsl(var(--muted));
+}
 
+.dark .article-content tr:nth-child(even) {
+  background: hsl(var(--muted) / 0.2);
+}
 
 /* ===== Accessibility Enhancements ===== */
 /* Focus visible for keyboard navigation */
@@ -660,14 +677,14 @@
 /* ===== Steps Container ===== */
 .article-content .steps-container,
 .article-content .steps {
-  display: flex !important;
-  flex-direction: column !important;
   background: linear-gradient(135deg, hsl(var(--muted) / 0.4) 0%, hsl(var(--muted) / 0.2) 100%);
   border-radius: 1rem;
   padding: 2rem;
-  margin: 2.5rem 0;
+  margin: 2rem 0;
   border: 1px solid hsl(var(--border));
-  box-shadow: 0 4px 12px hsl(var(--foreground) / 0.05);
+  box-shadow: 0 2px 8px hsl(var(--foreground) / 0.05);
+  max-width: 100%;
+  overflow: hidden;
 }
 
 /* Steps header with icon */
@@ -682,17 +699,18 @@
 }
 
 .article-content .steps-container .step,
-.article-content .steps-container .step-item,
 .article-content .steps .step,
 .article-content .step {
-  display: flex !important;
-  flex-direction: row !important;
-  gap: 1.5rem;
-  margin-bottom: 2rem;
-  padding: 1.25rem;
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  padding: 1rem;
   background: hsl(var(--background) / 0.5);
-  border-radius: 0.875rem;
-  transition: all 0.3s ease;
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .article-content .steps-container .step:hover,
@@ -745,6 +763,9 @@
 .article-content .step-content {
   flex: 1;
   padding-top: 0.25rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .article-content .steps-container .step-title,
@@ -755,6 +776,8 @@
   color: hsl(var(--foreground));
   margin-bottom: 0.5rem;
   line-height: 1.4;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
 }
 
 .article-content .steps-container .step-description,
