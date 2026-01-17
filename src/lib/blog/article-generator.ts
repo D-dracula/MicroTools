@@ -736,10 +736,20 @@ Create an original, comprehensive, SEO-optimized article that provides real valu
     { role: 'user' as const, content: userPrompt },
   ];
 
-  const response = await chat(apiKey, messages, {
-    temperature: 0.7,
-    maxTokens: 6000, // Increased for 1500-2500 word articles with formatting
-  });
+  let response;
+  try {
+    response = await chat(apiKey, messages, {
+      temperature: 0.7,
+      maxTokens: 6000, // Increased for 1500-2500 word articles with formatting
+    });
+    
+    if (!response || !response.content) {
+      throw new Error('AI returned empty response');
+    }
+  } catch (chatError) {
+    console.error('OpenRouter API error:', chatError);
+    throw new Error(`Failed to generate article content: ${chatError instanceof Error ? chatError.message : 'Unknown error'}. Please check your API key and try again.`);
+  }
 
   // Parse the JSON response with improved error handling
   let articleData;
@@ -758,42 +768,100 @@ Create an original, comprehensive, SEO-optimized article that provides real valu
     if (codeBlockMatch) {
       jsonString = codeBlockMatch[1].trim();
     } else {
-      // 2. Try to extract JSON object directly
-      const jsonMatch = content.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
-        jsonString = jsonMatch[0];
+      // 2. Try to extract JSON object directly (find first { to last })
+      const firstBrace = content.indexOf('{');
+      const lastBrace = content.lastIndexOf('}');
+      if (firstBrace !== -1 && lastBrace !== -1 && lastBrace > firstBrace) {
+        jsonString = content.substring(firstBrace, lastBrace + 1);
       }
     }
 
     // 3. Clean up common issues
     jsonString = jsonString
       .replace(/[\u0000-\u001F]+/g, ' ') // Remove control characters
-      .replace(/,\s*}/g, '}') // Remove trailing commas
-      .replace(/,\s*]/g, ']'); // Remove trailing commas in arrays
+      .replace(/,(\s*[}\]])/g, '$1') // Remove trailing commas before } or ]
+      .replace(/\n/g, '\\n') // Escape newlines in strings
+      .replace(/\r/g, '\\r') // Escape carriage returns
+      .replace(/\t/g, '\\t'); // Escape tabs
 
+    // Try to parse the cleaned JSON
     articleData = JSON.parse(jsonString);
+    
+    // Validate that we got the expected structure
+    if (!articleData || typeof articleData !== 'object') {
+      throw new Error('Parsed data is not an object');
+    }
   } catch (parseError) {
     console.error('Failed to parse article response:', parseError);
-    console.error('Raw response:', response.content.substring(0, 1000));
+    console.error('Parse error details:', parseError instanceof Error ? parseError.message : String(parseError));
+    console.error('Raw response (first 2000 chars):', response.content.substring(0, 2000));
 
-    // Fallback: Create a basic article from the response
-    const fallbackContent = response.content
-      .replace(/```[\s\S]*?```/g, '') // Remove code blocks
-      .replace(/^\s*\{[\s\S]*?\}\s*$/m, '') // Remove JSON attempts
-      .trim();
-
-    if (fallbackContent.length > 200) {
-      articleData = {
-        title: topic.title.substring(0, 100),
-        summary: topic.text.substring(0, 200),
-        content: fallbackContent,
-        tags: [],
-        metaTitle: topic.title.substring(0, 60),
-        metaDescription: topic.text.substring(0, 155),
-      };
-    } else {
-      throw new Error('Failed to parse generated article content');
+    // Enhanced fallback: Try to extract content even if JSON parsing fails
+    const content = response.content.trim();
+    
+    // Try to extract title from various patterns
+    let extractedTitle = topic.title;
+    const titlePatterns = [
+      /"title"\s*:\s*"([^"]+)"/,
+      /title:\s*"([^"]+)"/i,
+      /^#\s+(.+)$/m,
+      /^(.+)$/m, // First line as fallback
+    ];
+    
+    for (const pattern of titlePatterns) {
+      const match = content.match(pattern);
+      if (match && match[1] && match[1].length > 10) {
+        extractedTitle = match[1].trim();
+        break;
+      }
     }
+    
+    // Try to extract content from various patterns
+    let extractedContent = '';
+    const contentPatterns = [
+      /"content"\s*:\s*"([\s\S]+?)"\s*,?\s*"tags"/,
+      /"content"\s*:\s*"([\s\S]+?)"\s*}/,
+      /content:\s*"([\s\S]+?)"\s*,?\s*tags:/i,
+    ];
+    
+    for (const pattern of contentPatterns) {
+      const match = content.match(pattern);
+      if (match && match[1] && match[1].length > 500) {
+        extractedContent = match[1]
+          .replace(/\\n/g, '\n')
+          .replace(/\\r/g, '\r')
+          .replace(/\\t/g, '\t')
+          .replace(/\\"/g, '"')
+          .trim();
+        break;
+      }
+    }
+    
+    // If no content extracted from JSON, use the whole response
+    if (!extractedContent || extractedContent.length < 500) {
+      extractedContent = content
+        .replace(/```[\s\S]*?```/g, '') // Remove code blocks
+        .replace(/\{[\s\S]*?"content"\s*:\s*"/i, '') // Remove JSON prefix
+        .replace(/"\s*,?\s*"tags"[\s\S]*$/i, '') // Remove JSON suffix
+        .trim();
+    }
+    
+    // Final validation
+    if (extractedContent.length < 500) {
+      throw new Error(`Failed to parse generated article content. Response too short (${content.length} chars). AI may have returned an error or incomplete response. Please check your API key and try again.`);
+    }
+
+    // Create fallback article data
+    articleData = {
+      title: extractedTitle.substring(0, 100),
+      summary: topic.text.substring(0, 200),
+      content: extractedContent,
+      tags: [],
+      metaTitle: extractedTitle.substring(0, 60),
+      metaDescription: topic.text.substring(0, 155),
+    };
+    
+    console.log('✓ Using fallback article data with extracted content');
   }
 
   // Validate required fields
