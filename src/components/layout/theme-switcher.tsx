@@ -17,6 +17,13 @@ export function ThemeSwitcher() {
   const { setTheme } = useTheme();
   const t = useTranslations("theme");
 
+  // Use startTransition to avoid blocking UI during theme switch
+  const handleThemeChange = React.useCallback((theme: string) => {
+    React.startTransition(() => {
+      setTheme(theme);
+    });
+  }, [setTheme]);
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -27,13 +34,13 @@ export function ThemeSwitcher() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        <DropdownMenuItem onClick={() => setTheme("light")}>
+        <DropdownMenuItem onClick={() => handleThemeChange("light")}>
           {t("light")}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
+        <DropdownMenuItem onClick={() => handleThemeChange("dark")}>
           {t("dark")}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
+        <DropdownMenuItem onClick={() => handleThemeChange("system")}>
           {t("system")}
         </DropdownMenuItem>
       </DropdownMenuContent>
