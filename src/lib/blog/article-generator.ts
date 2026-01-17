@@ -58,7 +58,7 @@ const CATEGORY_KEYWORDS: Record<ArticleCategory, string[]> = {
 const SIMILARITY_THRESHOLD = 0.35; // Lowered from 0.45 to be more strict about duplicates
 
 /** Number of recent articles to check for duplicates */
-const DUPLICATE_CHECK_LIMIT = 100;
+const DUPLICATE_CHECK_LIMIT = 500;
 
 // ============================================================================
 // Types
@@ -106,6 +106,7 @@ export type ProgressCallback = (progress: GenerationProgress) => void;
 export interface ExistingArticleInfo {
   title: string;
   keywords: string[];
+  urls: string[]; // Store all source URLs
 }
 
 // ============================================================================
@@ -147,15 +148,15 @@ function extractKeywords(text: string): string[] {
  */
 function calculateJaccardSimilarity(keywords1: string[], keywords2: string[]): number {
   if (keywords1.length === 0 || keywords2.length === 0) return 0;
-  
+
   const set1 = new Set(keywords1);
   const set2 = new Set(keywords2);
-  
+
   let intersection = 0;
   for (const word of set1) {
     if (set2.has(word)) intersection++;
   }
-  
+
   const union = set1.size + set2.size - intersection;
   return union > 0 ? intersection / union : 0;
 }
@@ -176,14 +177,14 @@ function calculateNgramSimilarity(text1: string, text2: string): number {
 
   const bigrams1 = getBigrams(text1);
   const bigrams2 = getBigrams(text2);
-  
+
   if (bigrams1.size === 0 || bigrams2.size === 0) return 0;
-  
+
   let intersection = 0;
   for (const bigram of bigrams1) {
     if (bigrams2.has(bigram)) intersection++;
   }
-  
+
   const union = bigrams1.size + bigrams2.size - intersection;
   return union > 0 ? intersection / union : 0;
 }
@@ -199,10 +200,10 @@ function calculateTopicSimilarity(
   // Title similarity (weighted higher)
   const newTitleKeywords = extractKeywords(newTopic.title);
   const titleSimilarity = calculateJaccardSimilarity(newTitleKeywords, existingArticle.keywords);
-  
+
   // N-gram similarity for title
   const ngramSimilarity = calculateNgramSimilarity(newTopic.title, existingArticle.title);
-  
+
   // Combined score: 50% keyword, 50% n-gram
   return (titleSimilarity * 0.5) + (ngramSimilarity * 0.5);
 }
@@ -214,23 +215,28 @@ function calculateTopicSimilarity(
  */
 export async function getExistingArticlesForDedup(): Promise<ExistingArticleInfo[]> {
   const supabase = createAdminClient();
-  
+
   const { data, error } = await supabase
     .from('articles' as any)
-    .select('title')
+    .select('title, sources')
     .eq('is_published', true)
     .order('created_at', { ascending: false })
     .limit(DUPLICATE_CHECK_LIMIT);
-  
+
   if (error) {
     console.error('Failed to fetch existing articles for dedup:', error);
     return [];
   }
-  
-  return (data || []).map((row: any) => ({
-    title: row.title,
-    keywords: extractKeywords(row.title),
-  }));
+
+  return (data || []).map((row: any) => {
+    const sources = Array.isArray(row.sources) ? row.sources : [];
+    const urls = sources.map((s: any) => s.url).filter(Boolean);
+    return {
+      title: row.title,
+      keywords: extractKeywords(row.title),
+      urls,
+    };
+  });
 }
 
 /**
@@ -241,34 +247,42 @@ export async function getExistingArticlesForDedup(): Promise<ExistingArticleInfo
  * @returns Object with isDuplicate flag and most similar article if found
  */
 export function checkTopicDuplication(
-  topic: { title: string; text?: string },
+  topic: { title: string; url?: string; text?: string },
   existingArticles: ExistingArticleInfo[]
 ): { isDuplicate: boolean; similarTo?: string; similarity: number } {
   let maxSimilarity = 0;
   let mostSimilarTitle = '';
-  
+
   for (const existing of existingArticles) {
+    // 1. Check URL match (100% duplicate if URL matches)
+    if (topic.url && existing.urls.includes(topic.url)) {
+      maxSimilarity = 1.0;
+      mostSimilarTitle = existing.title;
+      break;
+    }
+
+    // 2. Check title similarity
     const similarity = calculateTopicSimilarity(topic, existing);
-    
+
     if (similarity > maxSimilarity) {
       maxSimilarity = similarity;
       mostSimilarTitle = existing.title;
     }
-    
+
     // Log high similarity matches for debugging
     if (similarity >= SIMILARITY_THRESHOLD * 0.8) {
       console.log(`🔍 Similarity check: "${topic.title}" vs "${existing.title}" = ${(similarity * 100).toFixed(1)}%`);
     }
   }
-  
+
   const isDuplicate = maxSimilarity >= SIMILARITY_THRESHOLD;
-  
+
   if (isDuplicate) {
     console.log(`❌ DUPLICATE DETECTED: "${topic.title}" is ${(maxSimilarity * 100).toFixed(1)}% similar to "${mostSimilarTitle}"`);
   } else if (maxSimilarity > 0.2) {
     console.log(`✅ UNIQUE: "${topic.title}" (max similarity: ${(maxSimilarity * 100).toFixed(1)}% with "${mostSimilarTitle}")`);
   }
-  
+
   return {
     isDuplicate,
     similarTo: isDuplicate ? mostSimilarTitle : undefined,
@@ -289,13 +303,13 @@ export function filterDuplicateTopics(
 ): { filtered: ExaSearchResult[]; skipped: Array<{ title: string; similarTo: string; similarity: number }> } {
   const filtered: ExaSearchResult[] = [];
   const skipped: Array<{ title: string; similarTo: string; similarity: number }> = [];
-  
+
   for (const result of results) {
     const dupCheck = checkTopicDuplication(
       { title: result.title, text: result.text },
       existingArticles
     );
-    
+
     if (dupCheck.isDuplicate) {
       skipped.push({
         title: result.title,
@@ -307,11 +321,11 @@ export function filterDuplicateTopics(
       filtered.push(result);
     }
   }
-  
+
   if (skipped.length > 0) {
     console.log(`📊 Topic deduplication: ${filtered.length} unique, ${skipped.length} duplicates skipped`);
   }
-  
+
   return { filtered, skipped };
 }
 
@@ -332,10 +346,10 @@ export function filterDuplicateTopics(
  */
 export function processExaResults(searchResults: ExaSearchResult[]): ExaSearchResult[] {
   // Filter out results with insufficient content
-  return searchResults.filter(result => 
-    result.title && 
-    result.url && 
-    result.text && 
+  return searchResults.filter(result =>
+    result.title &&
+    result.url &&
+    result.text &&
     result.text.length > 100
   );
 }
@@ -346,12 +360,12 @@ export function processExaResults(searchResults: ExaSearchResult[]): ExaSearchRe
  */
 function calculateRecencyScore(publishedDate: string): number {
   if (!publishedDate) return 0.5; // Default for unknown dates
-  
+
   try {
     const published = new Date(publishedDate);
     const now = new Date();
     const daysSincePublished = (now.getTime() - published.getTime()) / (1000 * 60 * 60 * 24);
-    
+
     // Score decreases with age: 1.0 for today, ~0.5 for 30 days, ~0.1 for 90+ days
     if (daysSincePublished <= 0) return 1.0;
     if (daysSincePublished <= 7) return 0.9;
@@ -369,23 +383,23 @@ function calculateRecencyScore(publishedDate: string): number {
  */
 function classifyCategory(title: string, text: string): ArticleCategory {
   const content = `${title} ${text}`.toLowerCase();
-  
+
   let bestCategory: ArticleCategory = 'trends'; // Default
   let bestScore = 0;
-  
+
   for (const [category, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
     const score = keywords.reduce((acc, keyword) => {
       const regex = new RegExp(keyword.toLowerCase(), 'gi');
       const matches = content.match(regex);
       return acc + (matches ? matches.length : 0);
     }, 0);
-    
+
     if (score > bestScore) {
       bestScore = score;
       bestCategory = category as ArticleCategory;
     }
   }
-  
+
   return bestCategory;
 }
 
@@ -405,27 +419,27 @@ export function selectBestTopic(
   if (!results || results.length === 0) {
     return null;
   }
-  
+
   // Filter duplicates if existing articles provided
   let filteredResults = results;
   if (existingArticles && existingArticles.length > 0) {
     const { filtered, skipped } = filterDuplicateTopics(results, existingArticles);
     filteredResults = filtered;
-    
+
     if (filteredResults.length === 0) {
       console.log('⚠️ All topics were duplicates. Skipped topics:', skipped.map(s => s.title));
       return null;
     }
   }
-  
+
   // Score and rank all topics
   const scoredTopics: ScoredTopic[] = filteredResults.map(result => {
     const recencyScore = calculateRecencyScore(result.publishedDate);
     const relevanceScore = result.score || 0.5;
-    
+
     // Combined score: 60% relevance, 40% recency
     const combinedScore = (relevanceScore * 0.6) + (recencyScore * 0.4);
-    
+
     return {
       title: result.title,
       url: result.url,
@@ -437,10 +451,10 @@ export function selectBestTopic(
       suggestedCategory: classifyCategory(result.title, result.text),
     };
   });
-  
+
   // Sort by combined score (highest first)
   scoredTopics.sort((a, b) => b.combinedScore - a.combinedScore);
-  
+
   return scoredTopics[0];
 }
 
@@ -474,10 +488,10 @@ export async function generateArticle(
   metaTitle: string;
   metaDescription: string;
 }> {
-  const targetCategory = category && isArticleCategory(category) 
-    ? category 
+  const targetCategory = category && isArticleCategory(category)
+    ? category
     : topic.suggestedCategory;
-  
+
   // Build uniqueness instruction if existing titles provided
   const uniquenessInstruction = existingTitles && existingTitles.length > 0
     ? `\n\nIMPORTANT - UNIQUENESS REQUIREMENT:
@@ -654,7 +668,7 @@ RESPOND ONLY WITH VALID JSON. No additional text.`;
 
   // Use full content if available (up to 6000 chars for comprehensive context)
   const researchContent = (topic.text || '').substring(0, 6000);
-  
+
   const userPrompt = `Based on this research, write an original article about e-commerce:
 
 RESEARCH TOPIC: ${topic.title}
@@ -691,14 +705,14 @@ Create an original, comprehensive, SEO-optimized article that provides real valu
   let articleData;
   try {
     const content = response.content.trim();
-    
+
     // Log the response for debugging
     console.log('AI Response length:', content.length);
     console.log('AI Response preview:', content.substring(0, 500));
-    
+
     // Try multiple approaches to extract JSON
     let jsonString = content;
-    
+
     // 1. Try to find JSON in code blocks
     const codeBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/);
     if (codeBlockMatch) {
@@ -710,24 +724,24 @@ Create an original, comprehensive, SEO-optimized article that provides real valu
         jsonString = jsonMatch[0];
       }
     }
-    
+
     // 3. Clean up common issues
     jsonString = jsonString
       .replace(/[\u0000-\u001F]+/g, ' ') // Remove control characters
       .replace(/,\s*}/g, '}') // Remove trailing commas
       .replace(/,\s*]/g, ']'); // Remove trailing commas in arrays
-    
+
     articleData = JSON.parse(jsonString);
   } catch (parseError) {
     console.error('Failed to parse article response:', parseError);
     console.error('Raw response:', response.content.substring(0, 1000));
-    
+
     // Fallback: Create a basic article from the response
     const fallbackContent = response.content
       .replace(/```[\s\S]*?```/g, '') // Remove code blocks
       .replace(/^\s*\{[\s\S]*?\}\s*$/m, '') // Remove JSON attempts
       .trim();
-    
+
     if (fallbackContent.length > 200) {
       articleData = {
         title: topic.title.substring(0, 100),
@@ -750,7 +764,7 @@ Create an original, comprehensive, SEO-optimized article that provides real valu
   // Validate word count
   const wordCount = articleData.content.split(/\s+/).filter((w: string) => w.length > 0).length;
   console.log(`📝 Generated article word count: ${wordCount}`);
-  
+
   if (wordCount < MIN_WORD_COUNT * 0.8) { // Allow 20% tolerance
     console.warn(`⚠️ Article too short: ${wordCount} words (minimum: ${MIN_WORD_COUNT})`);
     // Don't throw error, but log warning - AI sometimes counts differently
@@ -820,11 +834,11 @@ export async function generateFullArticle(
     updateProgress('searching', 'Fetching existing articles...', 5);
     const existingArticles = await getExistingArticlesForDedup();
     console.log(`📚 Loaded ${existingArticles.length} existing articles for deduplication`);
-    
+
     // Step 2: Process search results
     updateProgress('searching', 'Processing search results...', 10);
     const processedResults = processExaResults(exaResults);
-    
+
     if (processedResults.length === 0) {
       return {
         success: false,
@@ -834,11 +848,11 @@ export async function generateFullArticle(
         },
       };
     }
-    
+
     // Step 3: Select best unique topic
     updateProgress('selecting', 'Selecting best unique topic...', 30);
     const selectedTopic = selectBestTopic(processedResults, existingArticles);
-    
+
     if (!selectedTopic) {
       return {
         success: false,
@@ -853,9 +867,9 @@ export async function generateFullArticle(
         },
       };
     }
-    
+
     console.log(`✅ Selected topic: "${selectedTopic.title}" (score: ${selectedTopic.combinedScore.toFixed(2)})`);
-    
+
     // Step 4: Generate article content
     updateProgress('generating', 'Generating article content...', 50);
     let articleData;
@@ -876,11 +890,11 @@ export async function generateFullArticle(
         },
       };
     }
-    
+
     // Step 5: Assign thumbnail
     updateProgress('creating-thumbnail', 'Assigning thumbnail...', 80);
     const thumbnailUrl = getThumbnailForCategory(articleData.category);
-    
+
     // Step 6: Save to database
     updateProgress('saving', 'Saving to database...', 90);
     let savedArticle;
@@ -902,7 +916,7 @@ export async function generateFullArticle(
     }
 
     updateProgress('complete', 'Article generated successfully!', 100);
-    
+
     return {
       success: true,
       article: savedArticle,

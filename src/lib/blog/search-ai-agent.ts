@@ -45,7 +45,7 @@ export async function filterSearchResults(
   // Build existing articles context
   const existingArticlesContext = existingTitles && existingTitles.length > 0
     ? `\n\nExisting articles to avoid (${existingTitles.length} total):
-${existingTitles.slice(0, 20).map((t, i) => `${i + 1}. "${t}"`).join('\n')}`
+${existingTitles.slice(0, 100).map((t, i) => `${i + 1}. "${t}"`).join('\n')}`
     : '';
 
   const systemPrompt = `You are an expert e-commerce content filter. Your job is to evaluate search results and filter out:
@@ -98,7 +98,7 @@ Return only results that are highly relevant to e-commerce and NOT similar to ex
 
   try {
     console.log(`[AI Filter] Analyzing ${results.length} results for relevance...`);
-    
+
     const response = await chat(apiKey, [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt },
@@ -109,22 +109,22 @@ Return only results that are highly relevant to e-commerce and NOT similar to ex
 
     const content = response.content.trim();
     const jsonMatch = content.match(/\{[\s\S]*\}/);
-    
+
     if (jsonMatch) {
       const filterResponse = JSON.parse(jsonMatch[0]) as AIFilterResponse;
-      
+
       // Filter results based on AI analysis
       const filteredResults = filterResponse.results
         .filter((r: FilteredResult) => r.isRelevant && r.relevanceScore >= 60)
         .map((r: FilteredResult) => results[r.index])
         .filter((result): result is UnifiedSearchResult => result !== undefined);
-      
+
       console.log(`[AI Filter] ✅ ${filterResponse.summary}`);
       console.log(`[AI Filter] Kept ${filteredResults.length}/${results.length} results`);
-      
+
       return filteredResults;
     }
-    
+
     throw new Error('Failed to parse AI filter response');
   } catch (error) {
     console.error('[AI Filter] Filtering failed:', error);
@@ -144,8 +144,8 @@ export async function generateSearchQueries(
   userQuery?: string,
   existingTitles?: string[]
 ): Promise<AISearchPlan> {
-  const currentDate = new Date().toLocaleDateString('en-US', { 
-    year: 'numeric', 
+  const currentDate = new Date().toLocaleDateString('en-US', {
+    year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
@@ -154,7 +154,7 @@ export async function generateSearchQueries(
     ? `\n\n🚨 CRITICAL - AVOID THESE EXISTING TOPICS:
 We already have ${existingTitles.length} articles. Your search queries MUST find DIFFERENT topics:
 
-${existingTitles.slice(0, 15).map((t, i) => `${i + 1}. "${t}"`).join('\n')}
+${existingTitles.slice(0, 100).map((t, i) => `${i + 1}. "${t}"`).join('\n')}
 
 DO NOT generate queries that would find similar topics to these existing articles.
 Focus on FRESH angles, NEW trends, DIFFERENT aspects of e-commerce.`
@@ -180,16 +180,18 @@ Generate 3-4 specific search queries that will return HIGH-QUALITY, UNIQUE e-com
 RESPOND WITH JSON ONLY:
 {
   "queries": ["query1", "query2", "query3"],
-  "reasoning": "Brief explanation of why these queries will find unique topics"
-}`;
+  "reasoning": "Why these specific queries differ from past articles and cover new ground"
+}
 
-  const userPrompt = category 
+VARIETY IS KEY: Generate queries that approach the category from different angles (e.g., technical, business, consumer-centric, trend-focused).`;
+
+  const userPrompt = category
     ? `Generate search queries for UNIQUE e-commerce blog articles in the "${category}" category.${userQuery ? ` User hint: "${userQuery}"` : ''}`
     : `Generate search queries for UNIQUE trending e-commerce blog topics.${userQuery ? ` User hint: "${userQuery}"` : ''}`;
 
   try {
     console.log('[AI Agent] Generating search queries...');
-    
+
     const response = await chat(apiKey, [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt },
@@ -205,7 +207,7 @@ RESPOND WITH JSON ONLY:
       console.log(`[AI Agent] Generated ${plan.queries.length} queries:`, plan.queries);
       return plan;
     }
-    
+
     throw new Error('Failed to parse AI response');
   } catch (error) {
     console.error('[AI Agent] Query generation failed:', error);
@@ -242,7 +244,7 @@ export async function selectBestTopic(
     ? `\n\n🚨 CRITICAL - REJECT DUPLICATE OR SIMILAR TOPICS:
 We have ${existingTitles.length} existing articles. You MUST select a topic that is COMPLETELY DIFFERENT:
 
-${existingTitles.slice(0, 25).map((t, i) => `${i + 1}. "${t}"`).join('\n')}
+${existingTitles.slice(0, 150).map((t, i) => `${i + 1}. "${t}"`).join('\n')}
 
 REJECTION CRITERIA - DO NOT select topics that:
 1. Cover the same subject matter (even with different wording)
@@ -308,7 +310,7 @@ Select the single best topic that will provide the most value to online sellers.
 
   try {
     console.log(`[AI Agent] Analyzing ${results.length} topics to select the best...`);
-    
+
     const response = await chat(apiKey, [
       { role: 'system', content: systemPrompt },
       { role: 'user', content: userPrompt },
@@ -319,28 +321,28 @@ Select the single best topic that will provide the most value to online sellers.
 
     const content = response.content.trim();
     const jsonMatch = content.match(/\{[\s\S]*\}/);
-    
+
     if (jsonMatch) {
       const analysis = JSON.parse(jsonMatch[0]) as AITopicSelection;
-      
+
       if (analysis.selectedIndex === -1 || analysis.relevanceScore < 40) {
         console.log('[AI Agent] ❌ No relevant topics found');
         return { selected: null, analysis };
       }
-      
+
       const selected = results[analysis.selectedIndex];
       console.log(`[AI Agent] ✅ Selected: "${analysis.title}" (${analysis.relevanceScore}% relevant)`);
       console.log(`[AI Agent] Angle: ${analysis.uniqueAngle}`);
-      
+
       return { selected, analysis };
     }
-    
+
     throw new Error('Failed to parse AI response');
   } catch (error) {
     console.error('[AI Agent] Topic selection failed:', error);
-    return { 
-      selected: results[0], 
-      analysis: null 
+    return {
+      selected: results[0],
+      analysis: null
     };
   }
 }
