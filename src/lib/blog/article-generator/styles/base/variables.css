@@ -10,14 +10,14 @@
     --article-font-code: "JetBrains Mono", "Fira Code", monospace;
 
     /* Font Sizes - Fluid */
-    --article-text-base: clamp(1.125rem, 1rem + 0.5vw, 1.25rem);
-    --article-text-sm: clamp(0.875rem, 0.85rem + 0.125vw, 0.9375rem);
-    --article-text-lg: clamp(1.25rem, 1.125rem + 0.5vw, 1.5rem);
+    --article-text-base: clamp(1rem, 0.96rem + 0.4vw, 1.125rem);
+    --article-text-sm: clamp(0.875rem, 0.84rem + 0.1vw, 0.95rem);
+    --article-text-lg: clamp(1.125rem, 1.04rem + 0.4vw, 1.35rem);
 
     /* Line Heights - Spacious for readability */
     --article-leading-tight: 1.4;
-    --article-leading-normal: 2.0;
-    --article-leading-relaxed: 2.2;
+    --article-leading-normal: 1.85;
+    --article-leading-relaxed: 2.05;
 
     /* ===== Spacing ===== */
     --article-space-xs: 0.5rem;

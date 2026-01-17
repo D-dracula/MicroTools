@@ -172,7 +172,7 @@ export function ArticleContent({
   }, [htmlContent]);
 
   return (
-    <div className="w-full max-w-[680px] mx-auto px-4 sm:px-6 overflow-hidden">
+    <div className="w-full max-w-[820px] mx-auto px-4 sm:px-6 overflow-hidden">
       {/* Article content with professional typography */}
       <article
         ref={articleRef}
