@@ -454,9 +454,11 @@ export function GenerateArticleContent() {
         body: JSON.stringify({
           exaKey: exaKey.trim() || undefined,
           newsApiKey: newsApiKey.trim() || undefined,
+          openRouterKey: apiKey.trim() || undefined, // Required for AI Agent
           query: searchQuery.trim() || undefined,
           category: category !== "auto" ? category : undefined,
           fetchFullContent: true, // Enable deep content fetching
+          useAIFilter: true, // Enable AI Agent filtering
         }),
       });
 
