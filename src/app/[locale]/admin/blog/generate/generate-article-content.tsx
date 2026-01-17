@@ -71,6 +71,39 @@ interface SearchResult {
   author?: string;
 }
 
+interface AISearchPlan {
+  queries: string[];
+  reasoning: string;
+}
+
+interface AIFilterStats {
+  totalResults: number;
+  filteredResults: number;
+  rejectedResults: number;
+  filteringEnabled: boolean;
+}
+
+interface AITopicSelection {
+  title: string;
+  relevanceScore: number;
+  uniqueAngle: string;
+  suggestedCategory: string;
+  reasoning: string;
+}
+
+interface AIAnalysis {
+  searchPlan: AISearchPlan | null;
+  filterStats: AIFilterStats | null;
+  topicSelection: AITopicSelection | null;
+  selectedTopic: {
+    title: string;
+    url: string;
+    relevanceScore: number;
+    uniqueAngle: string;
+    suggestedCategory: string;
+  } | null;
+}
+
 interface StepLog {
   id: string;
   step: GenerationStep;
@@ -81,7 +114,7 @@ interface StepLog {
   duration?: number;
 }
 
-type GenerationStep = 
+type GenerationStep =
   | 'idle'
   | 'validating'
   | 'searching'
@@ -103,39 +136,39 @@ function getTranslations(isRTL: boolean) {
     title: isRTL ? "توليد مقال بالذكاء الاصطناعي" : "Generate Article with AI",
     subtitle: isRTL ? "أنشئ مقالاً احترافياً باستخدام NewsAPI + Exa + AI" : "Create a professional article using NewsAPI + Exa + AI",
     back: isRTL ? "العودة" : "Back",
-    
+
     apiKey: {
       title: isRTL ? "مفتاح OpenRouter API" : "OpenRouter API Key",
       placeholder: isRTL ? "sk-or-v1-..." : "sk-or-v1-...",
       hint: isRTL ? "للتوليد بالذكاء الاصطناعي" : "For AI content generation",
       getKey: isRTL ? "احصل على مفتاح" : "Get Key",
     },
-    
+
     exaKey: {
       title: isRTL ? "مفتاح Exa API (اختياري)" : "Exa API Key (optional)",
       placeholder: isRTL ? "أدخل مفتاح Exa..." : "Enter Exa key...",
       hint: isRTL ? "للبحث العميق - يستخدم مفتاح السيرفر إذا فارغ" : "For deep search - uses server key if empty",
       getKey: isRTL ? "احصل على مفتاح" : "Get Key",
     },
-    
+
     newsApiKey: {
       title: isRTL ? "مفتاح NewsAPI (اختياري)" : "NewsAPI Key (optional)",
       placeholder: isRTL ? "أدخل مفتاح NewsAPI..." : "Enter NewsAPI key...",
       hint: isRTL ? "للأخبار الحديثة - يستخدم مفتاح السيرفر إذا فارغ" : "For fresh news - uses server key if empty",
       getKey: isRTL ? "احصل على مفتاح" : "Get Key",
     },
-    
+
     searchQuery: {
       title: isRTL ? "موضوع البحث" : "Search Topic",
       placeholder: isRTL ? "مثال: اتجاهات التجارة الإلكترونية 2026" : "e.g., e-commerce trends 2026",
       hint: isRTL ? "اتركه فارغاً للبحث التلقائي" : "Leave empty for auto-search",
     },
-    
+
     category: {
       title: isRTL ? "التصنيف" : "Category",
       auto: isRTL ? "تلقائي (يختاره AI)" : "Auto (AI chooses)",
     },
-    
+
     categories: {
       marketing: isRTL ? "التسويق" : "Marketing",
       "seller-tools": isRTL ? "أدوات البائع" : "Seller Tools",
@@ -143,7 +176,7 @@ function getTranslations(isRTL: boolean) {
       trends: isRTL ? "الاتجاهات" : "Trends",
       "case-studies": isRTL ? "دراسات الحالة" : "Case Studies",
     },
-    
+
     actions: {
       generate: isRTL ? "🚀 بدء التوليد" : "🚀 Start Generation",
       generating: isRTL ? "جاري التوليد..." : "Generating...",
@@ -152,7 +185,7 @@ function getTranslations(isRTL: boolean) {
       showLogs: isRTL ? "عرض السجلات" : "Show Logs",
       hideLogs: isRTL ? "إخفاء السجلات" : "Hide Logs",
     },
-    
+
     steps: {
       validating: isRTL ? "التحقق من المدخلات..." : "Validating inputs...",
       searching: isRTL ? "البحث في NewsAPI + Exa عن أحدث المواضيع..." : "Searching NewsAPI + Exa for latest topics...",
@@ -163,7 +196,7 @@ function getTranslations(isRTL: boolean) {
       saving: isRTL ? "حفظ في قاعدة البيانات..." : "Saving to database...",
       complete: isRTL ? "تم بنجاح!" : "Complete!",
     },
-    
+
     progress: {
       title: isRTL ? "تقدم العملية" : "Generation Progress",
       logs: isRTL ? "سجل العمليات" : "Operation Logs",
@@ -171,14 +204,14 @@ function getTranslations(isRTL: boolean) {
       searchResults: isRTL ? "نتائج البحث" : "Search Results",
       selectedTopic: isRTL ? "الموضوع المختار" : "Selected Topic",
     },
-    
+
     messages: {
       success: isRTL ? "🎉 تم توليد المقال بنجاح!" : "🎉 Article generated successfully!",
       error: isRTL ? "حدث خطأ" : "An error occurred",
       apiKeyRequired: isRTL ? "مفتاح OpenRouter مطلوب" : "OpenRouter key required",
       searchKeyRequired: isRTL ? "مطلوب مفتاح واحد على الأقل (Exa أو NewsAPI)" : "At least one search key required (Exa or NewsAPI)",
     },
-    
+
     sources: {
       newsapi: "NewsAPI",
       exa: "Exa",
@@ -201,7 +234,7 @@ interface StepProgressProps {
 
 function StepProgress({ steps, currentStep, isRTL, t }: StepProgressProps) {
   const allSteps: GenerationStep[] = ['validating', 'searching', 'analyzing', 'selecting', 'generating', 'formatting', 'saving', 'complete'];
-  
+
   const getStepIcon = (step: GenerationStep) => {
     switch (step) {
       case 'validating': return <Key className="h-4 w-4" />;
@@ -219,7 +252,7 @@ function StepProgress({ steps, currentStep, isRTL, t }: StepProgressProps) {
   const getStepStatus = (step: GenerationStep): 'pending' | 'running' | 'complete' | 'error' => {
     const stepIndex = allSteps.indexOf(step);
     const currentIndex = allSteps.indexOf(currentStep);
-    
+
     if (currentStep === 'error') return 'error';
     if (stepIndex < currentIndex) return 'complete';
     if (stepIndex === currentIndex) return 'running';
@@ -231,23 +264,21 @@ function StepProgress({ steps, currentStep, isRTL, t }: StepProgressProps) {
       {allSteps.map((step, index) => {
         const status = getStepStatus(step);
         const stepLog = steps.find(s => s.step === step);
-        
+
         return (
           <div
             key={step}
-            className={`flex items-center gap-3 p-3 rounded-lg transition-all ${
-              status === 'running' ? 'bg-primary/10 border border-primary/30' :
+            className={`flex items-center gap-3 p-3 rounded-lg transition-all ${status === 'running' ? 'bg-primary/10 border border-primary/30' :
               status === 'complete' ? 'bg-green-500/10' :
-              status === 'error' ? 'bg-destructive/10' :
-              'bg-muted/30'
-            }`}
+                status === 'error' ? 'bg-destructive/10' :
+                  'bg-muted/30'
+              }`}
           >
-            <div className={`flex-shrink-0 ${
-              status === 'running' ? 'text-primary animate-pulse' :
+            <div className={`flex-shrink-0 ${status === 'running' ? 'text-primary animate-pulse' :
               status === 'complete' ? 'text-green-500' :
-              status === 'error' ? 'text-destructive' :
-              'text-muted-foreground'
-            }`}>
+                status === 'error' ? 'text-destructive' :
+                  'text-muted-foreground'
+              }`}>
               {status === 'running' ? (
                 <Loader2 className="h-4 w-4 animate-spin" />
               ) : status === 'complete' ? (
@@ -258,14 +289,13 @@ function StepProgress({ steps, currentStep, isRTL, t }: StepProgressProps) {
                 getStepIcon(step)
               )}
             </div>
-            
+
             <div className="flex-1 min-w-0">
-              <p className={`text-sm font-medium ${
-                status === 'running' ? 'text-primary' :
+              <p className={`text-sm font-medium ${status === 'running' ? 'text-primary' :
                 status === 'complete' ? 'text-green-600 dark:text-green-400' :
-                status === 'error' ? 'text-destructive' :
-                'text-muted-foreground'
-              }`}>
+                  status === 'error' ? 'text-destructive' :
+                    'text-muted-foreground'
+                }`}>
                 {t.steps[step as keyof typeof t.steps] || step}
               </p>
               {stepLog?.details && (
@@ -274,7 +304,7 @@ function StepProgress({ steps, currentStep, isRTL, t }: StepProgressProps) {
                 </p>
               )}
             </div>
-            
+
             {stepLog?.duration && status === 'complete' && (
               <Badge variant="outline" className="text-xs">
                 {(stepLog.duration / 1000).toFixed(1)}s
@@ -315,6 +345,8 @@ export function GenerateArticleContent() {
   const [startTime, setStartTime] = useState<Date | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [sourcesUsed, setSourcesUsed] = useState<string[]>([]);
+  const [aiAnalysis, setAiAnalysis] = useState<AIAnalysis | null>(null);
+  const [showAIDetails, setShowAIDetails] = useState(true);
 
   const stepStartTimeRef = useRef<Date | null>(null);
 
@@ -359,7 +391,7 @@ export function GenerateArticleContent() {
   const addLog = (step: GenerationStep, message: string, details?: string, status: StepLog['status'] = 'running') => {
     const now = new Date();
     const duration = stepStartTimeRef.current ? now.getTime() - stepStartTimeRef.current.getTime() : undefined;
-    
+
     setStepLogs(prev => {
       const existing = prev.find(l => l.step === step);
       if (existing) {
@@ -367,7 +399,7 @@ export function GenerateArticleContent() {
       }
       return [...prev, { id: `${step}-${Date.now()}`, step, message, timestamp: now, status, details, duration }];
     });
-    
+
     stepStartTimeRef.current = now;
   };
 
@@ -375,8 +407,8 @@ export function GenerateArticleContent() {
   const updateLogStatus = (step: GenerationStep, status: StepLog['status'], details?: string) => {
     const now = new Date();
     const duration = stepStartTimeRef.current ? now.getTime() - stepStartTimeRef.current.getTime() : undefined;
-    
-    setStepLogs(prev => prev.map(l => 
+
+    setStepLogs(prev => prev.map(l =>
       l.step === step ? { ...l, status, details: details || l.details, duration } : l
     ));
   };
@@ -415,7 +447,7 @@ export function GenerateArticleContent() {
         exaKey.trim() ? "Exa" : null,
       ].filter(Boolean).join(" + ") || "Server Keys";
       addLog("searching", t.steps.searching, `Searching ${searchSources}...`);
-      
+
       const searchResponse = await fetch("/api/blog/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -437,38 +469,62 @@ export function GenerateArticleContent() {
       const results = searchResult.data.results || [];
       const usingFallback = searchResult.data.usingFallback;
       const sources = searchResult.data.sourcesUsed || [];
+      const aiAgentUsed = searchResult.data.aiAgentUsed || false;
+      const aiAnalysisData = searchResult.data.aiAnalysis || null;
+
       setSearchResults(results);
       setSourcesUsed(sources);
-      
-      updateLogStatus("searching", "complete", 
-        usingFallback 
-          ? `Using ${results.length} cached topics` 
-          : `Found ${results.length} topics from ${sources.join(" + ")}`
+      setAiAnalysis(aiAnalysisData);
+
+      updateLogStatus("searching", "complete",
+        usingFallback
+          ? `Using ${results.length} cached topics`
+          : aiAgentUsed
+            ? `AI Agent found ${results.length} topics from ${sources.join(" + ")}`
+            : `Found ${results.length} topics from ${sources.join(" + ")}`
       );
 
-      // Step 3: Analyzing results
+      // Step 3: Analyzing results (AI filtering if enabled)
       setGenerationStep("analyzing");
-      addLog("analyzing", t.steps.analyzing, `Processing ${results.length} search results...`);
-      await new Promise(r => setTimeout(r, 800));
-      updateLogStatus("analyzing", "complete", `Analyzed ${results.length} topics for relevance`);
-
-      // Step 4: Selecting best topic
-      setGenerationStep("selecting");
-      addLog("selecting", t.steps.selecting, "Ranking topics by score and recency...");
-      await new Promise(r => setTimeout(r, 500));
-      
-      if (results.length > 0) {
-        const bestTopic = results[0];
-        setSelectedTopic(bestTopic);
-        updateLogStatus("selecting", "complete", `Selected: "${bestTopic.title.substring(0, 50)}..."`);
+      if (aiAnalysisData?.filterStats) {
+        addLog("analyzing", t.steps.analyzing,
+          `AI Filter: Analyzing ${aiAnalysisData.filterStats.totalResults} results...`);
+        await new Promise(r => setTimeout(r, 800));
+        updateLogStatus("analyzing", "complete",
+          `AI filtered: Kept ${aiAnalysisData.filterStats.filteredResults}/${aiAnalysisData.filterStats.totalResults} (rejected ${aiAnalysisData.filterStats.rejectedResults} irrelevant)`);
       } else {
-        updateLogStatus("selecting", "complete", "Using default topic");
+        addLog("analyzing", t.steps.analyzing, `Processing ${results.length} search results...`);
+        await new Promise(r => setTimeout(r, 800));
+        updateLogStatus("analyzing", "complete", `Analyzed ${results.length} topics for relevance`);
+      }
+
+      // Step 4: Selecting best topic (AI selection if enabled)
+      setGenerationStep("selecting");
+      if (aiAnalysisData?.topicSelection) {
+        addLog("selecting", t.steps.selecting, "AI Agent is selecting the best topic...");
+        await new Promise(r => setTimeout(r, 500));
+        const selection = aiAnalysisData.topicSelection;
+        if (results.length > 0) {
+          setSelectedTopic(results[0]);
+        }
+        updateLogStatus("selecting", "complete",
+          `AI selected: "${selection.title.substring(0, 40)}..." (${selection.relevanceScore}% relevant)`);
+      } else {
+        addLog("selecting", t.steps.selecting, "Ranking topics by score and recency...");
+        await new Promise(r => setTimeout(r, 500));
+        if (results.length > 0) {
+          const bestTopic = results[0];
+          setSelectedTopic(bestTopic);
+          updateLogStatus("selecting", "complete", `Selected: "${bestTopic.title.substring(0, 50)}..."`);
+        } else {
+          updateLogStatus("selecting", "complete", "Using default topic");
+        }
       }
 
       // Step 5: Generating content
       setGenerationStep("generating");
       addLog("generating", t.steps.generating, "OpenRouter AI is writing the article...");
-      
+
       const response = await fetch("/api/blog/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -507,9 +563,9 @@ export function GenerateArticleContent() {
       setGenerationStep("error");
       const errorMessage = err instanceof Error ? err.message : t.messages.error;
       setError(errorMessage);
-      
+
       // Update current step to error
-      setStepLogs(prev => prev.map(l => 
+      setStepLogs(prev => prev.map(l =>
         l.status === 'running' ? { ...l, status: 'error' as const, details: errorMessage } : l
       ));
     }
@@ -526,6 +582,7 @@ export function GenerateArticleContent() {
     setStartTime(null);
     setElapsedTime(0);
     setSourcesUsed([]);
+    setAiAnalysis(null);
   };
 
   const getCategoryLabel = (cat: ArticleCategory) => t.categories[cat] || cat;
@@ -567,8 +624,8 @@ export function GenerateArticleContent() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="text-sm font-medium">{t.apiKey.title}</label>
-                  <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer" 
-                     className="text-xs text-primary hover:underline flex items-center gap-1">
+                  <a href="https://openrouter.ai/keys" target="_blank" rel="noopener noreferrer"
+                    className="text-xs text-primary hover:underline flex items-center gap-1">
                     {t.apiKey.getKey} <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
@@ -581,7 +638,7 @@ export function GenerateArticleContent() {
                   className="font-mono text-sm"
                 />
               </div>
-              
+
               {/* NewsAPI Key - Primary for fresh news */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -590,7 +647,7 @@ export function GenerateArticleContent() {
                     <Badge variant="secondary" className="text-xs">Fresh News</Badge>
                   </label>
                   <a href="https://newsapi.org/register" target="_blank" rel="noopener noreferrer"
-                     className="text-xs text-primary hover:underline flex items-center gap-1">
+                    className="text-xs text-primary hover:underline flex items-center gap-1">
                     {t.newsApiKey.getKey} <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
@@ -604,7 +661,7 @@ export function GenerateArticleContent() {
                 />
                 <p className="text-xs text-muted-foreground">{t.newsApiKey.hint}</p>
               </div>
-              
+
               {/* Exa Key - For deep search */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
@@ -613,7 +670,7 @@ export function GenerateArticleContent() {
                     <Badge variant="outline" className="text-xs">Deep Search</Badge>
                   </label>
                   <a href="https://exa.ai" target="_blank" rel="noopener noreferrer"
-                     className="text-xs text-primary hover:underline flex items-center gap-1">
+                    className="text-xs text-primary hover:underline flex items-center gap-1">
                     {t.exaKey.getKey} <ExternalLink className="h-3 w-3" />
                   </a>
                 </div>
@@ -648,7 +705,7 @@ export function GenerateArticleContent() {
                 />
                 <p className="text-xs text-muted-foreground">{t.searchQuery.hint}</p>
               </div>
-              
+
               <div className="space-y-2">
                 <label className="text-sm font-medium">{t.category.title}</label>
                 <Select value={category} onValueChange={(v) => setCategory(v as ArticleCategory | "auto")} disabled={isGenerating}>
@@ -698,7 +755,7 @@ export function GenerateArticleContent() {
                     )}
                     {t.progress.title}
                   </CardTitle>
-                  
+
                   {startTime && (
                     <Badge variant="outline" className="font-mono">
                       <Clock className="h-3 w-3 mr-1" />
@@ -736,9 +793,8 @@ export function GenerateArticleContent() {
                   {searchResults.slice(0, 5).map((result, index) => (
                     <div
                       key={index}
-                      className={`p-2 rounded-lg border text-sm ${
-                        selectedTopic?.url === result.url ? 'bg-primary/10 border-primary' : 'bg-muted/30'
-                      }`}
+                      className={`p-2 rounded-lg border text-sm ${selectedTopic?.url === result.url ? 'bg-primary/10 border-primary' : 'bg-muted/30'
+                        }`}
                     >
                       <div className="flex items-start justify-between gap-2">
                         <p className="font-medium line-clamp-1 flex-1">{result.title}</p>
@@ -759,6 +815,117 @@ export function GenerateArticleContent() {
                   ))}
                 </div>
               </CardContent>
+            </Card>
+          )}
+
+          {/* AI Agent Details Card */}
+          {aiAnalysis && generationStep !== 'idle' && (
+            <Card className="border-purple-500/50 bg-purple-50/50 dark:bg-purple-950/20">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm flex items-center gap-2 text-purple-700 dark:text-purple-300">
+                    <Brain className="h-4 w-4" />
+                    {isRTL ? "خطوات الوكيل الذكي" : "AI Agent Steps"}
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setShowAIDetails(!showAIDetails)}
+                    className="h-6 px-2"
+                  >
+                    {showAIDetails ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                  </Button>
+                </div>
+              </CardHeader>
+
+              {showAIDetails && (
+                <CardContent className="space-y-4">
+                  {/* Step 1: AI Search Queries */}
+                  {aiAnalysis.searchPlan && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold">1</div>
+                        <h4 className="text-sm font-semibold text-purple-700 dark:text-purple-300">
+                          {isRTL ? "استعلامات البحث المُولدة" : "Generated Search Queries"}
+                        </h4>
+                      </div>
+                      <div className="ml-8 space-y-1">
+                        {aiAnalysis.searchPlan.queries.map((query, i) => (
+                          <div key={i} className="flex items-center gap-2 text-sm">
+                            <Search className="h-3 w-3 text-muted-foreground" />
+                            <span className="font-mono text-xs bg-muted px-2 py-0.5 rounded">{query}</span>
+                          </div>
+                        ))}
+                        {aiAnalysis.searchPlan.reasoning && (
+                          <p className="text-xs text-muted-foreground italic mt-1">
+                            💡 {aiAnalysis.searchPlan.reasoning}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 2: AI Filtering */}
+                  {aiAnalysis.filterStats && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-orange-500 text-white flex items-center justify-center text-xs font-bold">2</div>
+                        <h4 className="text-sm font-semibold text-orange-700 dark:text-orange-300">
+                          {isRTL ? "فلترة النتائج" : "Results Filtering"}
+                        </h4>
+                      </div>
+                      <div className="ml-8">
+                        <div className="flex flex-wrap gap-2">
+                          <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950">
+                            {isRTL ? "الإجمالي:" : "Total:"} {aiAnalysis.filterStats.totalResults}
+                          </Badge>
+                          <Badge variant="outline" className="bg-green-50 dark:bg-green-950 text-green-700 dark:text-green-300">
+                            ✓ {isRTL ? "مقبول:" : "Kept:"} {aiAnalysis.filterStats.filteredResults}
+                          </Badge>
+                          <Badge variant="outline" className="bg-red-50 dark:bg-red-950 text-red-700 dark:text-red-300">
+                            ✗ {isRTL ? "مرفوض:" : "Rejected:"} {aiAnalysis.filterStats.rejectedResults}
+                          </Badge>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Step 3: AI Topic Selection */}
+                  {aiAnalysis.topicSelection && (
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-green-500 text-white flex items-center justify-center text-xs font-bold">3</div>
+                        <h4 className="text-sm font-semibold text-green-700 dark:text-green-300">
+                          {isRTL ? "اختيار الموضوع" : "Topic Selection"}
+                        </h4>
+                      </div>
+                      <div className="ml-8 space-y-2">
+                        <div className="p-3 rounded-lg bg-green-100/50 dark:bg-green-900/30 border border-green-200 dark:border-green-800">
+                          <p className="font-medium text-sm">{aiAnalysis.topicSelection.title}</p>
+                          <div className="flex flex-wrap gap-2 mt-2">
+                            <Badge className="bg-green-500">
+                              {aiAnalysis.topicSelection.relevanceScore}% {isRTL ? "صلة" : "relevant"}
+                            </Badge>
+                            <Badge variant="outline">
+                              {aiAnalysis.topicSelection.suggestedCategory}
+                            </Badge>
+                          </div>
+                          {aiAnalysis.topicSelection.uniqueAngle && (
+                            <p className="text-xs text-muted-foreground mt-2">
+                              🎯 <span className="font-medium">{isRTL ? "زاوية فريدة:" : "Unique angle:"}</span> {aiAnalysis.topicSelection.uniqueAngle}
+                            </p>
+                          )}
+                          {aiAnalysis.topicSelection.reasoning && (
+                            <p className="text-xs text-muted-foreground mt-1 italic">
+                              💭 {aiAnalysis.topicSelection.reasoning}
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </CardContent>
+              )}
             </Card>
           )}
 
@@ -789,7 +956,7 @@ export function GenerateArticleContent() {
                   <CheckCircle className="h-5 w-5" />
                   <span className="font-medium">{t.messages.success}</span>
                 </div>
-                
+
                 <div className="space-y-2">
                   <h3 className="font-semibold text-lg">{generatedArticle.title}</h3>
                   <p className="text-sm text-muted-foreground">{generatedArticle.summary}</p>

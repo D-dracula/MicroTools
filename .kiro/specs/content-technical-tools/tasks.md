@@ -1,0 +1,222 @@
+# Implementation Plan: Content & Technical Tools
+
+## Overview
+
+تنفيذ 9 أدوات جديدة للمحتوى والنصوص والأدوات التقنية. كل أداة تتضمن منطق أعمال، مكون React، ترجمات، ومحتوى SEO.
+
+## Tasks
+
+- [-] 1. Case Converter (محول الحروف)
+  - [x] 1.1 Create case-converter.ts with conversion functions
+    - Implement toUpperCase, toLowerCase, toTitleCase, toSentenceCase, toToggleCase
+    - Handle empty input and preserve non-alphabetic characters
+    - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7_
+  - [x] 1.2 Write property tests for case converter
+    - **Property 1: Non-alphabetic preservation**
+    - **Property 2: Toggle case round-trip**
+    - **Property 3: Uppercase/lowercase idempotence**
+    - **Validates: Requirements 1.1, 1.2, 1.5, 1.7**
+  - [x] 1.3 Create case-converter.tsx component
+    - Text input area with RTL support
+    - Case type selector buttons
+    - Result display with copy button
+    - _Requirements: 1.8, 1.9, 1.10_
+  - [x] 1.4 Add translations and SEO content for case converter
+    - Add to en.json and ar.json
+    - Include whatIs, formula, whyNeed sections
+    - _Requirements: 10.1-10.7_
+  - [x] 1.5 Register case converter in tools.ts
+    - Add tool definition with icon and category
+    - Export from components/tools/index.ts
+
+- [-] 2. Duplicate Line Remover (إزالة السطور المكررة)
+  - [x] 2.1 Create duplicate-remover.ts with removal logic
+    - Implement removeDuplicateLines function
+    - Support case-insensitive and trim whitespace options
+    - Return counts for removed and remaining lines
+    - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7_
+  - [x] 2.2 Write property tests for duplicate remover
+    - **Property 4: Count invariant (unique + removed = original)**
+    - **Property 5: Output has no duplicates**
+    - **Validates: Requirements 2.1, 2.4, 2.5**
+  - [x] 2.3 Create duplicate-remover.tsx component
+    - Text input area
+    - Options toggles (case-sensitive, trim whitespace)
+    - Statistics display (removed, remaining counts)
+    - _Requirements: 2.8, 2.9, 2.10_
+  - [x] 2.4 Add translations and SEO content for duplicate remover
+    - Add to en.json and ar.json
+    - _Requirements: 10.1-10.7_
+  - [x] 2.5 Register duplicate remover in tools.ts
+
+- [-] 3. Business Name Generator (مولد أسماء المتاجر)
+  - [x] 3.1 Create business-name-generator.ts with generation logic
+    - Implement generateBusinessNames function
+    - Support multiple categories (retail, food, fashion, technology, services)
+    - Generate at least 10 suggestions using prefixes, suffixes, patterns
+    - Support Arabic and English keywords
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6_
+  - [x] 3.2 Write property tests for name generator
+    - **Property 6: Minimum 10 suggestions output**
+    - **Validates: Requirements 3.3**
+  - [x] 3.3 Create business-name-generator.tsx component
+    - Keywords input
+    - Category selector
+    - Generated names list with copy buttons
+    - Regenerate button
+    - _Requirements: 3.7, 3.8, 3.9, 3.10_
+  - [x] 3.4 Add translations and SEO content for name generator
+    - Add to en.json and ar.json
+    - _Requirements: 10.1-10.7_
+  - [x] 3.5 Register business name generator in tools.ts
+
+- [x] 4. Checkpoint - Content Tools
+  - Ensure all tests pass for tools 1-3
+  - Ask the user if questions arise
+
+- [-] 5. Color Code Converter (محول أكواد الألوان)
+  - [x] 5.1 Create color-converter.ts with conversion functions
+    - Implement hexToRgb, rgbToHex, rgbToHsl, hslToRgb
+    - Support 3-digit and 6-digit HEX with/without # prefix
+    - Validate color inputs and return errors for invalid
+    - _Requirements: 4.1, 4.2, 4.3, 4.5, 4.6, 4.7_
+  - [x] 5.2 Write property tests for color converter
+    - **Property 7: HEX round-trip**
+    - **Property 8: RGB-HSL round-trip (with tolerance)**
+    - **Property 9: 3-digit HEX normalization**
+    - **Validates: Requirements 4.1, 4.2, 4.3, 4.6, 4.7**
+  - [x] 5.3 Create color-converter.tsx component
+    - Color input field with format detection
+    - Color preview display
+    - All format outputs (HEX, RGB, HSL) with copy buttons
+    - _Requirements: 4.4, 4.8, 4.9, 4.10_
+  - [x] 5.4 Add translations and SEO content for color converter
+    - Add to en.json and ar.json
+    - _Requirements: 10.1-10.7_
+  - [x] 5.5 Register color converter in tools.ts
+
+- [-] 6. Password Generator (مولد كلمات المرور)
+  - [x] 6.1 Create password-generator.ts with generation logic
+    - Implement generatePassword function
+    - Support length 8-128 characters
+    - Support uppercase, lowercase, numbers, symbols options
+    - Implement calculateStrength function
+    - Validate at least one character type selected
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7, 5.10_
+  - [x] 6.2 Write property tests for password generator
+    - **Property 10: Length invariant**
+    - **Property 11: Character type inclusion**
+    - **Validates: Requirements 5.1, 5.2, 5.3, 5.4, 5.5, 5.6**
+  - [x] 6.3 Create password-generator.tsx component
+    - Length slider/input
+    - Character type toggles
+    - Strength indicator with visual feedback
+    - Generated password display with copy and regenerate buttons
+    - _Requirements: 5.8, 5.9, 5.11, 5.12_
+  - [x] 6.4 Add translations and SEO content for password generator
+    - Add to en.json and ar.json
+    - _Requirements: 10.1-10.7_
+  - [x] 6.5 Register password generator in tools.ts
+
+- [x] 7. Checkpoint - Technical Tools Part 1
+  - Ensure all tests pass for tools 5-6
+  - Ask the user if questions arise
+
+- [-] 8. HTML Entity Encoder/Decoder (مشفر/فاك تشفير HTML)
+  - [x] 8.1 Create html-entity-codec.ts with encoding/decoding logic
+    - Implement encodeHtmlEntities function
+    - Implement decodeHtmlEntities function
+    - Handle <, >, &, ", ' characters
+    - Preserve already-encoded entities
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5, 7.6_
+  - [x] 8.2 Write property tests for HTML entity codec
+    - **Property 12: Encode-decode round-trip**
+    - **Property 13: Encoding idempotence**
+    - **Validates: Requirements 7.1, 7.2, 7.6**
+  - [x] 8.3 Create html-entity-codec.tsx component
+    - Text input area
+    - Mode selector (encode/decode)
+    - Result display with copy button
+    - _Requirements: 7.7, 7.8, 7.9_
+  - [x] 8.4 Add translations and SEO content for HTML entity codec
+    - Add to en.json and ar.json
+    - _Requirements: 10.1-10.7_
+  - [x] 8.5 Register HTML entity codec in tools.ts
+
+- [-] 9. Robots.txt Validator (فاحص Robots.txt)
+  - [x] 9.1 Create robots-validator.ts with validation logic
+    - Implement validateRobotsTxt function
+    - Validate User-agent, Allow, Disallow, Sitemap directives
+    - Return errors with line numbers
+    - Return warnings for best practice violations
+    - Provide suggestions for common issues
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5, 8.6, 8.7, 8.8_
+  - [x] 9.2 Write property tests for robots validator
+    - **Property 16: Valid content passes validation**
+    - **Validates: Requirements 8.1, 8.7**
+  - [x] 9.3 Create robots-validator.tsx component
+    - Text input area for robots.txt content
+    - Validation results display (errors, warnings, info)
+    - Success/failure indicator
+    - _Requirements: 8.9, 8.10, 8.11_
+  - [x] 9.4 Add translations and SEO content for robots validator
+    - Add to en.json and ar.json
+    - _Requirements: 10.1-10.7_
+  - [x] 9.5 Register robots validator in tools.ts
+
+- [-] 10. XML Sitemap Generator (مولد Sitemap)
+  - [x] 10.1 Create sitemap-generator.ts with generation logic
+    - Implement generateSitemap function
+    - Include XML declaration and urlset element
+    - Support priority (0.0-1.0) and changefreq options
+    - Auto-add lastmod with current date
+    - Validate URLs and report errors
+    - Limit to 100 URLs
+    - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5, 9.6, 9.7_
+  - [ ] 10.2 Write property tests for sitemap generator
+    - **Property 14: Generated XML is valid and parseable**
+    - **Property 15: URL limit enforcement**
+    - **Validates: Requirements 9.1, 9.2, 9.7**
+  - [x] 10.3 Create sitemap-generator.tsx component
+    - URL list input (textarea or dynamic list)
+    - Priority and changefreq selectors
+    - Generated XML preview
+    - Download and copy buttons
+    - _Requirements: 9.8, 9.9, 9.10, 9.11_
+  - [x] 10.4 Add translations and SEO content for sitemap generator
+    - Add to en.json and ar.json
+    - _Requirements: 10.1-10.7_
+  - [x] 10.5 Register sitemap generator in tools.ts
+
+- [x] 11. Response Checker (فاحص استجابة الموقع)
+  - [x] 11.1 Create response-checker.ts with checking logic
+    - Implement normalizeUrl function (add https:// if missing)
+    - Implement validateUrl function
+    - Implement checkResponse function (client-side fetch)
+    - Return response time, status code, accessibility
+    - Handle timeout and errors
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7_
+  - [x] 11.2 Create response-checker.tsx component
+    - URL input field
+    - Check button
+    - Results display with color-coded response time
+    - Status code and accessibility indicator
+    - _Requirements: 6.8, 6.9, 6.10_
+  - [x] 11.3 Add translations and SEO content for response checker
+    - Add to en.json and ar.json
+    - _Requirements: 10.1-10.7_
+  - [x] 11.4 Register response checker in tools.ts
+
+- [x] 12. Final Checkpoint
+  - Ensure all tests pass for all 9 tools
+  - Verify all tools appear in the tools grid
+  - Test RTL layout for Arabic
+  - Ask the user if questions arise
+
+## Notes
+
+- All property-based tests are required for comprehensive coverage
+- Each tool follows the existing pattern in the codebase
+- All tools use the shared SEOContent and ShareButtons components
+- Translations must be added to both en.json and ar.json using MCP JSON tools
+- Response Checker uses client-side fetch due to CORS limitations

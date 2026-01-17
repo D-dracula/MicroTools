@@ -1,0 +1,277 @@
+# Implementation Plan: Admin Dashboard
+
+## Overview
+
+This implementation plan creates a professional admin dashboard for the Micro-Tools platform. The dashboard will be built incrementally, starting with the core layout and authentication, then adding each management section progressively.
+
+## Tasks
+
+- [x] 1. Set up admin route structure and authentication
+  - [x] 1.1 Create admin layout with authentication check
+    - Create `src/app/[locale]/admin/layout.tsx`
+    - Implement admin email verification against ADMIN_EMAILS env variable
+    - Add redirect logic for unauthenticated/unauthorized users
+    - _Requirements: 1.1, 1.2, 1.3, 1.4_
+  - [x] 1.2 Create admin auth hook
+    - Create `src/lib/admin/use-admin-auth.ts`
+    - Implement session checking and admin verification
+    - Return isAdmin, isLoading, user, and error states
+    - _Requirements: 1.1, 1.2_
+  - [ ] 1.3 Write property test for admin authorization
+    - **Property 1: Admin Authorization Verification**
+    - **Validates: Requirements 1.1, 1.2**
+
+- [x] 2. Create admin sidebar and header components
+  - [x] 2.1 Create admin sidebar component
+    - Create `src/components/admin/admin-sidebar.tsx`
+    - Add navigation items with icons for all sections
+    - Implement active state highlighting
+    - Support RTL/LTR based on locale
+    - _Requirements: 2.1, 2.2, 2.3_
+  - [x] 2.2 Create admin header component
+    - Create `src/components/admin/admin-header.tsx`
+    - Display current section title
+    - Show admin user email and role
+    - _Requirements: 1.5, 2.5_
+  - [x] 2.3 Write property test for navigation state consistency
+    - **Property 2: Navigation State Consistency**
+    - **Validates: Requirements 2.2, 2.5**
+  - [ ] 2.4 Write property test for locale direction
+    - **Property 3: Locale Direction Consistency**
+    - **Validates: Requirements 2.3**
+
+- [ ] 3. Checkpoint - Verify admin layout and navigation
+  - Ensure admin routes are protected
+  - Verify sidebar navigation works correctly
+  - Test RTL/LTR switching
+  - Ask the user if questions arise
+
+- [x] 4. Create analytics overview section
+  - [x] 4.1 Create analytics API endpoint
+    - Create `src/app/api/admin/analytics/route.ts`
+    - Implement metrics calculation (tools, calculations, users, articles)
+    - Add chart data aggregation by day
+    - Add top tools ranking
+    - Add recent activity feed
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+  - [x] 4.2 Create analytics overview component
+    - Create `src/components/admin/analytics-overview.tsx`
+    - Display key metrics cards
+    - Add calculations chart (last 7 days)
+    - Display top 5 tools
+    - Show recent activity feed
+    - Add date range selector
+    - _Requirements: 7.1, 7.2, 7.3, 7.4, 7.5_
+  - [x] 4.3 Create admin overview page
+    - Create `src/app/[locale]/admin/page.tsx`
+    - Integrate analytics overview component
+    - Add quick action buttons
+    - _Requirements: 9.1, 9.2, 9.3_
+  - [x] 4.4 Write property tests for analytics
+    - **Property 12: Analytics Metrics Calculation**
+    - **Property 13: Top Tools Ranking**
+    - **Property 14: Recent Activity Ordering**
+    - **Validates: Requirements 7.1, 7.2, 7.3, 7.4, 7.5**
+
+- [x] 5. Create blog manager section
+  - [x] 5.1 Create blog admin API endpoints
+    - Update `src/app/api/blog/articles/route.ts` for admin operations
+    - Add filtering by status and category
+    - Add search functionality
+    - Add delete endpoint
+    - _Requirements: 3.1, 3.5, 3.6_
+  - [x] 5.2 Create blog manager component
+    - Create `src/components/admin/blog-manager.tsx`
+    - Display article list with all required fields
+    - Add filter controls (status, category)
+    - Add search input
+    - Add generate, edit, delete actions
+    - Show progress indicator during operations
+    - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7_
+  - [x] 5.3 Create blog admin page
+    - Create `src/app/[locale]/admin/blog/page.tsx`
+    - Integrate blog manager component
+    - _Requirements: 3.1_
+  - [x] 5.4 Write property tests for blog filtering
+    - **Property 4: Article List Display Completeness**
+    - **Property 5: Article Filtering Correctness**
+    - **Validates: Requirements 3.1, 3.5, 3.6**
+
+- [x] 6. Create user manager section
+  - [x] 6.1 Create user admin API endpoint
+    - Create `src/app/api/admin/users/route.ts`
+    - Implement user listing with pagination
+    - Add search by email
+    - Add user statistics calculation
+    - Add email confirmation endpoint
+    - _Requirements: 4.1, 4.2, 4.4, 4.5_
+  - [x] 6.2 Create user manager component
+    - Create `src/components/admin/user-manager.tsx`
+    - Display user list with pagination
+    - Add search input
+    - Show user statistics cards
+    - Add user detail modal
+    - Add confirm email action
+    - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5_
+  - [x] 6.3 Create users admin page
+    - Create `src/app/[locale]/admin/users/page.tsx`
+    - Integrate user manager component
+    - _Requirements: 4.1_
+  - [x] 6.4 Write property tests for user management
+    - **Property 6: User List Pagination Correctness**
+    - **Property 7: User Search Accuracy**
+    - **Property 8: User Statistics Calculation**
+    - **Validates: Requirements 4.1, 4.2, 4.5**
+
+- [ ] 7. Checkpoint - Verify content management sections
+  - Test blog article management
+  - Test user management
+  - Verify filtering and search work correctly
+  - Ask the user if questions arise
+
+- [x] 8. Create error monitor section
+  - [x] 8.1 Update error admin API endpoint
+    - Update `src/app/api/admin/errors/route.ts`
+    - Add filtering by severity and time range
+    - Add acknowledge and resolve endpoints
+    - _Requirements: 5.1, 5.4, 5.5, 5.6_
+  - [x] 8.2 Create error monitor component
+    - Create `src/components/admin/error-monitor.tsx`
+    - Display error metrics cards
+    - Show error list with severity indicators
+    - Add filter controls
+    - Add error detail modal
+    - Add acknowledge/resolve actions
+    - Display system health status
+    - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6, 5.7_
+  - [x] 8.3 Create errors admin page
+    - Create `src/app/[locale]/admin/errors/page.tsx`
+    - Integrate error monitor component
+    - _Requirements: 5.1_
+  - [x] 8.4 Write property tests for error monitoring
+    - **Property 9: Error Metrics Accuracy**
+    - **Property 10: Error Filtering Correctness**
+    - **Validates: Requirements 5.1, 5.4**
+
+- [x] 9. Create migration manager section
+  - [x] 9.1 Update migration admin API endpoint
+    - Update `src/app/api/admin/migrations/route.ts`
+    - Add statistics calculation
+    - Improve response format
+    - _Requirements: 6.1, 6.2_
+  - [x] 9.2 Create migration manager component
+    - Create `src/components/admin/migration-manager.tsx`
+    - Display migration statistics cards
+    - Show migration list with status badges
+    - Add run migrations button
+    - Add dry run button
+    - Add rollback options
+    - Display execution results
+    - _Requirements: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6_
+  - [x] 9.3 Create migrations admin page
+    - Create `src/app/[locale]/admin/migrations/page.tsx`
+    - Integrate migration manager component
+    - _Requirements: 6.1_
+  - [x] 9.4 Write property test for migration statistics
+    - **Property 11: Migration Statistics Accuracy**
+    - **Validates: Requirements 6.1, 6.2**
+
+- [x] 10. Create system health section
+  - [x] 10.1 Create health check API endpoint
+    - Create `src/app/api/admin/health/route.ts`
+    - Check database connection
+    - Check Supabase connection
+    - Check API response times
+    - Return system resource usage if available
+    - _Requirements: 8.1, 8.2, 8.3, 8.4_
+  - [x] 10.2 Create system health component
+    - Create `src/components/admin/system-health.tsx`
+    - Display service status cards with visual indicators
+    - Show API response times
+    - Display resource usage if available
+    - Show alerts for failed health checks
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+  - [x] 10.3 Create health admin page
+    - Create `src/app/[locale]/admin/health/page.tsx`
+    - Integrate system health component
+    - _Requirements: 8.1_
+
+- [x] 11. Add translations for admin dashboard
+  - [x] 11.1 Add English translations
+    - Add admin section to `messages/en.json`
+    - Include all labels, titles, and messages
+    - _Requirements: 2.3_
+  - [x] 11.2 Add Arabic translations
+    - Add admin section to `messages/ar.json`
+    - Include all labels, titles, and messages
+    - _Requirements: 2.3_
+
+- [x] 12. Create API keys manager section
+  - [x] 12.1 Create keys management API endpoint
+    - Create `src/app/api/admin/keys/route.ts`
+    - Implement GET to list all keys with masked values
+    - Implement POST to update key values
+    - Implement POST to test key validity
+    - Store keys securely in database or environment
+    - _Requirements: 10.1, 10.2, 10.3, 10.5_
+  - [x] 12.2 Create keys manager component
+    - Create `src/components/admin/keys-manager.tsx`
+    - Display list of API keys grouped by category
+    - Show masked values with reveal toggle
+    - Add edit form for each key
+    - Add test button for testable keys
+    - Show validation status and last updated
+    - Display warning for missing/invalid keys
+    - _Requirements: 10.1, 10.2, 10.4, 10.5, 10.6, 10.7_
+  - [x] 12.3 Create keys admin page
+    - Create `src/app/[locale]/admin/keys/page.tsx`
+    - Integrate keys manager component
+    - _Requirements: 10.1_
+  - [x] 12.4 Write property tests for keys management
+    - **Property 17: API Key Masking**
+    - **Property 18: API Key Validation**
+    - **Validates: Requirements 10.1, 10.2, 10.5**
+
+- [ ] 13. Checkpoint - Verify monitoring sections
+  - Test error monitoring functionality
+  - Test migration management
+  - Test system health checks
+  - Test API keys management
+  - Verify all translations work correctly
+  - Ask the user if questions arise
+
+- [x] 14. Add API security and logging
+  - [x] 14.1 Create admin middleware
+    - Create `src/lib/admin/admin-middleware.ts`
+    - Implement admin verification for API routes
+    - Add action logging
+    - Add rate limiting for sensitive operations
+    - _Requirements: 11.1, 11.2, 11.3, 11.4_
+  - [x] 14.2 Apply middleware to all admin API routes
+    - Update all admin API routes to use middleware
+    - Ensure consistent error responses
+    - _Requirements: 11.1, 11.2_
+  - [ ] 14.3 Write property tests for API security
+    - **Property 15: API Authorization Enforcement**
+    - **Property 16: Admin Action Logging**
+    - **Validates: Requirements 11.1, 11.2, 11.3**
+
+- [ ] 15. Final checkpoint - Complete admin dashboard
+  - Verify all sections work correctly
+  - Test all CRUD operations
+  - Verify responsive design
+  - Test RTL/LTR layouts
+  - Ensure all tests pass
+  - Ask the user if questions arise
+
+## Notes
+
+- All property tests are REQUIRED for comprehensive coverage
+- Each task references specific requirements for traceability
+- Checkpoints ensure incremental validation
+- Property tests validate universal correctness properties using fast-check library
+- Unit tests validate specific examples and edge cases
+- The implementation uses existing UI components from `src/components/ui/`
+- All components support both Arabic and English with proper RTL/LTR
+- Minimum 100 iterations per property test
+

@@ -1,0 +1,298 @@
+# Implementation Plan: Logistics & Image Tools
+
+## Overview
+
+Implementation of 14 new tools for the e-commerce micro-tools website:
+- 7 Logistics & Sizing Tools (smart conversion)
+- 7 Image & Brand Tools (performance optimization)
+
+All tools include SEO content, share features (copy/image), and export features (PDF/Excel).
+Using TypeScript with Next.js, following existing project patterns.
+
+## Tasks
+
+- [x] 1. Setup shared infrastructure and export services
+  - [x] 1.1 Create export-buttons.tsx shared component
+    - Add PDF, Excel, Copy, and Image download buttons
+    - Integrate with existing share-buttons.tsx pattern
+    - _Requirements: 0.6, 0.7, 0.8, 0.9, 0.12, 0.15_
+  - [x] 1.2 Create PDF generator service (lib/export/pdf-generator.ts)
+    - Use jsPDF for English-only PDF generation
+    - Include site branding and formatting
+    - _Requirements: 0.13, 0.14_
+  - [x] 1.3 Create Excel generator service (lib/export/excel-generator.ts)
+    - Use xlsx library for spreadsheet generation
+    - Support comparison tables export
+    - _Requirements: 0.16, 0.17_
+  - [x] 1.4 Update tools.ts with new tool definitions
+    - Add logistics and images categories
+    - Define all 14 new tools with metadata
+    - _Requirements: All tools_
+  - [x] 1.5 Add i18n translations for new tools
+    - Update ar.json and en.json with tool names, descriptions, and SEO content
+    - _Requirements: All tools_
+
+- [ ] 2. Checkpoint - Verify shared infrastructure
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 3. Implement Logistics Tools - Part 1
+  - [x] 3.1 Create size-conversion.ts calculator logic
+    - Implement SIZE_CHARTS data structure
+    - Implement convertSize and recommendSizeByMeasurement functions
+    - _Requirements: 1.1, 1.2, 1.3, 1.4_
+  - [x] 3.2 Create size-converter.tsx component
+    - Category selection (men/women/kids/shoes)
+    - Size input with bidirectional conversion
+    - Measurement-based recommendation
+    - Comparison table display
+    - SEO content and export buttons
+    - _Requirements: 1.1-1.11_
+  - [ ]* 3.3 Write property test for size conversion bidirectionality
+    - **Property 5: Size Conversion Bidirectionality**
+    - **Validates: Requirements 1.2, 1.4**
+  - [x] 3.4 Create volumetric-weight.ts calculator logic
+    - Implement CARRIER_DIVISORS data
+    - Implement calculateVolumetricWeight function
+    - _Requirements: 2.1, 2.2, 2.4_
+  - [x] 3.5 Create volumetric-calculator.tsx component
+    - Dimension inputs with unit toggle
+    - Actual weight input
+    - Carrier comparison table
+    - Chargeable weight highlight
+    - SEO content and export buttons
+    - _Requirements: 2.1-2.11_
+  - [ ]* 3.6 Write property test for volumetric weight formula
+    - **Property 2: Volumetric Weight Formula Correctness**
+    - **Validates: Requirements 2.1, 2.2, 2.5**
+  - [x] 3.7 Create dimension-conversion.ts calculator logic
+    - Implement cm/inch conversion with precision
+    - Calculate volumes in both units
+    - _Requirements: 3.1, 3.2, 3.3_
+  - [x] 3.8 Create dimension-converter.tsx component
+    - Dimension inputs with unit selection
+    - Bidirectional conversion display
+    - Volume calculation
+    - Box size recommendations
+    - Batch conversion support
+    - SEO content and export buttons
+    - _Requirements: 3.1-3.11_
+  - [ ]* 3.9 Write property test for unit conversion round-trip
+    - **Property 1: Unit Conversion Round-Trip**
+    - **Validates: Requirements 2.3, 3.1, 3.2, 5.1, 5.2**
+
+- [ ] 4. Checkpoint - Verify Logistics Tools Part 1
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [-] 5. Implement Logistics Tools - Part 2
+  - [x] 5.1 Create last-mile-cost.ts calculator logic
+    - Implement provider pricing data (SMSA, Aramex, Naqel, Saudi Post)
+    - Implement cost calculation with zone surcharges
+    - _Requirements: 4.1, 4.2, 4.4_
+  - [x] 5.2 Create last-mile-calculator.tsx component
+    - Region selection (city/suburban/remote)
+    - Package dimensions and weight inputs
+    - Provider comparison table
+    - Cost breakdown display
+    - Remote area warnings
+    - SEO content and export buttons
+    - _Requirements: 4.1-4.11_
+  - [ ]* 5.3 Write property test for last mile cost breakdown
+    - **Property 13: Last Mile Cost Breakdown Sum**
+    - **Validates: Requirements 4.2, 4.4**
+  - [x] 5.4 Create weight-conversion.ts calculator logic
+    - Implement multi-unit conversion (g/oz/lb/kg)
+    - Implement shipping category assignment
+    - _Requirements: 5.1, 5.2, 5.3, 5.5_
+  - [x] 5.5 Create weight-converter.tsx component
+    - Weight input with unit selection
+    - All units display
+    - Product weight references
+    - Shipping category indicator
+    - SEO content and export buttons
+    - _Requirements: 5.1-5.11_
+  - [ ]* 5.6 Write property test for weight category assignment
+    - **Property 14: Weight Category Assignment**
+    - **Validates: Requirements 5.5**
+  - [x] 5.7 Create lead-time.ts calculator logic
+    - Implement shipping method transit times
+    - Implement customs clearance estimates
+    - Implement peak season detection
+    - _Requirements: 6.1, 6.2, 6.3, 6.5_
+  - [x] 5.8 Create lead-time-tracker.tsx component
+    - Supplier location and processing time inputs
+    - Shipping method selection
+    - Timeline breakdown display
+    - Peak season warnings
+    - SEO content and export buttons
+    - _Requirements: 6.1-6.11_
+  - [ ]* 5.9 Write property test for lead time sum
+    - **Property 4: Lead Time Sum Property**
+    - **Validates: Requirements 6.1, 6.4**
+  - [x] 5.10 Create cbm-calculation.ts calculator logic
+    - Implement CONTAINER_SPECS data
+    - Implement calculateCBM function with utilization
+    - _Requirements: 7.1, 7.2, 7.3, 7.4_
+  - [x] 5.11 Create cbm-calculator.tsx component
+    - Container type selection
+    - Carton dimensions and quantity inputs
+    - Multiple cartons support
+    - Utilization percentage display
+    - Overflow warnings and suggestions
+    - SEO content and export buttons
+    - _Requirements: 7.1-7.11_
+  - [ ]* 5.12 Write property test for CBM calculation
+    - **Property 3: CBM Calculation Invariant**
+    - **Validates: Requirements 7.2, 7.4**
+
+- [ ] 6. Checkpoint - Verify all Logistics Tools
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [-] 7. Implement Image Tools - Part 1
+  - [x] 7.1 Create webp-conversion.ts logic
+    - Implement Canvas-based WebP conversion
+    - Implement quality settings
+    - _Requirements: 8.1, 8.2, 8.3_
+  - [x] 7.2 Create webp-converter.tsx component
+    - Image upload with drag-drop
+    - Quality selection (low/medium/high/lossless)
+    - Before/after size comparison
+    - Batch conversion support
+    - Download as ZIP for batch
+    - SEO content and export buttons
+    - _Requirements: 8.1-8.12_
+  - [ ]* 7.3 Write property test for image dimension preservation
+    - **Property 6: Image Dimension Preservation**
+    - **Validates: Requirements 8.6, 14.5**
+  - [x] 7.4 Create image-compression.ts logic
+    - Implement smart compression with quality analysis
+    - Implement target size mode
+    - _Requirements: 9.1, 9.2, 9.5_
+  - [x] 7.5 Create image-compressor.tsx component
+    - Image upload
+    - Target size or quality mode
+    - Side-by-side preview
+    - Quality warning display
+    - Batch compression support
+    - SEO content and export buttons
+    - _Requirements: 9.1-9.12_
+  - [ ]* 7.6 Write property test for compression size reduction
+    - **Property 7: Image Compression Size Reduction**
+    - **Validates: Requirements 8.3, 9.2**
+  - [x] 7.7 Create social-resize.ts logic
+    - Implement PLATFORM_SIZES data
+    - Implement crop position calculation
+    - _Requirements: 10.2, 10.3, 10.4, 10.5_
+  - [x] 7.8 Create social-resizer.tsx component
+    - Image upload
+    - Platform preset selection (Instagram/Snapchat/Twitter)
+    - Crop position adjustment
+    - Multi-platform batch resize
+    - Download organized by platform
+    - SEO content and export buttons
+    - _Requirements: 10.1-10.12_
+  - [ ]* 7.9 Write property test for social media dimensions
+    - **Property 8: Social Media Resize Dimensions**
+    - **Validates: Requirements 10.2, 10.3, 10.4**
+
+- [ ] 8. Checkpoint - Verify Image Tools Part 1
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 9. Implement Image Tools - Part 2
+  - [x] 9.1 Create color-extraction.ts logic
+    - Implement color quantization algorithm
+    - Implement HEX/RGB/HSL conversion
+    - Implement complementary/analogous color generation
+    - _Requirements: 11.1, 11.2, 11.3, 11.4_
+  - [x] 9.2 Create color-extractor.tsx component
+    - Image upload
+    - Color palette display with percentages
+    - Multiple format display (HEX/RGB/HSL)
+    - One-click copy for each color
+    - Complementary and analogous suggestions
+    - Export as CSS variables
+    - SEO content and export buttons
+    - _Requirements: 11.1-11.12_
+  - [ ]* 9.3 Write property test for color extraction
+    - **Property 9: Color Extraction Count and Percentage**
+    - **Validates: Requirements 11.1, 11.3**
+  - [x] 9.4 Create watermark.ts logic
+    - Implement watermark positioning
+    - Implement opacity and size adjustment
+    - Implement text watermark rendering
+    - _Requirements: 12.1, 12.2, 12.3, 12.4_
+  - [x] 9.5 Create watermark-creator.tsx component
+    - Image and watermark upload
+    - Position selection (corners/center/tiled)
+    - Opacity and size sliders
+    - Text watermark with font options
+    - Batch watermarking support
+    - SEO content and export buttons
+    - _Requirements: 12.1-12.12_
+  - [x] 9.6 Create favicon-generation.ts logic
+    - Implement multi-size favicon generation
+    - Implement ICO file creation
+    - Generate HTML snippet
+    - _Requirements: 13.1, 13.2, 13.3, 13.6_
+  - [x] 9.7 Create favicon-generator.tsx component
+    - Logo upload
+    - Preview in browser tab mockup
+    - All sizes generation (16-256px + Apple Touch)
+    - HTML code snippet display
+    - Download all as ZIP
+    - SEO content and export buttons
+    - _Requirements: 13.1-13.12_
+  - [ ]* 9.8 Write property test for favicon multi-size generation
+    - **Property 10: Favicon Multi-Size Generation**
+    - **Validates: Requirements 13.1, 13.3, 13.5**
+  - [x] 9.9 Create image-transform.ts logic
+    - Implement flip (horizontal/vertical)
+    - Implement rotation (90/180/270/custom)
+    - _Requirements: 14.1, 14.2, 14.5_
+  - [x] 9.10 Create bulk-image-tool.tsx component
+    - Multiple image upload
+    - Operation selection (flip/rotate)
+    - Before/after preview
+    - Batch processing
+    - Download all as ZIP
+    - SEO content and export buttons
+    - _Requirements: 14.1-14.12_
+  - [ ]* 9.11 Write property test for image rotation dimensions
+    - **Property 12: Image Rotation Dimension Swap**
+    - **Validates: Requirements 14.1, 14.2**
+  - [ ]* 9.12 Write property test for batch processing completeness
+    - **Property 11: Batch Processing Completeness**
+    - **Validates: Requirements 3.5, 8.4, 9.4, 10.6, 12.5, 14.4**
+
+- [ ] 10. Checkpoint - Verify all Image Tools
+  - Ensure all tests pass, ask the user if questions arise.
+
+- [x] 11. Integration and final wiring
+  - [x] 11.1 Update components/tools/index.ts exports
+    - Export all new logistics tools
+    - Export all new image tools
+    - _Requirements: All tools_
+  - [x] 11.2 Create tool pages for all 14 tools
+    - Add pages under [locale]/tools/[slug]
+    - Ensure proper routing and metadata
+    - _Requirements: All tools_
+  - [x] 11.3 Update tools-grid.tsx to display new categories
+    - Add logistics and images category filters
+    - Display new tools in grid
+    - _Requirements: All tools_
+  - [x] 11.4 Verify all tools accessible and functional
+    - Test each tool's basic functionality
+    - Verify SEO content displays correctly
+    - Verify export features work
+    - _Requirements: All tools_
+
+- [ ] 12. Final checkpoint - Complete verification
+  - Ensure all tests pass, ask the user if questions arise.
+
+## Notes
+
+- Tasks marked with `*` are optional property-based tests
+- All image processing is client-side using Canvas API
+- PDF export uses English only (no Arabic text in PDF as per requirements)
+- Excel export supports RTL for Arabic
+- Each tool follows existing component patterns in the project
+- SEO content is approximately 300 words per tool in Arabic
