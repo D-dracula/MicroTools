@@ -231,11 +231,6 @@ export function GenerateArticleButton({
       >
         <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
         {t("admin.generateArticle")}
-        {rateLimitStatus && (
-          <span className="ml-2 text-xs opacity-75" aria-label={t("admin.rateLimitRemaining", { remaining: rateLimitStatus.remaining, limit: rateLimitStatus.dailyLimit })}>
-            ({rateLimitStatus.remaining}/{rateLimitStatus.dailyLimit})
-          </span>
-        )}
       </Button>
 
       {/* Generation Dialog */}

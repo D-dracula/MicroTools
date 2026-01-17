@@ -153,7 +153,7 @@ export const authOptions: NextAuthOptions = {
           const db = createAdminDatabaseOperations();
           
           // Check if profile exists
-          let userProfile = await db.getUserById(user.id);
+          const userProfile = await db.getUserById(user.id);
           
           if (!userProfile) {
             // Create new profile for OAuth user

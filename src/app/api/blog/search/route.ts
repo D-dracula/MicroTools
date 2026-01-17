@@ -235,11 +235,17 @@ RESPOND WITH JSON ONLY:
 /**
  * AI Agent Step 2: Evaluate and select the best topic
  * Analyzes all search results and picks the most valuable topic
+ * 
+ * @param apiKey - OpenRouter API key
+ * @param results - Search results to analyze
+ * @param category - Optional target category
+ * @param existingTitles - Optional list of existing article titles to avoid
  */
 async function selectBestTopic(
   apiKey: string,
   results: UnifiedSearchResult[],
-  category?: ArticleCategory
+  category?: ArticleCategory,
+  existingTitles?: string[]
 ): Promise<{ selected: UnifiedSearchResult | null; analysis: AITopicSelection | null }> {
   if (results.length === 0) {
     return { selected: null, analysis: null };
@@ -253,6 +259,21 @@ async function selectBestTopic(
     source: r.sourceName || r.source,
     publishedDate: r.publishedDate,
   }));
+
+  // Build existing articles warning if provided
+  const existingArticlesWarning = existingTitles && existingTitles.length > 0
+    ? `\n\n⚠️ CRITICAL - AVOID DUPLICATE TOPICS:
+The following ${existingTitles.length} articles already exist. You MUST select a topic that is SIGNIFICANTLY DIFFERENT:
+
+${existingTitles.slice(0, 20).map((t, i) => `${i + 1}. "${t}"`).join('\n')}
+
+DO NOT select topics about:
+- The same subject matter as existing articles
+- Similar trends or strategies already covered
+- Topics that would result in repetitive content
+
+SELECT a topic with a UNIQUE angle, different focus, or fresh perspective.`
+    : '';
 
   const systemPrompt = `You are an expert e-commerce content curator. Analyze these search results and select the SINGLE BEST topic for a blog article.
 
@@ -270,6 +291,8 @@ REJECT topics about:
 - Airlines, travel, weather
 - TV shows, movies, music
 
+${existingArticlesWarning}
+
 RESPOND WITH JSON ONLY:
 {
   "selectedIndex": <number>,
@@ -277,17 +300,17 @@ RESPOND WITH JSON ONLY:
   "relevanceScore": <0-100>,
   "uniqueAngle": "suggested unique angle for the article",
   "suggestedCategory": "marketing|seller-tools|logistics|trends|case-studies",
-  "reasoning": "why this topic is the best choice"
+  "reasoning": "why this topic is the best choice and how it differs from existing articles"
 }
 
-If NO topics are relevant to e-commerce, respond with:
+If NO topics are relevant to e-commerce OR all topics are too similar to existing articles, respond with:
 {
   "selectedIndex": -1,
   "title": "",
   "relevanceScore": 0,
   "uniqueAngle": "",
   "suggestedCategory": "trends",
-  "reasoning": "No relevant e-commerce topics found"
+  "reasoning": "No relevant or unique e-commerce topics found"
 }`;
 
   const userPrompt = `Analyze these ${topicsForAnalysis.length} topics and select the BEST one for an e-commerce blog${category ? ` (category: ${category})` : ''}:
@@ -884,11 +907,30 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     }
 
     // Deduplicate results
-    let uniqueResults = deduplicateResults(allResults);
+    const uniqueResults = deduplicateResults(allResults);
     console.log(`[Blog Search] After deduplication: ${uniqueResults.length}`);
     
     // Rank results by score
     let rankedResults = rankResults(uniqueResults);
+
+    // ========================================================================
+    // STEP 2.5: Fetch existing articles for deduplication (NEW)
+    // ========================================================================
+    let existingTitles: string[] = [];
+    
+    if (useAIAgent) {
+      try {
+        console.log('[AI Agent] Fetching existing articles to avoid duplicates...');
+        // Import the function from article-generator
+        const { getExistingArticlesForDedup } = await import('@/lib/blog/article-generator');
+        const existingArticles = await getExistingArticlesForDedup();
+        existingTitles = existingArticles.map(a => a.title);
+        console.log(`[AI Agent] Loaded ${existingTitles.length} existing articles for duplicate avoidance`);
+      } catch (error) {
+        console.error('[AI Agent] Failed to fetch existing articles:', error);
+        // Continue without existing articles
+      }
+    }
 
     // ========================================================================
     // STEP 3: AI Agent selects the best topic
@@ -897,7 +939,12 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     
     if (useAIAgent && rankedResults.length > 0 && !rankedResults.every(r => r.source === 'fallback')) {
       console.log('[AI Agent] Step 2: Selecting best topic from results...');
-      const { selected, analysis } = await selectBestTopic(openRouterKey!, rankedResults, body.category);
+      const { selected, analysis } = await selectBestTopic(
+        openRouterKey!, 
+        rankedResults, 
+        body.category,
+        existingTitles  // ← Pass existing titles to AI Agent
+      );
       
       if (selected && analysis && analysis.relevanceScore >= 40) {
         selectedTopic = selected;
@@ -910,6 +957,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         ];
         
         console.log(`[AI Agent] ✅ Selected: "${analysis.title}" (${analysis.relevanceScore}% relevant)`);
+        console.log(`[AI Agent] Unique angle: ${analysis.uniqueAngle}`);
       } else {
         console.log('[AI Agent] ⚠️ No highly relevant topic found, using top ranked result');
       }

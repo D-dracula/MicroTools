@@ -100,7 +100,7 @@ export async function signIn({ email, password }: SignInData): Promise<AuthResul
     if (data.user) {
       try {
         const db = createDatabaseOperations()
-        let profile = await db.getUserById(data.user.id)
+        const profile = await db.getUserById(data.user.id)
         
         if (!profile) {
           // Create profile if it doesn't exist

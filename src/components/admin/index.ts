@@ -18,3 +18,6 @@ export { UserManager } from "./user-manager";
 export { ErrorMonitor } from "./error-monitor";
 export { SystemHealth } from "./system-health";
 export { KeysManager } from "./keys-manager";
+
+// Blog Admin Components
+export { AIAgentSteps, type AIAgentStep } from "../blog/admin/ai-agent-steps";

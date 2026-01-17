@@ -58,7 +58,7 @@ const CATEGORY_KEYWORDS: Record<ArticleCategory, string[]> = {
 };
 
 /** Similarity threshold for topic deduplication (0-1, higher = more strict) */
-const SIMILARITY_THRESHOLD = 0.45;
+const SIMILARITY_THRESHOLD = 0.35; // Lowered from 0.45 to be more strict about duplicates
 
 /** Number of recent articles to check for duplicates */
 const DUPLICATE_CHECK_LIMIT = 100;
@@ -121,6 +121,7 @@ export interface ExistingArticleInfo {
  */
 function extractKeywords(text: string): string[] {
   const stopWords = new Set([
+    // Common English words only - removed e-commerce terms to improve matching
     'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with',
     'by', 'from', 'as', 'is', 'was', 'are', 'were', 'been', 'be', 'have', 'has', 'had',
     'do', 'does', 'did', 'will', 'would', 'could', 'should', 'may', 'might', 'must',
@@ -131,9 +132,8 @@ function extractKeywords(text: string): string[] {
     'same', 'so', 'than', 'too', 'very', 'just', 'your', 'our', 'their', 'my', 'his',
     'her', 'about', 'into', 'through', 'during', 'before', 'after', 'above', 'below',
     'between', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'any',
-    // E-commerce common words (less distinctive)
-    'ecommerce', 'e-commerce', 'online', 'store', 'business', 'seller', 'sellers',
-    'guide', 'tips', 'strategies', 'best', 'top', 'new', 'ultimate', 'complete',
+    // Generic filler words
+    'guide', 'tips', 'best', 'top', 'new', 'ultimate', 'complete',
   ]);
 
   return text
@@ -257,11 +257,24 @@ export function checkTopicDuplication(
       maxSimilarity = similarity;
       mostSimilarTitle = existing.title;
     }
+    
+    // Log high similarity matches for debugging
+    if (similarity >= SIMILARITY_THRESHOLD * 0.8) {
+      console.log(`🔍 Similarity check: "${topic.title}" vs "${existing.title}" = ${(similarity * 100).toFixed(1)}%`);
+    }
+  }
+  
+  const isDuplicate = maxSimilarity >= SIMILARITY_THRESHOLD;
+  
+  if (isDuplicate) {
+    console.log(`❌ DUPLICATE DETECTED: "${topic.title}" is ${(maxSimilarity * 100).toFixed(1)}% similar to "${mostSimilarTitle}"`);
+  } else if (maxSimilarity > 0.2) {
+    console.log(`✅ UNIQUE: "${topic.title}" (max similarity: ${(maxSimilarity * 100).toFixed(1)}% with "${mostSimilarTitle}")`);
   }
   
   return {
-    isDuplicate: maxSimilarity >= SIMILARITY_THRESHOLD,
-    similarTo: maxSimilarity >= SIMILARITY_THRESHOLD ? mostSimilarTitle : undefined,
+    isDuplicate,
+    similarTo: isDuplicate ? mostSimilarTitle : undefined,
     similarity: maxSimilarity,
   };
 }

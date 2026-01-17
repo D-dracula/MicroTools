@@ -480,7 +480,7 @@ export async function chatWithTools(
     enableCalculator = true,
   } = options;
 
-  let currentMessages = [...messages];
+  const currentMessages = [...messages];
   let totalTokens = 0;
   let iterations = 0;
   const maxIterations = 5; // Prevent infinite loops

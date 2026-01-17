@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
         try {
           // Ensure user profile exists in database
           const db = createAdminDatabaseOperations()
-          let profile = await db.getUserById(data.user.id)
+          const profile = await db.getUserById(data.user.id)
           
           if (!profile) {
             // Create profile for new user
