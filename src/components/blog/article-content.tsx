@@ -47,7 +47,7 @@ marked.setOptions({
 function removeEmojis(text: string): string {
   // Comprehensive emoji regex covering all Unicode emoji ranges
   const emojiRegex = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA00}-\u{1FA6F}]|[\u{1FA70}-\u{1FAFF}]|[\u{2934}-\u{2935}]|[\u{2B05}-\u{2B07}]|[\u{2B1B}-\u{2B1C}]|[\u{2B50}]|[\u{2B55}]|[\u{3030}]|[\u{303D}]|[\u{3297}]|[\u{3299}]/gu;
-  
+
   return text.replace(emojiRegex, '');
 }
 
@@ -90,12 +90,12 @@ function transformCalloutBoxes(html: string): string {
       // Extract title from <strong> tag if present
       const titleMatch = content.match(/<strong>(.*?)<\/strong>/i);
       const title = titleMatch ? titleMatch[1].trim() : '';
-      
+
       // Remove the strong tag AND any surrounding whitespace/line breaks/paragraphs
-      let mainContent = titleMatch 
+      let mainContent = titleMatch
         ? content.replace(/<strong>.*?<\/strong>/i, '')
         : content;
-      
+
       // Clean up the content thoroughly
       mainContent = mainContent
         .replace(/^[\s\n\r]+/g, '')           // Remove leading whitespace
@@ -105,7 +105,7 @@ function transformCalloutBoxes(html: string): string {
         .replace(/^<p>\s*<\/p>/gi, '')        // Remove empty paragraphs
         .replace(/<p>\s*<\/p>$/gi, '')        // Remove trailing empty paragraphs
         .trim();
-      
+
       // If content is wrapped in <p> tags, extract it
       const pMatch = mainContent.match(/^<p>([\s\S]*)<\/p>$/i);
       if (pMatch) {
@@ -150,7 +150,7 @@ function transformCalloutBoxes(html: string): string {
 
   // 2. Transform highlight-box (statistics boxes) - handle nested divs
   const highlightBoxRegex = /<div\s+class=["']highlight-box["']>\s*<div\s+class=["']highlight-box-title["']>(.*?)<\/div>\s*<div\s+class=["']highlight-box-value["']>(.*?)<\/div>\s*<div\s+class=["']highlight-box-description["']>(.*?)<\/div>\s*<\/div>/gi;
-  
+
   transformedHtml = transformedHtml.replace(highlightBoxRegex, (_match, title, value, description) => {
     return `
 <div class="highlight-box bg-primary/5 border border-primary/20 rounded-xl p-6 my-6 text-center">
@@ -162,21 +162,21 @@ function transformCalloutBoxes(html: string): string {
 
   // 3. Transform steps (step-by-step guides) - handle nested structure
   const stepsRegex = /<div\s+class=["']steps["']>([\s\S]*?)<\/div>\s*(?=<(?:div class=["'](?!step)|p|h\d|$)|\n\n)/gi;
-  
+
   transformedHtml = transformedHtml.replace(stepsRegex, (_match, content) => {
     // Extract individual steps with their content
     let stepIndex = 0;
     let stepsHtml = '';
-    
+
     // Match each step div with its nested content - simplified pattern
     const stepPattern = /<div\s+class=["']step["']>\s*<div\s+class=["']step-title["']>(.*?)<\/div>([\s\S]*?)<\/div>/gi;
     let stepMatch;
-    
+
     while ((stepMatch = stepPattern.exec(content)) !== null) {
       stepIndex++;
       const stepTitle = stepMatch[1] || `Step ${stepIndex}`;
       let stepDesc = stepMatch[2].trim();
-      
+
       // Clean up the description - remove extra whitespace and line breaks
       stepDesc = stepDesc
         .replace(/^[\s\n\r]+/g, '')
@@ -184,19 +184,19 @@ function transformCalloutBoxes(html: string): string {
         .replace(/^(<br\s*\/?>)+/gi, '')
         .replace(/(<br\s*\/?>)+$/gi, '')
         .trim();
-      
+
       // If wrapped in <p> tags, extract content
       const pMatch = stepDesc.match(/^<p>([\s\S]*)<\/p>$/i);
       if (pMatch) {
         stepDesc = pMatch[1].trim();
       }
-      
+
       stepsHtml += `
 <div class="step flex gap-4 mb-6 last:mb-0">
   <div class="flex-shrink-0 w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-base shadow-sm">${stepIndex}</div>
   <div class="flex-1 pt-1">
-    <div class="font-semibold text-foreground mb-2 text-base">${stepTitle}</div>
-    <div class="text-muted-foreground text-sm leading-relaxed">${stepDesc}</div>
+    <div class="step-title font-semibold text-foreground mb-2 text-base">${stepTitle}</div>
+    <div class="step-content">${stepDesc}</div>
   </div>
 </div>`;
     }
@@ -222,7 +222,7 @@ function transformCalloutBoxes(html: string): string {
     (_match, content) => {
       const citeMatch = content.match(/<cite>(.*?)<\/cite>/i);
       const cite = citeMatch ? citeMatch[1] : '';
-      const quote = citeMatch 
+      const quote = citeMatch
         ? content.replace(/<cite>.*?<\/cite>/i, '').replace(/^["']|["']$/g, '').trim()
         : content.replace(/^["']|["']$/g, '').trim();
 
@@ -243,10 +243,10 @@ function transformCalloutBoxes(html: string): string {
 
   // 5. Transform key-takeaways (summary box) - handle nested structure
   const keyTakeawaysRegex = /<div\s+class=["']key-takeaways["']>\s*<div\s+class=["']key-takeaways-title["']>(.*?)<\/div>([\s\S]*?)<\/div>\s*(?=<(?:div|p|h\d)|$|\n\n)/gi;
-  
+
   transformedHtml = transformedHtml.replace(keyTakeawaysRegex, (_match, title, listContent) => {
     const finalTitle = title || 'Key Takeaways';
-    
+
     return `
 <div class="key-takeaways bg-primary/5 border-2 border-primary/20 rounded-xl p-6 my-8">
   <div class="flex items-center gap-2 mb-4">
@@ -263,10 +263,10 @@ function transformCalloutBoxes(html: string): string {
 
   // 6. Transform CTA box (Call to Action)
   const ctaBoxRegex = /<div\s+class=["']cta-box["']>\s*<div\s+class=["']cta-title["']>(.*?)<\/div>\s*<div\s+class=["']cta-content["']>([\s\S]*?)<\/div>\s*<\/div>/gi;
-  
+
   transformedHtml = transformedHtml.replace(ctaBoxRegex, (_match, title, content) => {
     const finalTitle = title || '🚀 Ready to Get Started?';
-    
+
     return `
 <div class="cta-box relative bg-gradient-to-br from-primary/10 to-primary/5 border-2 border-primary/30 rounded-xl p-8 my-10 text-center overflow-hidden">
   <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary to-primary/50"></div>
@@ -276,6 +276,16 @@ function transformCalloutBoxes(html: string): string {
   });
 
   return transformedHtml;
+}
+
+/**
+ * Wrap tables in a responsive container
+ */
+function transformTables(html: string): string {
+  return html.replace(
+    /<table>([\s\S]*?)<\/table>/gi,
+    '<div class="table-container"><table>$1</table></div>'
+  );
 }
 
 /**
@@ -291,8 +301,8 @@ function getIconPath(type: string): string {
   return paths[type] || paths.info;
 }
 
-export function ArticleContent({ 
-  content, 
+export function ArticleContent({
+  content,
   isMarkdown = true,
   locale = "en"
 }: ArticleContentProps) {
@@ -306,16 +316,16 @@ export function ArticleContent({
       // Remove emojis from content first
       const cleanContent = removeEmojis(content);
       const rawHtml = isMarkdown ? (marked.parse(cleanContent) as string) : cleanContent;
-      
+
       // Dynamic import DOMPurify only on client side
       if (typeof window !== 'undefined') {
         const DOMPurify = (await import('dompurify')).default;
         let sanitizedHtml = DOMPurify.sanitize(rawHtml, {
           ALLOWED_TAGS: [
             'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-            'ul', 'ol', 'li', 
+            'ul', 'ol', 'li',
             'blockquote', 'cite', 'footer',
-            'pre', 'code', 
+            'pre', 'code',
             'em', 'strong', 'del', 'ins',
             'a', 'img', 'figure', 'figcaption',
             'table', 'thead', 'tbody', 'tr', 'th', 'td',
@@ -328,16 +338,19 @@ export function ArticleContent({
             'colspan', 'rowspan', 'scope'
           ],
         });
-        
+
         // Transform special divs into styled callout boxes
         sanitizedHtml = transformCalloutBoxes(sanitizedHtml);
-        
+
+        // Wrap tables for responsiveness and color styling
+        sanitizedHtml = transformTables(sanitizedHtml);
+
         setHtmlContent(sanitizedHtml);
       } else {
         setHtmlContent(rawHtml);
       }
     };
-    
+
     parseContent();
   }, [content, isMarkdown]);
 
@@ -347,7 +360,7 @@ export function ArticleContent({
 
     // Find the first paragraph that has actual text content
     const paragraphs = articleRef.current.querySelectorAll('p');
-    
+
     for (const p of paragraphs) {
       // Skip empty paragraphs or those inside callouts
       if (p.textContent && p.textContent.trim().length > 0 && !p.closest('.article-callout')) {
@@ -361,7 +374,7 @@ export function ArticleContent({
   return (
     <div className="w-full max-w-[680px] mx-auto px-4 sm:px-0">
       {/* Article content with professional typography */}
-      <article 
+      <article
         ref={articleRef}
         dir={isRTL ? "rtl" : "ltr"}
         className="article-content"

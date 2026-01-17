@@ -459,6 +459,32 @@ export function selectBestTopic(
 }
 
 // ============================================================================
+// Helper Functions
+// ============================================================================
+
+/**
+ * Clean article content from AI-generated meta-talk and word counts
+ * 
+ * @param text - Raw article text from AI
+ * @returns Cleaned text with markers and instructions removed
+ */
+function cleanArticleContent(text: string): string {
+  if (!text) return text;
+
+  return text
+    // Remove word count markers like (150-200 words), (300 words), [Section 1: 400 words]
+    // Handles both english and common patterns
+    .replace(/\(\d+(?:-\d+)?\s*words?\)/gi, '')
+    .replace(/\[\d+(?:-\d+)?\s*words?\]/gi, '')
+    .replace(/-\s*Target\s+Length:\s*\d+(?:-\d+)?\s*words?/gi, '')
+    // Remove section headers that AI sometimes includes as instructions
+    .replace(/^Section\s+\d+:\s*/gmi, '')
+    // Remove multiple empty lines created by removals
+    .replace(/\n{3,}/g, '\n\n')
+    .trim();
+}
+
+// ============================================================================
 // Article Generation
 // ============================================================================
 
@@ -513,12 +539,14 @@ Create a fresh perspective, different angle, or new approach to the topic. Do NO
 
 === ARTICLE STRUCTURE (FOLLOW EXACTLY) ===
 
-## Introduction (150-200 words)
+## Introduction
+- Target Length: 150-200 words
 - Hook the reader with a compelling statistic or question
 - Explain why this topic matters for e-commerce sellers
 - Preview what the article will cover
 
-## Main Sections (3-5 sections, 300-400 words each)
+## Main Sections (3-5 sections)
+- Target Length: 300-400 words per section
 - Each section covers a different angle of the topic
 - Include specific examples, statistics, and case studies
 - Use subheadings (###) to break down complex topics
@@ -530,9 +558,10 @@ Create a fresh perspective, different angle, or new approach to the topic. Do NO
 - Help readers make informed decisions
 
 ## Step-by-Step Guide (if applicable)
-- Numbered steps with clear instructions
-- Include screenshots descriptions or tool recommendations
-- Mention potential pitfalls and how to avoid them
+- Use the specialized HTML structure: <div class="steps"><div class="step">...</div></div>
+- DO NOT use markdown tables for steps as they break on mobile.
+- Use sub-elements: .step-title (mandatory), .step-details, .step-tool, .step-pitfall.
+- Ensure every step has clear, numbered titles.
 
 ## Case Study / Success Story
 - Real or realistic example of success
@@ -610,16 +639,20 @@ Create a fresh perspective, different angle, or new approach to the topic. Do NO
    </ul>
    </div>
 
-7. STEP-BY-STEP GUIDES:
+7. STEP-BY-STEP GUIDES (MANDATORY FORMAT):
    <div class="steps">
-   <div class="step">
-   <div class="step-title">Step Title</div>
-   Detailed step description...
-   </div>
-   <div class="step">
-   <div class="step-title">Another Step Title</div>
-   Another step description...
-   </div>
+     <div class="step">
+       <div class="step-title">Step 1: Activity Name</div>
+       Main instruction paragraph...
+       <div class="step-details">
+         <ul>
+           <li>Detail point A</li>
+           <li>Detail point B</li>
+         </ul>
+       </div>
+       <div class="step-tool"><strong>🛠️ Tool Recommendation:</strong> Tool Name/Software</div>
+       <div class="step-pitfall"><strong>⚠️ Pitfall to Avoid:</strong> What to stay away from...</div>
+     </div>
    </div>
 
 8. COMPARISON TABLES (use markdown):
@@ -643,8 +676,15 @@ Create a fresh perspective, different angle, or new approach to the topic. Do NO
     </div>
     </div>
 
-=== CONTENT QUALITY CHECKLIST ===
+=== CONTENT QUALITY & CLEANLINESS ===
+1. NO META-TALK: Do NOT include things like "(150 words)", "[Section 1]", or "Here is your article".
+2. NO WORD COUNTS: Never include word count targets or counts in headings or body text.
+3. NO PLACEHOLDERS: Do not use [Insert Image] or similar. Describe the context instead.
+4. PURE CONTENT: Only output the article itself, starting with the Title.
+
+=== FINAL CHECK ===
 ✓ Is the article at least 1500 words?
+✓ Are ALL word count markers (e.g., "(300 words)") removed?
 ✓ Does it include 2-3 real examples or case studies?
 ✓ Are there actionable tips in every section?
 ✓ Is the main keyword used naturally throughout?
@@ -778,14 +818,14 @@ Create an original, comprehensive, SEO-optimized article that provides real valu
   }];
 
   return {
-    title: articleData.title,
-    summary: articleData.summary || articleData.title,
-    content: articleData.content,
+    title: cleanArticleContent(articleData.title),
+    summary: cleanArticleContent(articleData.summary || articleData.title),
+    content: cleanArticleContent(articleData.content),
     category: targetCategory,
-    tags: Array.isArray(articleData.tags) ? articleData.tags.slice(0, 5) : [],
+    tags: Array.isArray(articleData.tags) ? articleData.tags.map((t: string) => t.toLowerCase()).slice(0, 5) : [],
     sources,
-    metaTitle: articleData.metaTitle || articleData.title.substring(0, 60),
-    metaDescription: articleData.metaDescription || (articleData.summary || '').substring(0, 155),
+    metaTitle: cleanArticleContent(articleData.metaTitle || articleData.title).substring(0, 70),
+    metaDescription: cleanArticleContent(articleData.metaDescription || articleData.summary || '').substring(0, 160),
   };
 }
 
