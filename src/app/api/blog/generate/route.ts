@@ -6,20 +6,17 @@
  * Admin-only endpoint for generating new blog articles using AI.
  * Uses Exa for topic research and OpenRouter for content generation.
  * 
- * Requirements: 2.1, 2.2, 2.7, 2.8
+ * Requirements: 2.1, 2.2, 2.7
  * - Verify admin authentication before allowing access
  * - Deny access to non-admin users with 403 status
  * - Generate article and save to database
- * - Rate limit to 5 articles per day per admin
  */
 
 import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import {
-  checkRateLimit,
   generateFullArticle,
-  DAILY_RATE_LIMIT,
 } from '@/lib/blog/article-generator';
 import type { ArticleCategory, ExaSearchResult } from '@/lib/blog/types';
 import { isArticleCategory } from '@/lib/blog/types';
@@ -87,61 +84,6 @@ interface GenerateResponse {
     resetAt?: string;
     suggestions?: string[];
   };
-}
-
-// ============================================================================
-// GET - Check Rate Limit Status
-// ============================================================================
-
-/**
- * GET /api/blog/generate
- * 
- * Returns the current rate limit status for the admin user.
- */
-export async function GET(): Promise<NextResponse<GenerateResponse | { success: boolean; data?: unknown; error?: unknown }>> {
-  try {
-    // Check admin access
-    const { isAdmin, userId } = await checkAdminAccess();
-    
-    if (!isAdmin || !userId) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: 'UNAUTHORIZED',
-            message: 'Admin access required to generate articles',
-          },
-        },
-        { status: 403 }
-      );
-    }
-
-    // Check rate limit
-    const rateLimit = await checkRateLimit(userId);
-
-    return NextResponse.json({
-      success: true,
-      data: {
-        allowed: rateLimit.allowed,
-        remaining: rateLimit.remaining,
-        generatedToday: rateLimit.generatedToday,
-        dailyLimit: DAILY_RATE_LIMIT,
-        resetAt: rateLimit.resetAt.toISOString(),
-      },
-    });
-  } catch (error) {
-    console.error('Rate limit check error:', error);
-    return NextResponse.json(
-      {
-        success: false,
-        error: {
-          code: 'INTERNAL_ERROR',
-          message: error instanceof Error ? error.message : 'Failed to check rate limit',
-        },
-      },
-      { status: 500 }
-    );
-  }
 }
 
 // ============================================================================
@@ -221,23 +163,6 @@ export async function POST(request: NextRequest): Promise<NextResponse<GenerateR
           },
         },
         { status: 400 }
-      );
-    }
-
-    // Check rate limit (Requirement: 2.8)
-    const rateLimit = await checkRateLimit(userId);
-    
-    if (!rateLimit.allowed) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: 'RATE_LIMIT_EXCEEDED',
-            message: `Daily limit of ${DAILY_RATE_LIMIT} articles reached. Try again tomorrow.`,
-            resetAt: rateLimit.resetAt.toISOString(),
-          },
-        },
-        { status: 429 }
       );
     }
 

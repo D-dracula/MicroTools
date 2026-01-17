@@ -29,9 +29,6 @@ import { getThumbnailForCategory } from './thumbnail-service';
 // Constants
 // ============================================================================
 
-/** Maximum articles per admin per day */
-const DAILY_RATE_LIMIT = 5;
-
 /** Target word count range for generated articles */
 const MIN_WORD_COUNT = 1500;
 const MAX_WORD_COUNT = 2500;
@@ -316,84 +313,6 @@ export function filterDuplicateTopics(
   }
   
   return { filtered, skipped };
-}
-
-// ============================================================================
-// Rate Limiting
-// ============================================================================
-
-/**
- * Check if admin has exceeded daily rate limit
- * 
- * @param adminId - Admin user ID
- * @returns Rate limit status
- * 
- * Requirements: 2.8
- */
-export async function checkRateLimit(adminId: string): Promise<RateLimitResult> {
-  // Use admin client to bypass RLS for rate limit checking
-  const supabase = createAdminClient();
-  
-  // Get start of current day (UTC)
-  const now = new Date();
-  const startOfDay = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
-  const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000);
-  
-  // Count generations today
-  const { count, error } = await supabase
-    .from('article_generation_log' as any)
-    .select('*', { count: 'exact', head: true })
-    .eq('admin_id', adminId)
-    .gte('generated_at', startOfDay.toISOString())
-    .lt('generated_at', endOfDay.toISOString());
-  
-  if (error) {
-    console.error('Failed to check rate limit:', error);
-    // Default to allowing if check fails
-    return {
-      allowed: true,
-      remaining: DAILY_RATE_LIMIT,
-      resetAt: endOfDay,
-      generatedToday: 0,
-    };
-  }
-  
-  const generatedToday = count || 0;
-  const remaining = Math.max(0, DAILY_RATE_LIMIT - generatedToday);
-  
-  return {
-    allowed: remaining > 0,
-    remaining,
-    resetAt: endOfDay,
-    generatedToday,
-  };
-}
-
-/**
- * Log article generation attempt
- * 
- * @param adminId - Admin user ID
- * @param topic - Topic that was generated
- * @param success - Whether generation succeeded
- * @param errorMessage - Error message if failed
- */
-async function logGeneration(
-  adminId: string,
-  topic: string | null,
-  success: boolean,
-  errorMessage?: string
-): Promise<void> {
-  // Use admin client to bypass RLS for logging
-  const supabase = createAdminClient();
-  
-  await supabase
-    .from('article_generation_log' as any)
-    .insert({
-      admin_id: adminId,
-      topic,
-      success,
-      error_message: errorMessage || null,
-    });
 }
 
 // ============================================================================
@@ -897,136 +816,111 @@ export async function generateFullArticle(
   };
 
   try {
-    // Step 1: Check rate limit
-    updateProgress('searching', 'Checking rate limit...', 5);
-    const rateLimit = await checkRateLimit(adminId);
-    
-    if (!rateLimit.allowed) {
-      return {
-        success: false,
-        error: {
-          code: 'RATE_LIMIT_EXCEEDED',
-          message: `Daily limit of ${DAILY_RATE_LIMIT} articles reached. Try again tomorrow.`,
-          resetAt: rateLimit.resetAt,
-        },
-      };
-    }
-
-    // Step 2: Fetch existing articles for deduplication
-    updateProgress('searching', 'Checking for duplicate topics...', 10);
+    // Step 1: Fetch existing articles for deduplication
+    updateProgress('searching', 'Fetching existing articles...', 5);
     const existingArticles = await getExistingArticlesForDedup();
     console.log(`📚 Loaded ${existingArticles.length} existing articles for deduplication`);
-
-    // Step 3: Process search results
-    updateProgress('searching', 'Processing search results...', 15);
+    
+    // Step 2: Process search results
+    updateProgress('searching', 'Processing search results...', 10);
     const processedResults = processExaResults(exaResults);
     
     if (processedResults.length === 0) {
-      await logGeneration(adminId, null, false, 'No valid topics found');
       return {
         success: false,
         error: {
           code: 'NO_TOPICS_FOUND',
-          message: 'No suitable topics found from search results.',
-          suggestions: TOPIC_SEARCH_QUERIES.slice(0, 3),
+          message: 'No valid topics found in search results',
         },
       };
     }
-
-    // Step 4: Select best unique topic (with deduplication)
-    updateProgress('selecting', 'Selecting unique topic...', 30);
+    
+    // Step 3: Select best unique topic
+    updateProgress('selecting', 'Selecting best unique topic...', 30);
     const selectedTopic = selectBestTopic(processedResults, existingArticles);
     
     if (!selectedTopic) {
-      await logGeneration(adminId, null, false, 'All topics were duplicates of existing articles');
       return {
         success: false,
         error: {
           code: 'NO_TOPICS_FOUND',
-          message: 'All found topics are too similar to existing articles. Try different search queries.',
-          suggestions: TOPIC_SEARCH_QUERIES.slice(3, 6),
+          message: 'All topics were duplicates of existing articles',
+          suggestions: [
+            'Try a different search query',
+            'Search for more specific or niche topics',
+            'Check back later for new trending topics',
+          ],
         },
       };
     }
-
-    console.log(`✅ Selected unique topic: ${selectedTopic.title} (score: ${selectedTopic.combinedScore.toFixed(2)})`);
-
-    // Step 5: Generate article content
+    
+    console.log(`✅ Selected topic: "${selectedTopic.title}" (score: ${selectedTopic.combinedScore.toFixed(2)})`);
+    
+    // Step 4: Generate article content
     updateProgress('generating', 'Generating article content...', 50);
     let articleData;
     try {
-      // Pass existing titles to help AI create unique content
-      const existingTitles = existingArticles.map(a => a.title);
-      articleData = await generateArticle(apiKey, selectedTopic, options.category, existingTitles);
+      articleData = await generateArticle(
+        apiKey,
+        selectedTopic,
+        options.category,
+        existingArticles.map(a => a.title)
+      );
     } catch (genError) {
       const errorMessage = genError instanceof Error ? genError.message : 'Unknown error';
-      await logGeneration(adminId, selectedTopic.title, false, errorMessage);
       return {
         success: false,
         error: {
           code: 'CONTENT_GENERATION_FAILED',
-          message: `Failed to generate article: ${errorMessage}`,
+          message: errorMessage,
         },
       };
     }
-
-    // Step 6: Assign thumbnail
-    updateProgress('creating-thumbnail', 'Assigning thumbnail...', 75);
+    
+    // Step 5: Assign thumbnail
+    updateProgress('creating-thumbnail', 'Assigning thumbnail...', 80);
     const thumbnailUrl = getThumbnailForCategory(articleData.category);
-
-    // Step 7: Save to database
-    updateProgress('saving', 'Saving article...', 90);
-    let savedArticle: Article;
+    
+    // Step 6: Save to database
+    updateProgress('saving', 'Saving to database...', 90);
+    let savedArticle;
     try {
       savedArticle = await createArticle({
-        title: articleData.title,
-        summary: articleData.summary,
-        content: articleData.content,
-        category: articleData.category,
-        tags: articleData.tags,
+        ...articleData,
         thumbnailUrl,
-        sources: articleData.sources,
-        metaTitle: articleData.metaTitle,
-        metaDescription: articleData.metaDescription,
         isPublished: true,
       });
     } catch (saveError) {
       const errorMessage = saveError instanceof Error ? saveError.message : 'Unknown error';
-      await logGeneration(adminId, selectedTopic.title, false, errorMessage);
       return {
         success: false,
         error: {
           code: 'SAVE_FAILED',
-          message: `Failed to save article: ${errorMessage}`,
+          message: errorMessage,
         },
       };
     }
 
-    // Log successful generation
-    await logGeneration(adminId, selectedTopic.title, true);
-
     updateProgress('complete', 'Article generated successfully!', 100);
-
+    
     return {
       success: true,
       article: savedArticle,
     };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    updateProgress('error', errorMessage, 0, errorMessage);
-    
+    console.error('Article generation error:', error);
     return {
       success: false,
       error: {
         code: 'CONTENT_GENERATION_FAILED',
-        message: errorMessage,
+        message: error instanceof Error ? error.message : 'Unknown error occurred',
       },
     };
   }
 }
 
 // ============================================================================
-// Utility Exports
+// Exports
 // ============================================================================
 
-export { TOPIC_SEARCH_QUERIES, DAILY_RATE_LIMIT, MIN_WORD_COUNT, MAX_WORD_COUNT, SIMILARITY_THRESHOLD };
+export { TOPIC_SEARCH_QUERIES, MIN_WORD_COUNT, MAX_WORD_COUNT, SIMILARITY_THRESHOLD };

@@ -22,7 +22,6 @@ import {
   CheckCircle,
   RefreshCw,
   ExternalLink,
-  Zap,
   Search,
   Globe,
   FileText,
@@ -49,14 +48,6 @@ import { ARTICLE_CATEGORIES, type ArticleCategory } from "@/lib/blog/types";
 // ============================================================================
 // Types
 // ============================================================================
-
-interface RateLimitStatus {
-  allowed: boolean;
-  remaining: number;
-  generatedToday: number;
-  dailyLimit: number;
-  resetAt: string;
-}
 
 interface GeneratedArticle {
   id: string;
@@ -151,13 +142,6 @@ function getTranslations(isRTL: boolean) {
       logistics: isRTL ? "اللوجستيات" : "Logistics",
       trends: isRTL ? "الاتجاهات" : "Trends",
       "case-studies": isRTL ? "دراسات الحالة" : "Case Studies",
-    },
-    
-    rateLimit: {
-      title: isRTL ? "الحد اليومي" : "Daily Limit",
-      remaining: isRTL ? "متبقي" : "remaining",
-      of: isRTL ? "من" : "of",
-      exceeded: isRTL ? "تم الوصول للحد. حاول غداً." : "Limit reached. Try tomorrow.",
     },
     
     actions: {
@@ -321,8 +305,6 @@ export function GenerateArticleContent() {
   const [newsApiKey, setNewsApiKey] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [category, setCategory] = useState<ArticleCategory | "auto">("auto");
-  const [rateLimit, setRateLimit] = useState<RateLimitStatus | null>(null);
-  const [isLoadingRateLimit, setIsLoadingRateLimit] = useState(true);
   const [generationStep, setGenerationStep] = useState<GenerationStep>("idle");
   const [error, setError] = useState<string | null>(null);
   const [generatedArticle, setGeneratedArticle] = useState<GeneratedArticle | null>(null);
@@ -372,22 +354,6 @@ export function GenerateArticleContent() {
     setNewsApiKey(value);
     if (value) localStorage.setItem("newsapi_key", value);
   };
-
-  // Fetch rate limit
-  useEffect(() => {
-    const fetchRateLimit = async () => {
-      try {
-        const response = await fetch("/api/blog/generate");
-        const result = await response.json();
-        if (result.success && result.data) setRateLimit(result.data);
-      } catch (err) {
-        console.error("Failed to fetch rate limit:", err);
-      } finally {
-        setIsLoadingRateLimit(false);
-      }
-    };
-    fetchRateLimit();
-  }, []);
 
   // Add log entry
   const addLog = (step: GenerationStep, message: string, details?: string, status: StepLog['status'] = 'running') => {
@@ -537,13 +503,6 @@ export function GenerateArticleContent() {
       setGenerationStep("complete");
       addLog("complete", t.steps.complete, "🎉 Article ready!");
       setGeneratedArticle(result.data.article);
-
-      // Refresh rate limit
-      const rateLimitResponse = await fetch("/api/blog/generate");
-      const rateLimitResult = await rateLimitResponse.json();
-      if (rateLimitResult.success && rateLimitResult.data) {
-        setRateLimit(rateLimitResult.data);
-      }
     } catch (err) {
       setGenerationStep("error");
       const errorMessage = err instanceof Error ? err.message : t.messages.error;
@@ -591,14 +550,6 @@ export function GenerateArticleContent() {
             <p className="text-sm text-muted-foreground mt-1">{t.subtitle}</p>
           </div>
         </div>
-        
-        {/* Rate Limit Badge */}
-        {rateLimit && (
-          <Badge variant={rateLimit.remaining > 0 ? "default" : "destructive"} className="text-sm">
-            <Zap className="h-3 w-3 mr-1" />
-            {rateLimit.remaining}/{rateLimit.dailyLimit} {t.rateLimit.remaining}
-          </Badge>
-        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -721,7 +672,7 @@ export function GenerateArticleContent() {
               size="lg"
               className="w-full"
               onClick={handleGenerate}
-              disabled={!apiKey.trim() || (rateLimit?.remaining === 0)}
+              disabled={!apiKey.trim()}
             >
               <Sparkles className={`h-4 w-4 ${isRTL ? "ml-2" : "mr-2"}`} />
               {t.actions.generate}
